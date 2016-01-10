@@ -1,12 +1,17 @@
 (function(){
 	
 	var module = angular.module('ammart', [
-		'ngRoute', 'questionaire', 'question', 'criterion', 'choice'
+		'ngRoute', 'ngDialog',
+		'questionaire', 'question', 'criterion', 'choice'
 	])
 
-	.config(function($interpolateProvider, $httpProvider, $locationProvider, $routeProvider){
+	.config(function(
+		$interpolateProvider, $httpProvider, 
+		$locationProvider, $routeProvider, CSRF_TOKEN
+	){
 		$interpolateProvider.startSymbol('[[').endSymbol(']]');
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+		$httpProvider.defaults.headers.common['X-Csrf-Token'] = CSRF_TOKEN;
 
 		$locationProvider.html5Mode(true);
 		$routeProvider

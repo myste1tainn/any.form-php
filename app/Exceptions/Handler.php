@@ -46,7 +46,11 @@ class Handler extends ExceptionHandler {
 		}
 		else
 		{
-			return parent::render($request, $e);
+			if ($request->ajax()) {
+				return dd($e);
+			} else {
+				return parent::render($request, $e);
+			}
 		}
 	}
 

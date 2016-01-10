@@ -18,7 +18,7 @@ class CreateChoicesTable extends Migration {
 			$table->string('label')->nullable();
 			$table->string('name')->nullable();
 			$table->string('description')->nullable();
-			$table->string('note'->nullable();
+			$table->string('note')->nullable();
 			$table->integer('value');
 			$table->integer('questionID')->unsigned();
 			$table->timestamps();

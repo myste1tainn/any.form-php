@@ -11,6 +11,10 @@
 				questions: [$question.newInstance()]
 			}
 		}
+
+		this.save = function(questionaire) {
+			return $http.post('form/save', questionaire);
+		}
 	})
 
 	.controller('QuestionaireListController', function($scope){
@@ -27,26 +31,69 @@
 	})
 
 	.controller('QuestionaireCreateController', function(
-		$scope, $questionaire, $question, $criterion, $choice
+		$scope, ngDialog,
+		$questionaire, $question, $criterion, $choice
 	) {
 		$scope.questionaire = $questionaire.newInstance();
 
-		console.log($scope.questionaire);
-
 		$scope.submit = function() {
-			$questionaire.save($scope.questionaire);
+			$questionaire.save($scope.questionaire)
+			.success(function(res, status, headers, config){
+				ngDialog.open({
+					plain: true,
+					template: (res.message) ? res.message : res
+				})
+			})
+			.error(function(res, status, headers, config){
+				console.log(res, status, headers);
+				ngDialog.open({
+					plain: true,
+					template: res
+				})
+			});
+		}
+
+		var copyOfPreviousCriterion = function() {
+			var length = $scope.questionaire.criteria.length;
+			var previous = $scope.questionaire.criteria[length - 1];
+			return angular.copy(previous);
+		}
+
+		var copyOfPreviousQuestion = function() {
+			var length = $scope.questionaire.questions.length;
+			var previous = $scope.questionaire.questions[length - 1];
+			return angular.copy(previous);
+		}
+
+		var copyOfPreviousChoice = function(question) {
+			var length = question.choices.length;
+			var previous = question.choices[length - 1];
+			return angular.copy(previous);
 		}
 
 		$scope.addCriterion = function() {
-			$scope.questionaire.criteria.push($criterion.newInstance());
+			if ($scope.questionaire.criteria.length > 0) {
+				$scope.questionaire.criteria.push(copyOfPreviousCriterion());
+			} else {
+				$scope.questionaire.criteria.push($criterion.newInstance());
+			}
 		}
 
 		$scope.addQuestion = function() {
-			$scope.questionaire.questions.push($question.newInstance());
+			if ($scope.questionaire.questions.length > 0) {
+				console.log('copy');
+				$scope.questionaire.questions.push(copyOfPreviousQuestion());
+			} else {
+				$scope.questionaire.questions.push($question.newInstance());
+			}
 		}
 
 		$scope.addChoice = function(question) {
-			question.choices.push($choice.newInstance());
+			if (question.choices.length > 0) {
+				question.choices.push(copyOfPreviousChoice(question));
+			} else {
+				question.choices.push($choice.newInstance());
+			}
 		}
 	});
 

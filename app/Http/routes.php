@@ -15,6 +15,7 @@
 Route::get('/', 'HomeController@index');
 Route::get('/sdq-eq', 'FormController@index');
 Route::get('/form/create', 'FormController@create');
+Route::post('/form/save', 'FormController@store');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

@@ -6,18 +6,21 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Laravel</title>
 
-	<script src="bower_components/jquery/dist/jquery.js"></script>
-	<script src="bower_components/bootstrap/js/bootstrap.min.js"></script>
-	<script src="bower_components/angular/angular.js"></script>
-	<script src="bower_components/angular-route/angular-route.js"></script>
+	<script src="{{ asset('/bower_components/jquery/dist/jquery.js') }}"></script>
+	<script src="{{ asset('/bower_components/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ asset('/bower_components/angular/angular.js') }}"></script>
+	<script src="{{ asset('/bower_components/angular-route/angular-route.js') }}"></script>
+	<script src="{{ asset('/bower_components/ngDialog/js/ngDialog.min.js') }}"></script>
 
-	<script src="js/ammart.js"></script>
-	<script src="js/questionaire.js"></script>
-	<script src="js/question.js"></script>
-	<script src="js/criterion.js"></script>
-	<script src="js/choice.js"></script>
+	<script src="{{ asset('/js/ammart.js') }}"></script>
+	<script src="{{ asset('/js/questionaire.js') }}"></script>
+	<script src="{{ asset('/js/question.js') }}"></script>
+	<script src="{{ asset('/js/criterion.js') }}"></script>
+	<script src="{{ asset('/js/choice.js') }}"></script>
 
-	<link href="css/app.css" rel="stylesheet">
+	<link href="{{ url('bower_components/ngDialog/css/ngDialog.min.css') }}" rel="stylesheet">
+	<link href="{{ url('bower_components/ngDialog/css/ngDialog-theme-default.min.css') }}" rel="stylesheet">
+	<link href="{{ url('css/app.css') }}" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -25,6 +28,10 @@
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 	<![endif]-->
+
+	<script type="text/javascript">
+		angular.module('ammart').constant('CSRF_TOKEN', '{{ csrf_token() }}');
+	</script>
 </head>
 <body>
 	<base href="{{ env('APP_URI') }}"></base>

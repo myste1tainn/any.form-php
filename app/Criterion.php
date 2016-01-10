@@ -4,13 +4,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Criterion extends Model {
 
-	public static create($questionaire, $iCriteria) {
+	public static function createWith($questionaire, $iCriteria) {
 		$criteria = [];
 		foreach ($iCriteria as $iCriterion) {
 			$criterion = new Criterion();
 			$criterion->label = $iCriterion['label'];
 			$criterion->from = $iCriterion['from'];
 			$criterion->to = $iCriterion['to'];
+			$criterion->questionaireID = $questionaire->id;
 			$criterion->save();
 
 			$criteria[] = $criterion;

@@ -4,9 +4,6 @@
 	table {
 		width: 100%;
 	}
-	td {
-		padding: 5px;
-	}
 	input {
 		width: 100%;
 	}
@@ -14,17 +11,20 @@
 		border-top: 2px solid #555;
 		border-bottom: 2px solid #555;
 	}
+	td {
+		padding: 10px;
+	}
 	tr.classified td {
 		padding: 10px;
 	}
 	tr.classified.cri {
-		/*border-color: #bbbbff;*/
+		border-color: #bbbbff;
 	}
 	tr.classified.que {
-		/*border-color: #bbffbb;*/
+		border-color: #bbffbb;
 	}
 	tr.classified.cho {
-		/*border-color: #ffbbbb;*/
+		border-color: #ffbbbb;
 	}
 	.criterion {
 		background: #bbbbff;
@@ -43,7 +43,7 @@
 		<tr>
 			<td colspan="1">ชื่อ</td>
 			<td colspan="6">
-				<input name="name" ng-model="name" type="text" />
+				<input name="name" ng-model="questionaire.name" type="text" />
 			</td>
 		</tr>
 		<tr>
@@ -162,5 +162,6 @@
 			</td>
 		</tr>
 	</table>
+	<button ng-click="submit()" style="float: right; padding: 5px; margin: 10px">Submit</button>
 </div>
 @endsection

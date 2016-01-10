@@ -40,12 +40,14 @@ class FormController extends Controller {
 	{
 		$inputName = Request::input('name');
 		$inputCriteria = Request::input('criteria');
+		$inputQuestions = Request::input('questions');
 
 		$questionaire = new Questionaire();
 		$questionaire->name = $inputName;
 		$questionaire->save();
 
-		$questionaire->criteria = Criterion::create($questionaire, $inputCriteria);
+		$questionaire->criteria = Criterion::createWith($questionaire, $inputCriteria);
+		$questionaire->questions = Question::createWith($questionaire, $inputQuestions);
 
 		return response()->json([
 			'success' => true,
