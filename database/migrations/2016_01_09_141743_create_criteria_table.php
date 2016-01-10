@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQuestionsTable extends Migration {
+class CreateCriteriaTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,32 +12,14 @@ class CreateQuestionsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('questions', function(Blueprint $table)
+		Schema::create('criteria', function(Blueprint $table)
 		{
-			// e.g.
 			$table->increments('id');
-
-			// e.g.
-			$table->integer('order');
-
-			// e.g.
-			$table->string('label')->nullable();
-
-			// e.g.
-			$table->string('name');
-
-			// e.g.
-			$table->string('description')->nullable();
-
-			// e.g. abcd choices, quality choices (poor - best)
-			$table->integer('type');
-
-			// e.g.
+			$table->string('label', 64);
+			$table->integer('from');
+			$table->integer('to');
 			$table->integer('questionaireID')->unsigned();
-
-			// e.g.
 			$table->timestamps();
-
 
 			$table->foreign('questionaireID')->references('id')->on('questionaires');
 		});
@@ -50,7 +32,7 @@ class CreateQuestionsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('questions');
+		Schema::drop('criteria');
 	}
 
 }

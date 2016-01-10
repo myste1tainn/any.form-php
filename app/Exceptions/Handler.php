@@ -38,7 +38,11 @@ class Handler extends ExceptionHandler {
 	{
 		if ($this->isHttpException($e))
 		{
-			return $this->renderHttpException($e);
+			if ($request->ajax()) {
+				dd($e);
+			} else {
+				return $this->renderHttpException($e);
+			}
 		}
 		else
 		{

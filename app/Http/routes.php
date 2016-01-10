@@ -1,3 +1,4 @@
+
 <?php
 
 /*
@@ -11,9 +12,9 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
+Route::get('/', 'HomeController@index');
+Route::get('/sdq-eq', 'FormController@index');
+Route::get('/form/create', 'FormController@create');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

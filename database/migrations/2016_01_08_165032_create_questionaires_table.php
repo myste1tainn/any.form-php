@@ -16,7 +16,6 @@ class CreateQuestionairesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->integer('criterion');
 			$table->timestamps();
 		});
 	}

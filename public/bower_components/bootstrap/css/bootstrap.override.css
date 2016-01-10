@@ -1,0 +1,78 @@
+.navbar {
+	transition: all 0.3s ease;
+	background-color: #555;
+	border: none;
+	border-radius: 0px;
+	margin-bottom: 10px;
+}
+
+.navbar .activeItem {
+	background-color: #5299df;
+}
+
+.navbar * {
+	transition: all 0.3s ease;
+	color: white !important;
+}
+
+.navbar li.dropdown.open * {
+	color: #555 !important;
+}
+
+.col-xs-11-5 { width: 99.5%; }
+.col-xs-10-5 { width: 91.0%; }
+.col-xs-9-5 { width: 82.83333333%; }
+.col-xs-8-5 { width: 74.5%; }
+.col-xs-7-5 { width: 65.16666667%; }
+.col-xs-6-5 { width: 57.83333333%; }
+.col-xs-5-5 { width: 49.5%; }
+.col-xs-4-5 { width: 41.16666667%; }
+.col-xs-3-5 { width: 32.83333333%; }
+.col-xs-2-5 { width: 24.5%; }
+.col-xs-1-5 { width: 16.16666667%; }
+.col-xs-0-5 { width: 7.83333333%; }
+
+@media (min-width: 768px) {
+	.col-sm-11-5 { width: 99.5%; }
+	.col-sm-10-5 { width: 91.0%; }
+	.col-sm-9-5 { width: 82.83333333%; }
+	.col-sm-8-5 { width: 74.5%; }
+	.col-sm-7-5 { width: 65.16666667%; }
+	.col-sm-6-5 { width: 57.83333333%; }
+	.col-sm-5-5 { width: 49.5%; }
+	.col-sm-4-5 { width: 41.16666667%; }
+	.col-sm-3-5 { width: 32.83333333%; }
+	.col-sm-2-5 { width: 24.5%; }
+	.col-sm-1-5 { width: 16.16666667%; }
+	.col-sm-0-5 { width: 7.83333333%; }
+}
+
+@media (min-width: 992px) {
+	.col-md-11-5 { width: 99.5%; }
+	.col-md-10-5 { width: 91.0%; }
+	.col-md-9-5 { width: 82.83333333%; }
+	.col-md-8-5 { width: 74.5%; }
+	.col-md-7-5 { width: 65.16666667%; }
+	.col-md-6-5 { width: 57.83333333%; }
+	.col-md-5-5 { width: 49.5%; }
+	.col-md-4-5 { width: 41.16666667%; }
+	.col-md-3-5 { width: 32.83333333%; }
+	.col-md-2-5 { width: 24.5%; }
+	.col-md-1-5 { width: 16.16666667%; }
+	.col-md-0-5 { width: 7.83333333%; }
+}
+
+.col-xs-11,.col-xs-10,.col-xs-9,.col-xs-8,.col-xs-7,.col-xs-6
+.col-xs-5,.col-xs-4,.col-xs-3,.col-xs-2,.col-xs-1,.col-xs-0
+.col-sm-11,.col-sm-10,.col-sm-9,.col-sm-8,.col-sm-7,.col-sm-6
+.col-sm-5,.col-sm-4,.col-sm-3,.col-sm-2,.col-sm-1,.col-sm-0
+.col-md-11,.col-md-10,.col-md-9,.col-md-8,.col-md-7,.col-md-6
+.col-md-5,.col-md-4,.col-md-3,.col-md-2,.col-md-1,.col-md-0,
+.col-xs-11-5,.col-xs-10-5,.col-xs-9-5,.col-xs-8-5,.col-xs-7-5,.col-xs-6-5
+.col-xs-5-5,.col-xs-4-5,.col-xs-3-5,.col-xs-2-5,.col-xs-1-5,.col-xs-0-5
+.col-sm-11-5,.col-sm-10-5,.col-sm-9-5,.col-sm-8-5,.col-sm-7-5,.col-sm-6-5
+.col-sm-5-5,.col-sm-4-5,.col-sm-3-5,.col-sm-2-5,.col-sm-1-5,.col-sm-0-5
+.col-md-11-5,.col-md-10-5,.col-md-9-5,.col-md-8-5,.col-md-7-5,.col-md-6-5
+.col-md-5-5,.col-md-4-5,.col-md-3-5,.col-md-2-5,.col-md-1-5,.col-md-0-5 {
+	
+}
