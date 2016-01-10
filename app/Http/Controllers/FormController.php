@@ -31,6 +31,18 @@ class FormController extends Controller {
 		return view('questionaire/create');
 	}
 
+	public function edit($questionaireID) {
+		return view('questionaire/create');
+	}
+
+	public function load($id) {
+		$questionaire = Questionaire::find($id)
+									->with('criteria', 'questions.choices')
+									->first();
+
+		return response()->json($questionaire);
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -38,21 +50,39 @@ class FormController extends Controller {
 	 */
 	public function store()
 	{
+		$inputID = intval(Request::input('id'));
 		$inputName = Request::input('name');
 		$inputCriteria = Request::input('criteria');
 		$inputQuestions = Request::input('questions');
 
-		$questionaire = new Questionaire();
-		$questionaire->name = $inputName;
-		$questionaire->save();
-
-		$questionaire->criteria = Criterion::createWith($questionaire, $inputCriteria);
-		$questionaire->questions = Question::createWith($questionaire, $inputQuestions);
+		if ($inputID > -1) {
+			$this->updateQuestionaire($inputID, $inputName, $inputCriteria, $inputQuestions);
+		} else {
+			$this->createQuestionaire($inputName, $inputCriteria, $inputQuestions);
+		}
 
 		return response()->json([
 			'success' => true,
 			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์'
 		]);
+	}
+
+	public function createQuestionaire($iName, $iCriteria, $iQuestions) {
+		$questionaire = new Questionaire();
+		$questionaire->name = $iName;
+		$questionaire->save();
+
+		$questionaire->criteria = Criterion::createWith($questionaire, $iCriteria);
+		$questionaire->questions = Question::createWith($questionaire, $iQuestions);
+	}
+
+	public function updateQuestionaire($iID, $iName, $iCriteria, $iQuestions) {
+		$questionaire = Questionaire::find($iID);
+		$questionaire->name = $iName;
+		$questionaire->save();
+
+		$questionaire->criteria = Criterion::updateWith($questionaire, $iCriteria);
+		$questionaire->questions = Question::updateWith($questionaire, $iQuestions);
 	}
 
 	public function all()
@@ -62,17 +92,6 @@ class FormController extends Controller {
 			'success' => true,
 			'data' => $questionaires
 		]);
-	}
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
 	}
 
 	/**

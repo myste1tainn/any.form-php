@@ -12,6 +12,20 @@
 			}
 		}
 
+		this.load = function(id, callback) {
+			if (typeof id != 'undefined') {
+				$http.get('api/questionaire/'+id)
+				.success(function(res, status, headers, config){
+					callback(res);
+				})
+				.error(function(res, status, headers, config){
+					callback(this.newInstance());
+				});
+			} else {
+				callback(this.newInstance());
+			}
+		}
+
 		this.save = function(questionaire) {
 			return $http.post('form/save', questionaire);
 		}
@@ -31,10 +45,15 @@
 	})
 
 	.controller('QuestionaireCreateController', function(
-		$scope, ngDialog,
+		$scope, $route, ngDialog,
 		$questionaire, $question, $criterion, $choice
 	) {
-		$scope.questionaire = $questionaire.newInstance();
+		var id = $route.current.params.questionaireID
+		
+		$questionaire.load(id, function(questionaire) {
+			console.log(questionaire)
+			$scope.questionaire = questionaire;
+		})
 
 		$scope.submit = function() {
 			$questionaire.save($scope.questionaire)
@@ -56,19 +75,26 @@
 		var copyOfPreviousCriterion = function() {
 			var length = $scope.questionaire.criteria.length;
 			var previous = $scope.questionaire.criteria[length - 1];
-			return angular.copy(previous);
+			var copy = angular.copy(previous);
+			return copy;
 		}
 
 		var copyOfPreviousQuestion = function() {
 			var length = $scope.questionaire.questions.length;
 			var previous = $scope.questionaire.questions[length - 1];
-			return angular.copy(previous);
+			var copy = angular.copy(previous)
+			copy.id = -1;
+			copy.order += 1;
+			copy.label = copy.order + ".";
+			return copy;
 		}
 
 		var copyOfPreviousChoice = function(question) {
 			var length = question.choices.length;
 			var previous = question.choices[length - 1];
-			return angular.copy(previous);
+			var copy = angular.copy(previous);
+			copy.id = -1;
+			return copy;
 		}
 
 		$scope.addCriterion = function() {
@@ -81,7 +107,6 @@
 
 		$scope.addQuestion = function() {
 			if ($scope.questionaire.questions.length > 0) {
-				console.log('copy');
 				$scope.questionaire.questions.push(copyOfPreviousQuestion());
 			} else {
 				$scope.questionaire.questions.push($question.newInstance());
@@ -93,6 +118,14 @@
 				question.choices.push(copyOfPreviousChoice(question));
 			} else {
 				question.choices.push($choice.newInstance());
+			}
+		}
+
+		$scope.toggleFold = function (question) {
+			if (typeof question.folded == 'undefined') {
+				question.folded = true;
+			} else {
+				question.folded = !question.folded;
 			}
 		}
 	});

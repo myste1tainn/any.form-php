@@ -118,12 +118,15 @@
 						<td colspan="7" style="padding: 0px">
 							<table>
 								<tr>
-									<td colspan="1"><button ng-click="addChoice(question)">+</button></td>
+									<td colspan="1">
+										<button ng-click="addChoice(question)">+</button>
+										<button ng-click="toggleFold(question)">==</button>
+									</td>
 									<td colspan="6">
 										<b>คำตอบ</b>
 									</td>
 								</tr>
-								<tr ng-repeat="choice in question.choices" class="classified cho">
+								<tr ng-repeat="choice in question.choices" class="classified cho" ng-if="!question.folded">
 									<td colspan="1" class="choice">
 									</td>
 									<td colspan="6">

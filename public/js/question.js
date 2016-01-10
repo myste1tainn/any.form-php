@@ -12,6 +12,7 @@
 				description: "",
 				choices: [$choice.newInstance()],
 				type: 0,
+				folded: true,
 			}
 		}
 	})

@@ -31,6 +31,11 @@
 				controller: 'QuestionaireCreateController',
 				controllerAs: 'questionaireCreate'
 			})
+			.when('/form/edit/:questionaireID', {
+				templateUrl: 'form/edit/:questionaireID',
+				controller: 'QuestionaireCreateController',
+				controllerAs: 'questionaireCreate'
+			})
 			.when('/report', {
 				templateUrl: 'report'
 			})
