@@ -60,4 +60,14 @@ class Choice extends Model {
 		return $question;
 	}
 
+	public static function summationFromChoices($choices)
+	{
+		$sum = 0;
+		foreach ($choices as $c) {
+			$sum += intval($c['value']);
+		}
+
+		return $sum;
+	}
+
 }

@@ -13,11 +13,15 @@
 */
 
 Route::get('/', 'HomeController@index');
-Route::get('/sdq-eq', 'FormController@index');
+Route::get('/forms', 'FormController@index');
 Route::get('/form/create', 'FormController@create');
 Route::get('/form/edit/{questionaireID}', 'FormController@edit');
 Route::get('/api/questionaire/{id}', 'FormController@load');
+Route::get('/api/questionaires', 'FormController@all');
 Route::post('/form/save', 'FormController@store');
+Route::post('/api/questionaire/submit', 'FormController@submit');
+
+Route::get('/questionaire/{id}', 'FormController@show');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

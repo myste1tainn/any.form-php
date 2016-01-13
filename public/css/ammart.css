@@ -1,0 +1,58 @@
+.std-pad { padding: 8px; }
+.std-margin { margin: 8px; }
+.min-w-100 { width: 100px; }
+table {
+	width: 100%;
+}
+input {
+	width: 100%;
+}
+input[type=checkbox],
+input[type=radio] {
+	width: auto;
+}
+tr.classified {
+	border-top: 2px solid #555;
+	border-bottom: 2px solid #555;
+}
+td {
+	padding: 10px;
+}
+.do table.name td {
+	;
+}
+.do table.questions td {
+	border: 1px solid #ddd;
+}
+.do table.questions td.selected {
+	background: darkblue;
+}
+th {
+	text-align: center;
+	font-size: 1.1em;
+	padding: 15px;
+	color: white;
+	background: gray;
+	border: 1px solid #ddd;
+}
+tr.classified td {
+	padding: 10px;
+}
+tr.classified.cri {
+	border-color: #bbbbff;
+}
+tr.classified.que {
+	border-color: #bbffbb;
+}
+tr.classified.cho {
+	border-color: #ffbbbb;
+}
+.criterion {
+	background: #bbbbff;
+}
+.question {
+	background: #bbffbb;
+}
+.choice {
+	background: #ffbbbb;
+}

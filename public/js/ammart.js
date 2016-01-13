@@ -21,8 +21,8 @@
 			.when('/home', {
 				templateUrl: ''
 			})
-			.when('/sdq-eq', {
-				templateUrl: 'sdq-eq',
+			.when('/forms', {
+				templateUrl: 'forms',
 				controller: 'QuestionaireListController',
 				controllerAs: 'questionaireList'
 			})
@@ -35,6 +35,11 @@
 				templateUrl: 'form/edit/:questionaireID',
 				controller: 'QuestionaireCreateController',
 				controllerAs: 'questionaireCreate'
+			})
+			.when('/questionaire/:questionaireID', {
+				templateUrl: 'questionaire/:questionaireID',
+				controller: 'QuestionaireDoController',
+				controllerAs: 'questionaireDo'
 			})
 			.when('/report', {
 				templateUrl: 'report'

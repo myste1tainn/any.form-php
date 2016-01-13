@@ -1,41 +1,5 @@
 @extends((Request::ajax()) ? 'nilview' : 'app')
 @section('content')
-<style>
-	table {
-		width: 100%;
-	}
-	input {
-		width: 100%;
-	}
-	tr.classified {
-		border-top: 2px solid #555;
-		border-bottom: 2px solid #555;
-	}
-	td {
-		padding: 10px;
-	}
-	tr.classified td {
-		padding: 10px;
-	}
-	tr.classified.cri {
-		border-color: #bbbbff;
-	}
-	tr.classified.que {
-		border-color: #bbffbb;
-	}
-	tr.classified.cho {
-		border-color: #ffbbbb;
-	}
-	.criterion {
-		background: #bbbbff;
-	}
-	.question {
-		background: #bbffbb;
-	}
-	.choice {
-		background: #ffbbbb;
-	}
-</style>
 <div class="container">
 	<h3>สร้างแบบฟอร์ม</h3>
 	<hr />

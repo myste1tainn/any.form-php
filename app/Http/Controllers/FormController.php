@@ -1,9 +1,13 @@
 <?php namespace App\Http\Controllers;
 
 use App\Questionaire;
+use App\QuestionaireResult;
 use App\Criterion;
 use App\Question;
 use App\Choice;
+use App\Participant;
+use App\ParticipantAnswer;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -41,6 +45,10 @@ class FormController extends Controller {
 									->first();
 
 		return response()->json($questionaire);
+	}
+
+	public function show($id) {
+		return view('questionaire/do');
 	}
 
 	/**
@@ -87,33 +95,65 @@ class FormController extends Controller {
 
 	public function all()
 	{
-		$questionaires = Questionaire::with('criteria', 'questions.choices');
+		$questionaires = Questionaire::with('criteria', 'questions.choices')->get();
 		return response()->json([
 			'success' => true,
 			'data' => $questionaires
 		]);
 	}
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
+	public function submit()
 	{
-		//
+		$choices 		= Request::input('choices');
+		$questionaire	= $this->prepareQuestionaire();
+		$participant 	= $this->prepareParticipant();		
+
+		// Retain only one copy of question answers of each participant
+		ParticipantAnswer::where('participantID', $participant->id)
+						 ->where('questionaireID', $questionaire->id)
+						 ->delete();
+
+		QuestionaireResult::where('participantID', $participant->id)
+						  ->where('questionaireID', $questionaire->id)
+						  ->delete();
+
+		$answers		= ParticipantAnswer::createWith($questionaire, $participant, $choices);
+		$summation		= Choice::summationFromChoices($choices);
+
+		$qr					= new QuestionaireResult();
+		$qr->participantID 	= $participant->id;
+		$qr->questionaireID = $questionaire->id;
+		$qr->value			= $summation;
+		$qr->save(); 
+
+		return response()->json([
+			'success' => true,
+			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์'
+		]);
 	}
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
+	private function prepareParticipant() {
+		$identifier = Request::input('identifier');
+
+		$participant = Participant::where('identifier', $identifier)->first();
+		if (!$participant) {
+			$participant = new Participant();
+			$participant->identifier = $identifier;
+			$participant->save();
+		}
+
+		return $participant;
+	}
+
+	private function prepareQuestionaire() {
+		$id = Request::input('questionaireID');
+		$questionaire = Questionaire::find($id);
+
+		if (!$questionaire) {
+			throw new \Exception('Questionaire does not existed');
+		}
+
+		return $questionaire;
 	}
 
 }

@@ -2,7 +2,7 @@
 	
 	var module = angular.module('questionaire', [])
 
-	.service('$questionaire', function($http, $question, $criterion) {
+	.service('$questionaire', function($http, $question, $criterion, ngDialog) {
 		this.newInstance = function() {
 			return {
 				id: -1,
@@ -26,22 +26,56 @@
 			}
 		}
 
+		this.all = function(callback) {
+			$http.get('api/questionaires')
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.data);
+				} else {
+					ngDialog.open({
+						plain: true,
+						template: res
+					});	
+				}
+			})
+			.error(function(res, status, headers, config){
+				ngDialog.open({
+					plain: true,
+					template: res
+				});
+			});
+		}
+
 		this.save = function(questionaire) {
 			return $http.post('form/save', questionaire);
 		}
+
+		this.submit = function(result, callback) {
+			$http.post('api/questionaire/submit', result)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.message)
+				} else {
+					ngDialog.open({
+						plain: true,
+						template: res
+					})
+				}
+			})
+			.error(function(res, status, headers, config){
+				ngDialog.open({
+					plain: true,
+					template: res
+				})
+			});
+		}
 	})
 
-	.controller('QuestionaireListController', function($scope){
-		$scope.questionaires = [
-			{ id: 1, name: 'แบบฟอร์ม 1' },
-			{ id: 2, name: 'แบบฟอร์ม 2' },
-			{ id: 3, name: 'แบบฟอร์ม 3' },
-			{ id: 4, name: 'แบบฟอร์ม 4' },
-			{ id: 1, name: 'แบบฟอร์ม 1' },
-			{ id: 2, name: 'แบบฟอร์ม 2' },
-			{ id: 3, name: 'แบบฟอร์ม 3' },
-			{ id: 4, name: 'แบบฟอร์ม 4' },
-		]
+	.controller('QuestionaireListController', function($scope, $questionaire, ngDialog){
+		$scope.questionaires = [];
+		$questionaire.all(function(questionaires){
+			$scope.questionaires = questionaires;
+		})
 	})
 
 	.controller('QuestionaireCreateController', function(
@@ -51,7 +85,6 @@
 		var id = $route.current.params.questionaireID
 		
 		$questionaire.load(id, function(questionaire) {
-			console.log(questionaire)
 			$scope.questionaire = questionaire;
 		})
 
@@ -128,6 +161,89 @@
 				question.folded = !question.folded;
 			}
 		}
-	});
+	})
+
+	.controller('QuestionaireDoController', function($scope, $route, $questionaire, ngDialog) {
+		var id = $route.current.params.questionaireID
+
+		$scope.participant = { 
+			identifier: null, 
+			choices: []
+		};
+		$scope.questionaire = {};
+		$questionaire.load(id, function(questionaire){
+			$scope.questionaire = questionaire;
+		})
+
+		$scope.toggleChoose = function(question, choice) {
+			question.choice = choice;
+		}
+
+		$scope.isChoosen = function(question, choice) {
+			return question.choice == choice;
+		}
+
+		var choosenChoices = function() {
+			var choices = [];
+			for (var i = 0; i < $scope.questionaire.questions.length; i++) {
+				var q = $scope.questionaire.questions[i];
+				
+				if (q.choice) {
+					choices.push(q.choice);
+				}
+			};
+			return choices;
+		}
+
+		var validateFormInput = function() {
+			var valid = (
+						$scope.participant.identifier != null && 
+						$scope.participant.identifier != ""
+						);
+
+			if (!valid) {
+				ngDialog.open({
+					plain: true,
+					template: 'กรุณาใส่หมายเลขประจำตัวนักเรียน'
+				});
+			}
+
+			return valid;
+		}
+
+		var validateChoosenChoices = function(choices) {
+			var valid = choices.length == $scope.questionaire.questions.length;
+
+			console.log(choices);
+
+			if (!valid) {
+				ngDialog.open({
+					plain: true,
+					template: 'กรุณาตอบคำถามให้ครบทุกข้อ'
+				})
+			}
+
+			return valid;
+		}
+
+		$scope.submit = function() {
+			var choices = choosenChoices();
+
+			// if (validateFormInput()) {
+			// 	if (validateChoosenChoices(choices)) {
+					$scope.participant.choices = choices;
+					$scope.participant.questionaireID = $scope.questionaire.id;
+
+					$questionaire.submit($scope.participant, function (response) {
+						ngDialog.open({
+							plain: true,
+							template: response
+						})
+					})
+					
+				// }	
+			// }
+		}
+	})
 
 })();

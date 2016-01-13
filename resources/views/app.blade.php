@@ -21,6 +21,7 @@
 	<link href="{{ url('bower_components/ngDialog/css/ngDialog.min.css') }}" rel="stylesheet">
 	<link href="{{ url('bower_components/ngDialog/css/ngDialog-theme-default.min.css') }}" rel="stylesheet">
 	<link href="{{ url('css/app.css') }}" rel="stylesheet">
+	<link href="{{ url('css/ammart.css') }}" rel="stylesheet">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -50,7 +51,7 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="{{ url('/') }}">หน้าแรก</a></li>
-					<li><a href="{{ url('sdq-eq') }}">แบบฟอร์ม</a></li>
+					<li><a href="{{ url('forms') }}">แบบฟอร์ม</a></li>
 					<li><a href="{{ url('report') }}">รายงาน</a></li>
 				</ul>
 
