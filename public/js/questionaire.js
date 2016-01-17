@@ -12,11 +12,40 @@
 			}
 		}
 
+		this.newHeader = function() {
+			return {
+				rows: [this.newHeaderRow()]
+			}
+		}
+
+		this.newHeaderRow = function () {
+			return {
+				cols: [this.newHeaderCol()]
+			}
+		}
+
+		this.newHeaderCol = function () {
+			return {
+				rowspan: 1, colspan: 1, label: 'New Label'
+			}
+		}
+
 		this.load = function(id, callback) {
 			if (typeof id != 'undefined') {
 				$http.get('api/questionaire/'+id)
 				.success(function(res, status, headers, config){
-					callback(res);
+					if (typeof res == 'object') {
+						if (res.header != null) {
+							var h = res.header;
+							res.header = JSON.parse(h);
+						}
+						callback(res);
+					} else {
+						ngDialog.open({
+							plain: true,
+							template: res
+						})
+					}
 				})
 				.error(function(res, status, headers, config){
 					callback(this.newInstance());
@@ -78,87 +107,107 @@
 		})
 	})
 
-	.controller('QuestionaireCreateController', function(
-		$scope, $route, ngDialog,
+	.directive('questionaireCreate', function(
+		$route, ngDialog,
 		$questionaire, $question, $criterion, $choice
-	) {
-		var id = $route.current.params.questionaireID
-		
-		$questionaire.load(id, function(questionaire) {
-			$scope.questionaire = questionaire;
-		})
+	){
+		return {
+			restrict: 'E',
+			controllerAs: 'questionaireCreate',
+			controller: function($scope, $element, $attrs){
+				var id = $route.current.params.questionaireID
 
-		$scope.submit = function() {
-			$questionaire.save($scope.questionaire)
-			.success(function(res, status, headers, config){
-				ngDialog.open({
-					plain: true,
-					template: (res.message) ? res.message : res
+				$questionaire.load(id, function(questionaire) {
+					$scope.questionaire = questionaire;
+
+					if ($scope.questionaire.header) {
+						$scope.toggleHasHeader(true, true);
+					}
 				})
-			})
-			.error(function(res, status, headers, config){
-				console.log(res, status, headers);
-				ngDialog.open({
-					plain: true,
-					template: res
-				})
-			});
-		}
 
-		var copyOfPreviousCriterion = function() {
-			var length = $scope.questionaire.criteria.length;
-			var previous = $scope.questionaire.criteria[length - 1];
-			var copy = angular.copy(previous);
-			return copy;
-		}
+				var compileHeader = function() {
+					if ($scope.hasHeader()) {
+						
+					} else {
+						$scope.questionaire.header = null;
+					}
+				}
 
-		var copyOfPreviousQuestion = function() {
-			var length = $scope.questionaire.questions.length;
-			var previous = $scope.questionaire.questions[length - 1];
-			var copy = angular.copy(previous)
-			copy.id = -1;
-			copy.order += 1;
-			copy.label = copy.order + ".";
-			return copy;
-		}
+				$scope.submit = function() {
+					compileHeader();
+					$questionaire.save($scope.questionaire)
+					.success(function(res, status, headers, config){
+						ngDialog.open({
+							plain: true,
+							template: (res.message) ? res.message : res
+						})
+					})
+					.error(function(res, status, headers, config){
+						console.log(res, status, headers);
+						ngDialog.open({
+							plain: true,
+							template: res
+						})
+					});
+				}
 
-		var copyOfPreviousChoice = function(question) {
-			var length = question.choices.length;
-			var previous = question.choices[length - 1];
-			var copy = angular.copy(previous);
-			copy.id = -1;
-			return copy;
-		}
+				var copyOfPreviousCriterion = function() {
+					var length = $scope.questionaire.criteria.length;
+					var previous = $scope.questionaire.criteria[length - 1];
+					var copy = angular.copy(previous);
+					return copy;
+				}
 
-		$scope.addCriterion = function() {
-			if ($scope.questionaire.criteria.length > 0) {
-				$scope.questionaire.criteria.push(copyOfPreviousCriterion());
-			} else {
-				$scope.questionaire.criteria.push($criterion.newInstance());
-			}
-		}
+				var copyOfPreviousQuestion = function() {
+					var length = $scope.questionaire.questions.length;
+					var previous = $scope.questionaire.questions[length - 1];
+					var copy = angular.copy(previous)
+					copy.id = -1;
+					copy.order = parseInt(copy.order);
+					copy.order += 1;
+					copy.label = copy.order + ".";
+					return copy;
+				}
 
-		$scope.addQuestion = function() {
-			if ($scope.questionaire.questions.length > 0) {
-				$scope.questionaire.questions.push(copyOfPreviousQuestion());
-			} else {
-				$scope.questionaire.questions.push($question.newInstance());
-			}
-		}
+				var copyOfPreviousChoice = function(question) {
+					var length = question.choices.length;
+					var previous = question.choices[length - 1];
+					var copy = angular.copy(previous);
+					copy.id = -1;
+					return copy;
+				}
 
-		$scope.addChoice = function(question) {
-			if (question.choices.length > 0) {
-				question.choices.push(copyOfPreviousChoice(question));
-			} else {
-				question.choices.push($choice.newInstance());
-			}
-		}
+				$scope.addCriterion = function() {
+					if ($scope.questionaire.criteria.length > 0) {
+						$scope.questionaire.criteria.push(copyOfPreviousCriterion());
+					} else {
+						$scope.questionaire.criteria.push($criterion.newInstance());
+					}
+				}
 
-		$scope.toggleFold = function (question) {
-			if (typeof question.folded == 'undefined') {
-				question.folded = true;
-			} else {
-				question.folded = !question.folded;
+				$scope.addQuestion = function() {
+					if ($scope.questionaire.questions.length > 0) {
+						$scope.questionaire.questions.push(copyOfPreviousQuestion());
+					} else {
+						$scope.questionaire.questions.push($question.newInstance());
+					}
+				}
+
+				$scope.addChoice = function(question) {
+					if (question.choices.length > 0) {
+						question.choices.push(copyOfPreviousChoice(question));
+					} else {
+						question.choices.push($choice.newInstance());
+					}
+				}
+
+				$scope.toggleFold = function (question) {
+					if (typeof question.folded == 'undefined') {
+						question.folded = true;
+					} else {
+						question.folded = !question.folded;
+					}
+				}
 			}
 		}
 	})
@@ -214,8 +263,6 @@
 		var validateChoosenChoices = function(choices) {
 			var valid = choices.length == $scope.questionaire.questions.length;
 
-			console.log(choices);
-
 			if (!valid) {
 				ngDialog.open({
 					plain: true,
@@ -229,8 +276,8 @@
 		$scope.submit = function() {
 			var choices = choosenChoices();
 
-			// if (validateFormInput()) {
-			// 	if (validateChoosenChoices(choices)) {
+			if (validateFormInput()) {
+				if (validateChoosenChoices(choices)) {
 					$scope.participant.choices = choices;
 					$scope.participant.questionaireID = $scope.questionaire.id;
 
@@ -241,8 +288,54 @@
 						})
 					})
 					
-				// }	
-			// }
+				}	
+			}
+		}
+	})
+
+	.directive('headerToggler', function($http, $questionaire){
+		return {
+			restrict: 'A',
+			require: 'questionaireCreate',
+			controllerAs: 'headerToggler',
+			controller: function($scope, $element, $attrs){
+				var _hasHeader = false;
+
+				$scope.toggleHasHeader = function(val, relectToElement) {
+					_hasHeader = val;
+
+					if (_hasHeader) {
+						if ($scope.questionaire.header) {
+
+						} else {
+							$scope.questionaire.header = $questionaire.newHeader();
+						}
+					};
+
+					if (relectToElement) {
+						$element.prop('checked', val);
+					}
+				}
+
+				$scope.hasHeader = function() {
+					return _hasHeader;
+				}
+
+				$scope.addHeaderRow = function() {
+					var row = $questionaire.newHeaderRow()
+					$scope.questionaire.header.rows.push(row);
+				}
+
+				$scope.addHeaderCol = function(row) {
+					var col = $questionaire.newHeaderCol()
+					row.cols.push(col);
+				}
+
+				$element.change(function (e) {
+					$scope.toggleHasHeader($element.prop('checked'));
+					$scope.$apply();
+				})
+			}
 		}
 	})
 

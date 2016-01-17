@@ -40,8 +40,8 @@ class FormController extends Controller {
 	}
 
 	public function load($id) {
-		$questionaire = Questionaire::find($id)
-									->with('criteria', 'questions.choices')
+		$questionaire = Questionaire::with('criteria', 'questions.choices')
+									->where('id', $id)
 									->first();
 
 		return response()->json($questionaire);
@@ -60,13 +60,14 @@ class FormController extends Controller {
 	{
 		$inputID = intval(Request::input('id'));
 		$inputName = Request::input('name');
+		$inputHeader = Request::input('header');
 		$inputCriteria = Request::input('criteria');
 		$inputQuestions = Request::input('questions');
 
 		if ($inputID > -1) {
-			$this->updateQuestionaire($inputID, $inputName, $inputCriteria, $inputQuestions);
+			$this->updateQuestionaire($inputID, $inputName, $inputHeader, $inputCriteria, $inputQuestions);
 		} else {
-			$this->createQuestionaire($inputName, $inputCriteria, $inputQuestions);
+			$this->createQuestionaire($inputName, $inputHeader, $inputCriteria, $inputQuestions);
 		}
 
 		return response()->json([
@@ -75,18 +76,28 @@ class FormController extends Controller {
 		]);
 	}
 
-	public function createQuestionaire($iName, $iCriteria, $iQuestions) {
+	public function createQuestionaire($iName, $iHeader, $iCriteria, $iQuestions) {
 		$questionaire = new Questionaire();
 		$questionaire->name = $iName;
+		if ($iHeader) {
+			$questionaire->header = json_encode($iHeader);
+		} else {
+			$questionaire->header = null;
+		}
 		$questionaire->save();
 
 		$questionaire->criteria = Criterion::createWith($questionaire, $iCriteria);
 		$questionaire->questions = Question::createWith($questionaire, $iQuestions);
 	}
 
-	public function updateQuestionaire($iID, $iName, $iCriteria, $iQuestions) {
+	public function updateQuestionaire($iID, $iName, $iHeader, $iCriteria, $iQuestions) {
 		$questionaire = Questionaire::find($iID);
 		$questionaire->name = $iName;
+		if ($iHeader) {
+			$questionaire->header = json_encode($iHeader);
+		} else {
+			$questionaire->header = null;
+		}
 		$questionaire->save();
 
 		$questionaire->criteria = Criterion::updateWith($questionaire, $iCriteria);

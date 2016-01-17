@@ -1,6 +1,6 @@
 @extends((Request::ajax()) ? 'nilview' : 'app')
 @section('content')
-<div class="container">
+<questionaire-create class="container">
 	<h3>สร้างแบบฟอร์ม</h3>
 	<hr />
 	<table>
@@ -8,6 +8,38 @@
 			<td colspan="1">ชื่อ</td>
 			<td colspan="6">
 				<input name="name" ng-model="questionaire.name" type="text" />
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align: top;">
+				มีหัวตาราง
+				<input type="checkbox" header-toggler />
+				<button ng-click="addHeaderRow()">+</button>
+			</td>
+			<td colspan="6">
+				<table ng-show="hasHeader()" ng-repeat="r in questionaire.header.rows">
+					<tr>
+						<td>แถวที่ [[ $index+1 ]]</td>
+					</tr>
+					<tr ng-repeat="c in r.cols">
+						<td>
+							คอลัมน์ที่ [[ $index+1 ]]
+							<button ng-click="addHeaderCol(r)">+</button>
+						</td>
+						<td>
+							หัว
+							<input ng-model="c.label" />
+						</td>
+						<td>
+							Column span
+							<input ng-model="c.colspan" />
+						</td>
+						<td>
+							Row span
+							<input ng-model="c.rowspan" />
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 		<tr>
@@ -130,5 +162,5 @@
 		</tr>
 	</table>
 	<button ng-click="submit()" style="float: right; padding: 5px; margin: 10px">Submit</button>
-</div>
+</questionaire-create>
 @endsection

@@ -28,13 +28,9 @@
 			})
 			.when('/form/create', {
 				templateUrl: 'form/create',
-				controller: 'QuestionaireCreateController',
-				controllerAs: 'questionaireCreate'
 			})
 			.when('/form/edit/:questionaireID', {
 				templateUrl: 'form/edit/:questionaireID',
-				controller: 'QuestionaireCreateController',
-				controllerAs: 'questionaireCreate'
 			})
 			.when('/questionaire/:questionaireID', {
 				templateUrl: 'questionaire/:questionaireID',

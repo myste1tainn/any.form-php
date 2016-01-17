@@ -31,19 +31,12 @@
 	</div>
 
 	<table class="questions">
-		<tr>
-			<th rowspan="2" colspan="2">
-				อาการพฤติกรรมหรือความรู้สึก
+		<tr ng-repeat="r in questionaire.header.rows">
+			<th ng-repeat="c in r.cols"
+				rowspan="[[ c.rowspan ]]" 
+				colspan="[[ c.colspan ]]">
+				[[ c.label ]]
 			</th>
-			<th colspan="4">
-				ระดับอาการ
-			</th>
-		</tr>
-		<tr>
-			<th>ไม่เคยเลย</th>
-			<th>เป็นครั้งคราว</th>
-			<th>เป็นบ่อยๆ</th>
-			<th>เป็นประจำ</th>
 		</tr>
 		<tr ng-repeat="q in questionaire.questions">
 			<td class="text-right">[[ q.label ]]</td>

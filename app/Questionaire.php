@@ -12,4 +12,12 @@ class Questionaire extends Model {
 		return $this->hasMany('App\Question', 'questionaireID');
 	}
 
+	public function parent() {
+		return $this->belongsTo('App\Questionaire', 'parentID');
+	}
+
+	public function childs() {
+		return $this->hasMany('App\Questionaire', 'id');
+	}
+
 }
