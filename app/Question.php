@@ -4,6 +4,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model {
 
+	public function meta()
+	{
+		return $this->hasOne('App\QuestionMeta', 'questionID');
+	}
+
 	public function choices() {
 		return $this->hasMany('App\Choice', 'questionID');
 	}
@@ -44,6 +49,7 @@ class Question extends Model {
 		$question->questionaireID = $questionaire->id;
 		$question->save();
 
+		$question->meta = QuestionMeta::createWith($question, $iQuestion['meta']);
 		$question->choices = Choice::createWith($question, $iQuestion['choices']);
 
 		return $question;
@@ -58,6 +64,10 @@ class Question extends Model {
 		$question->type = $iQuestion['type'];
 		$question->questionaireID = $questionaire->id;
 		$question->save();
+
+		if (array_key_exists('meta', $iQuestion)) {
+			$question->meta = QuestionMeta::updateWith($question, $iQuestion['meta']);
+		}
 
 		$question->choices = Choice::updateWith($question, $iQuestion['choices']);
 

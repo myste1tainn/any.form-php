@@ -1,8 +1,8 @@
 (function(){
 	
 	var module = angular.module('ammart', [
-		'ngRoute', 'ngDialog',
-		'questionaire', 'question', 'criterion', 'choice'
+		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar',
+		'questionaire', 'question', 'criterion', 'choice', 'report'
 	])
 
 	.config(function(
@@ -38,8 +38,20 @@
 				controllerAs: 'questionaireDo'
 			})
 			.when('/report', {
-				templateUrl: 'report'
+				templateUrl: 'report',
 			})
+			.when('/report/:type', {
+				templateUrl: 'report/:type',
+			})
+	})
+
+	.service('sys', function(ngDialog){
+		this.error = function(msg) {
+			ngDialog.open({
+				plain: true,
+				template: msg
+			})
+		}
 	})
 
 })();

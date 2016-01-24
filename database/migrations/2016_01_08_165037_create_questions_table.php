@@ -39,7 +39,10 @@ class CreateQuestionsTable extends Migration {
 			$table->timestamps();
 
 
-			$table->foreign('questionaireID')->references('id')->on('questionaires');
+			$table->foreign('questionaireID')
+				  ->references('id')
+				  ->on('questionaires')
+				  ->onDelete('cascade');
 		});
 	}
 

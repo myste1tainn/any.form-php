@@ -40,7 +40,7 @@ class FormController extends Controller {
 	}
 
 	public function load($id) {
-		$questionaire = Questionaire::with('criteria', 'questions.choices')
+		$questionaire = Questionaire::with('criteria', 'questions.choices', 'questions.meta')
 									->where('id', $id)
 									->first();
 
@@ -144,14 +144,23 @@ class FormController extends Controller {
 	}
 
 	private function prepareParticipant() {
-		$identifier = Request::input('identifier');
+		$identifier 	= Request::input('identifier');
+		$fname 			= Request::input('firstname');
+		$lname 			= Request::input('lastname');
+		$class 			= Request::input('class');
+		$room 			= Request::input('room');
 
 		$participant = Participant::where('identifier', $identifier)->first();
 		if (!$participant) {
 			$participant = new Participant();
-			$participant->identifier = $identifier;
-			$participant->save();
 		}
+
+		$participant->identifier = $identifier;
+		$participant->firstname = $fname;
+		$participant->lastname = $lname;
+		$participant->class = $class;
+		$participant->room = $room;
+		$participant->save();
 
 		return $participant;
 	}

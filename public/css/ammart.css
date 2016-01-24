@@ -1,3 +1,13 @@
+/* #16006C : ammart blue */
+/* #075083 : table header */
+
+body { overflow: hidden; }
+div.body {
+	height: 100%;
+	overflow: scroll;
+}
+
+.small-pad { padding: 6px; }
 .std-pad { padding: 8px; }
 .std-margin { margin: 8px; }
 .min-w-100 { width: 100px; }
@@ -23,16 +33,17 @@ td {
 }
 .do table.questions td {
 	border: 1px solid #ddd;
+	transition: background 0.2s ease;
 }
 .do table.questions td.selected {
-	background: darkblue;
+	background: #555;
 }
 th {
 	text-align: center;
 	font-size: 1.1em;
 	padding: 15px;
 	color: white;
-	background: gray;
+	background: #075083;
 	border: 1px solid #ddd;
 }
 tr.classified td {
@@ -55,4 +66,93 @@ tr.classified.cho {
 }
 .choice {
 	background: #ffbbbb;
+}
+
+th[st-sort] {
+	cursor: pointer;
+}
+
+th[st-sort]:after {
+	font: normal normal normal 14px/1 FontAwesome;
+	content: " \f0dc";
+}
+
+.space-bottom {margin-bottom: 10px;}
+.space-right {margin-right: 10px;}
+.space-left {margin-left: 10px;}
+.space-top {margin-top: 10px;}
+.space {margin: 10px;}
+
+.h-pad {padding: 5px 0px;}
+.v-pad {padding: 0px 5px;}
+.pad {padding: 5px;}
+
+.no-pad {padding: 0px;}
+.no-pad-left {padding-left: 0px;}
+.no-pad-right {padding-right: 0px;}
+.no-pad-top {padding-top: 0px;}
+.no-pad-bottom {padding-bottom: 0px;}
+
+.text-light {font-weight: 500;}
+.text-small {font-size: 0.95em;}
+.text-big {font-size: 1.1em;}
+.text-bigger {font-size: 1.2em;}
+.text-xl {font-size: 1.3em;}
+.text-xxl {font-size: 1.4em;}
+.text-xxxl {font-size: 1.5em;}
+.text-xxxxl {font-size: 2em;}
+
+input {
+	border: none;
+	outline: none;
+	border-bottom: 1px solid gray;
+}
+
+input:focus,
+textarea:focus,
+button:focus {
+	outline: none;
+}
+
+input:focus,
+textarea:focus {
+	border-bottom: 1px solid skyblue;
+}
+
+textarea:focus {
+	border: 1px solid skyblue;
+}
+
+button.round {
+	color: white;
+	background: #555;
+	font-size: 10px; font-weight: bold;
+	width: 20px; height: 20px;
+	padding: 0;
+}
+
+button {
+	border: none;
+	background: #fff;
+	border-radius: 4px;
+	color: #555;
+	box-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+	transition: all 0.3s ease;
+}
+
+button:hover,
+button.selected {
+	background: #555;
+	color: white;
+	box-shadow: 1px 1px 8px rgba(0,0,0,0.8);
+}
+
+button.submit:hover,
+button.submit.selected {
+	background: #16006C;
+}
+
+button.submit {
+	background: #075083;
+	color: white;
 }

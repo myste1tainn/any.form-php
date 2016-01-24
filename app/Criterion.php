@@ -24,6 +24,11 @@ class Criterion extends Model {
 		$criteria = [];
 		foreach ($iCriteria as $iCriterion) {
 			$criterion = Criterion::find($iCriterion['id']);
+			
+			if (!$criterion) {
+				$criterion = new Criterion();
+			}
+
 			$criterion->label = $iCriterion['label'];
 			$criterion->from = $iCriterion['from'];
 			$criterion->to = $iCriterion['to'];
@@ -36,7 +41,18 @@ class Criterion extends Model {
 		return $criteria;
 	}
 
-	public function pass($value) {
-		return ($value >= $from && $value <= $to);
+	public function inValue($value) {
+		$value = round($value);
+		return ($value >= $this->from && $value <= $this->to);
+	}
+
+	public static function riskString($criteria, $value) {
+		foreach ($criteria as $c) {
+			if ($c->inValue($value)) {
+				return $c->label;
+			}
+		}
+
+		return "ไม่เข้าเกณฑ์ใดๆ";
 	}
 }

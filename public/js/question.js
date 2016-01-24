@@ -12,7 +12,34 @@
 				description: "",
 				choices: [$choice.newInstance()],
 				type: 0,
+				choiceAsHeader: false,
 				folded: true,
+				meta: this.newMeta()
+			}
+		}
+
+		this.newMeta = function() {
+			return {
+				id : -1,
+				header: this.newHeader()
+			}
+		}
+
+		this.newHeader = function() {
+			return {
+				rows: [this.newHeaderRow()]
+			}
+		}
+
+		this.newHeaderRow = function () {
+			return {
+				cols: [this.newHeaderCol()]
+			}
+		}
+
+		this.newHeaderCol = function () {
+			return {
+				rowspan: 1, colspan: 1, label: 'New Label'
 			}
 		}
 	})

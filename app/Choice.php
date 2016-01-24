@@ -20,7 +20,7 @@ class Choice extends Model {
 	public static function updateWith($question, $iChoices) {
 		$choices = [];
 		foreach ($iChoices as $iChoice) {
-			$item = Choice::find($iChoice['id'])->get();
+			$item = Choice::find($iChoice['id']);
 
 			if ($item) {
 				$choice = static::_update($question, $iChoice);
@@ -41,6 +41,7 @@ class Choice extends Model {
 		$choice->description = $iChoice['description'];
 		$choice->note = $iChoice['note'];
 		$choice->value = $iChoice['value'];
+		$choice->enabled = $iChoice['enabled'];
 		$choice->questionID = $question->id;
 		$choice->save();
 
@@ -54,6 +55,7 @@ class Choice extends Model {
 		$choice->description = $iChoice['description'];
 		$choice->note = $iChoice['note'];
 		$choice->value = $iChoice['value'];
+		$choice->enabled = $iChoice['enabled'];
 		$choice->questionID = $question->id;
 		$choice->save();
 

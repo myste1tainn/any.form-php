@@ -39,6 +39,11 @@
 							var h = res.header;
 							res.header = JSON.parse(h);
 						}
+
+						for (var i = res.questions.length - 1; i >= 0; i--) {
+							var q = res.questions[i];
+							if (q.meta) q.meta.header = JSON.parse(q.meta.header);
+						};
 						callback(res);
 					} else {
 						ngDialog.open({
@@ -155,6 +160,7 @@
 					var length = $scope.questionaire.criteria.length;
 					var previous = $scope.questionaire.criteria[length - 1];
 					var copy = angular.copy(previous);
+					copy.id = -1;
 					return copy;
 				}
 
@@ -225,7 +231,9 @@
 		})
 
 		$scope.toggleChoose = function(question, choice) {
-			question.choice = choice;
+			if (choice.enabled) {
+				question.choice = choice;
+			}
 		}
 
 		$scope.isChoosen = function(question, choice) {
@@ -335,6 +343,66 @@
 					$scope.toggleHasHeader($element.prop('checked'));
 					$scope.$apply();
 				})
+			}
+		}
+	})
+
+	.directive('choiceEnabledToggler', function($http){
+		return {
+			restrict: 'A',
+			require: 'questionaireCreate',
+			controllerAs: 'choiceEnabledToggler',
+			controller: function($scope, $element, $attrs){
+				$scope.toggleEnabled = function(choice) {
+					if (!choice.enabled) {
+						choice._cache		= angular.copy(choice);
+						choice.label 		= "";
+						choice.name 		= "";
+						choice.description 	= "";
+						choice.note 		= "";
+						choice.value		= -999;
+					} else {
+						if (choice._cache) {
+							choice.label 		= choice._cache.label;
+							choice.name 		= choice._cache.name;
+							choice.description 	= choice._cache.description;
+							choice.note 		= choice._cache.note;
+							choice.value		= choice._cache.value;
+						}
+					}
+				}
+
+			}
+		}
+	})
+
+	.directive('questionHeaderToggler', function($question){
+		return {
+			restrict: 'A',
+			controllerAs: 'questionHeaderToggler',
+			controller: function($scope, $element, $attrs){
+
+				$scope.toggleQuestionHeader = function(question) {
+					if (question.hasHeader) {
+						if (!question.meta) {
+							question.meta = $question.newMeta();
+						}
+					} else {
+						question.meta.header = null;
+					}
+
+					console.log(question.meta);
+				}
+
+				$scope.addQuestionHeaderRow = function(question) {
+					var row = $question.newHeaderRow()
+					question.meta.header.rows.push(row);
+				}
+
+				$scope.addQuestionHeaderCol = function(row) {
+					var col = $question.newHeaderCol()
+					row.cols.push(col);
+				}
 			}
 		}
 	})

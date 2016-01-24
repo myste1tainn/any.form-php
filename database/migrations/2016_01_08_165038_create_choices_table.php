@@ -23,7 +23,10 @@ class CreateChoicesTable extends Migration {
 			$table->integer('questionID')->unsigned();
 			$table->timestamps();
 
-			$table->foreign('questionID')->references('id')->on('questions');
+			$table->foreign('questionID')
+				  ->references('id')
+				  ->on('questions')
+				  ->onDelete('cascade');
 		});
 	}
 

@@ -20,8 +20,14 @@ class CreateQuestionaireResultsTable extends Migration {
 			$table->integer('value');
 			$table->timestamps();
 
-			$table->foreign('questionaireID')->references('id')->on('questionaires');
-			$table->foreign('participantID')->references('id')->on('participants');
+			$table->foreign('questionaireID')
+				  ->references('id')
+				  ->on('questionaires')
+				  ->onDelete('cascade');
+			$table->foreign('participantID')
+				  ->references('id')
+				  ->on('participants')
+				  ->onDelete('cascade');
 		});
 	}
 

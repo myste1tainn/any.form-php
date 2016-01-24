@@ -21,10 +21,22 @@ class CreateParticipantAnswersTable extends Migration {
 			$table->integer('choiceID')->unsigned();
 			$table->timestamps();
 
-			$table->foreign('participantID')->references('id')->on('participants');
-			$table->foreign('questionaireID')->references('id')->on('questionaires');
-			$table->foreign('questionID')->references('id')->on('questions');
-			$table->foreign('choiceID')->references('id')->on('choices');
+			$table->foreign('participantID')
+				  ->references('id')
+				  ->on('participants')
+				  ->onDelete('cascade');
+			$table->foreign('questionaireID')
+				  ->references('id')
+				  ->on('questionaires')
+				  ->onDelete('cascade');
+			$table->foreign('questionID')
+				  ->references('id')
+				  ->on('questions')
+				  ->onDelete('cascade');
+			$table->foreign('choiceID')
+				  ->references('id')
+				  ->on('choices')
+				  ->onDelete('cascade');
 		});
 	}
 
