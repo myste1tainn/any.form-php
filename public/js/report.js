@@ -61,6 +61,20 @@
 				sys.error(res)
 			});
 		}
+
+		this.class = function(id, clazz, callback) {
+			$http.get('report/results/'+id+'/class/'+clazz)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.data);
+				} else {
+					sys.error(res)
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res)
+			});
+		}
 	})
 
 	.directive('report', function($questionaire, $report, $compile, $route, $location){
@@ -149,37 +163,6 @@
 
 				$scope.getData = function() {
 					var cb = $report.person;
-					cb($scope.activeForm.id, function(result){
-						$scope.results = result;
-					})
-				}
-
-				if ($scope.activeForm) {
-					$scope.getData();
-				}
-			}
-		}
-	})
-
-	.directive('schoolReport', function($report){
-		return {
-			restrict: 'E',
-			require: '^report',
-			link: function ($scope, $element, $attrs, $controller) {
-				$controller.schoolReport = $scope;
-			},
-			controllerAs: 'schoolReport',
-			templateUrl: 'report/template/school',
-			controller: function($scope, $element, $attrs){
-				$scope.results = [];
-				$scope.displayedResults = [];
-
-				var createDisplayedResult = function() {
-					$scope.displayedResults = [].concat($scope.results);
-				}
-
-				$scope.getData = function() {
-					var cb = $report.school;
 					cb($scope.activeForm.id, function(result){
 						$scope.results = result;
 					})

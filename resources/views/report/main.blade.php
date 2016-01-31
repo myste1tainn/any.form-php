@@ -38,7 +38,8 @@
 
 	<div ng-switch="activeType">
 		<room-report ng-switch-when="1"></room-report>
-		<school-report ng-switch-when="2"></school-report>
+		<class-report ng-switch-when="2"></class-report>
+		<school-report ng-switch-when="3"></school-report>
 		<person-report ng-switch-default></person-report>
 	</div>
 </div>

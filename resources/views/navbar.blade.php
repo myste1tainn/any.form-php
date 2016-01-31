@@ -24,6 +24,18 @@
 						</table>
 					</a>
 				</li>
+				@if (Auth::guest())
+				<li id="login">
+					<a href="auth/login">
+						<table>
+						<tr>
+							<td><span class="fa fa-lock"></span></td>
+							<td>ล็อกอิน</td>
+						</tr>
+						</table>
+					</a>
+				</li>
+				@else
 				<li class="section">อาจารย์</li>
 				<li id="report">
 					<a href="report">
@@ -35,6 +47,7 @@
 						</table>
 					</a>
 				</li>
+				@endif
 			</ul>
 		</div>
 	</div>

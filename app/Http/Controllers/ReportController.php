@@ -12,6 +12,11 @@ use Illuminate\Support\Collection;
 
 class ReportController extends Controller {
 
+	public function __construct()
+	{
+		$this->middleware('auth');
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -158,6 +163,61 @@ class ReportController extends Controller {
 		]);
 	}
 
+	public function resultByClass($id, $class) {
+		$criteria = Criterion::where('questionaireID', $id)->get();
+
+		$sumnum = 0;
+		$sumval = 0;
+		$i = 0;
+		foreach ($criteria as $c) {
+			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
+									 ->where('questionaire_results.value', '>=', $c->from)
+									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->where('participants.class', $class)
+									 ->join(
+									 	'participants', 
+									 	'questionaire_results.participantID',
+									 	'=',
+									 	'participants.id'
+									 )
+									 ->groupBy([
+									 	'participants.class'
+									 ])
+									 ->selectRaw('
+									 	count(participants.id) as number,
+									 	sum(questionaire_results.value) as value
+									 ')
+									 ->first();
+
+			$c->class = $class;
+			$c->number = $r['number'];
+			$c->value = $r['value'];
+			$sumval += $c->value;
+			$sumnum += $c->number;
+		}
+
+		$avg = round($sumval / $sumnum, 2);
+
+		foreach ($criteria as $c) {
+			$c->percent = round($c->number / $sumnum * 100, 2);
+		}
+
+		$carr = $criteria->toArray();
+		usort($carr, function($a, $b){
+			return $a['percent'] < $b['percent'];
+		});
+
+		return response()->json([
+			'success' => true,
+			'data' => [[
+				'avgRisk' => Criterion::riskString($criteria, $avg),
+				'avgValue' => $avg,
+				'total' => $sumnum,
+				'criteria' => $carr
+			]]
+		]);
+	}
+
 	public function resultByPerson($id) {
 		$q = Questionaire::with('results.participant', 'criteria')
 									 ->where('id', $id)
@@ -175,55 +235,52 @@ class ReportController extends Controller {
 	}
 
 	public function resultBySchool($id) {
-		$results = Questionaire::where('questionaires.id', $id)
-								->join(
-									'questionaire_results', 
-									'questionaires.id', 
-									'=', 
-									'questionaire_results.questionaireID'
-								)
-								->join(
-									'participants', 
-									'questionaire_results.participantID', 
-									'=', 
-									'participants.id'
-								)
-								->selectRaw(
-									'
-									count(participants.id) as counts,
-									sum(questionaire_results.value) as value
-									'
-								)
-								->get();
-
 		$criteria = Criterion::where('questionaireID', $id)->get();
 
-		// $res = [[],[],[],[],[],[]];
-		// foreach ($results as $r) {
-		// 	$r->risk = Criterion::riskString($criteria, $r->value);
-		// 	$r->value = round($r->value, 2);
+		$sumnum = 0;
+		$sumval = 0;
+		$i = 0;
+		foreach ($criteria as $c) {
+			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
+									 ->where('questionaire_results.value', '>=', $c->from)
+									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->join(
+									 	'participants', 
+									 	'questionaire_results.participantID',
+									 	'=',
+									 	'participants.id'
+									 )
+									 ->selectRaw('
+									 	count(participants.id) as number,
+									 	sum(questionaire_results.value) as value
+									 ')
+									 ->first();
+									 
+			$c->number = $r['number'];
+			$c->value = $r['value'];
+			$sumval += $c->value;
+			$sumnum += $c->number;
+		}
 
-		// 	$res[$r->class - 1]['class'] = $r->class;
-		// 	$res[$r->class - 1]['results'][] = $r;
-		// }
+		$avg = round($sumval / $sumnum, 2);
 
-		// foreach ($res as &$class) {
-		// 	usort($class['results'], function ($a, $b) {
-		// 		return intval($a->room) > intval($b->room);
-		// 	});
+		foreach ($criteria as $c) {
+			$c->percent = round($c->number / $sumnum * 100, 2);
+		}
 
-		// 	$sum = 0;
-		// 	$count = count($class['results']);
-		// 	foreach ($class['results'] as $r) {
-		// 		$sum += $r->value;
-		// 	}
-		// 	$class['avgValue'] = round($sum / $count, 2);
-		// 	$class['avgRisk'] = Criterion::riskString($criteria, $class['avgValue']);
-		// }
+		$carr = $criteria->toArray();
+		usort($carr, function($a, $b){
+			return $a['percent'] < $b['percent'];
+		});
 
 		return response()->json([
 			'success' => true,
-			'data' => $results
+			'data' => [[
+				'avgRisk' => Criterion::riskString($criteria, $avg),
+				'avgValue' => $avg,
+				'total' => $sumnum,
+				'criteria' => $carr
+			]]
 		]);
 	}
 }

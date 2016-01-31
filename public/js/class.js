@@ -25,4 +25,54 @@
 		}
 	})
 
+	.directive('classReport', function($report, $class){
+		return {
+			restrict: 'E',
+			require: '^report',
+			link: function ($scope, $element, $attrs, $controller) {
+				$controller.classReport = $scope;
+			},
+			controllerAs: 'classReport',
+			templateUrl: 'report/template/class',
+			controller: function($scope, $element, $attrs){
+				var _ = this;
+
+				$scope.classes = [];
+				$scope.class = {};
+
+				$scope.classChange = function() {
+					$scope.getData();
+				}
+
+				$scope.results = [];
+				$scope.displayedResults = [];
+
+				var createDisplayedResult = function() {
+					$scope.displayedResults = [].concat($scope.results);
+				}
+
+				$scope.getData = function() {
+					var cb = $report.class;
+					var clazz = $scope.class.value;
+					cb($scope.activeForm.id, clazz, function(result){
+						$scope.results = result;
+					})
+				}
+
+				$class.all(function(res) {
+					for (var i = res.classes.length - 1; i >= 0; i--) {
+						var c = res.classes[i];
+						$scope.classes.push({text:c.class, value:c.class});
+					};
+
+					$scope.class = $scope.classes[0];
+					
+					if ($scope.activeForm) {
+						$scope.getData();
+					}
+				})
+			}
+		}
+	})
+
 })();

@@ -1,11 +1,10 @@
-@extends('app')
-
+@extends((Request::ajax()) ? 'nilview' : 'app')
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 40px">
 	<div class="row">
 		<div class="col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
-				<div class="panel-heading">Login</div>
+				<div class="panel-heading">ล็อกอิน</div>
 				<div class="panel-body">
 					@if (count($errors) > 0)
 						<div class="alert alert-danger">
@@ -18,18 +17,18 @@
 						</div>
 					@endif
 
-					<form class="form-horizontal" role="form" method="POST" action="/auth/login">
+					<form class="form-horizontal" role="form" method="POST" action="{{ url('/auth/login') }}">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">E-Mail Address</label>
+							<label class="col-md-4 control-label">ชื่อผู้ใช้</label>
 							<div class="col-md-6">
-								<input type="email" class="form-control" name="email" value="{{ old('email') }}">
+								<input type="username" class="form-control" name="username" value="{{ old('username') }}">
 							</div>
 						</div>
 
 						<div class="form-group">
-							<label class="col-md-4 control-label">Password</label>
+							<label class="col-md-4 control-label">รหัสผ่าน</label>
 							<div class="col-md-6">
 								<input type="password" class="form-control" name="password">
 							</div>
@@ -39,7 +38,7 @@
 							<div class="col-md-6 col-md-offset-4">
 								<div class="checkbox">
 									<label>
-										<input type="checkbox" name="remember"> Remember Me
+										<input type="checkbox" name="remember"> จำการล็อกอินไว้
 									</label>
 								</div>
 							</div>
@@ -48,10 +47,10 @@
 						<div class="form-group">
 							<div class="col-md-6 col-md-offset-4">
 								<button type="submit" class="btn btn-primary" style="margin-right: 15px;">
-									Login
+									เข้าสู่ระบบ
 								</button>
 
-								<a href="/password/email">Forgot Your Password?</a>
+								<!-- <a href="/password/email">Forgot Your Password?</a> -->
 							</div>
 						</div>
 					</form>

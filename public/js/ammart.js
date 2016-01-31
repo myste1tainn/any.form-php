@@ -21,6 +21,17 @@
 			.when('/home', {
 				templateUrl: ''
 			})
+			.when('/auth/login', {
+				templateUrl: 'auth/login'
+			})
+			.when('/auth/logout', {
+				redirectTo: function(){
+					window.location.href = 'auth/logout'
+				}
+			})
+			.when('/auth/register', {
+				templateUrl: 'auth/register'
+			})
 			.when('/forms', {
 				templateUrl: 'forms',
 				controller: 'QuestionaireListController',

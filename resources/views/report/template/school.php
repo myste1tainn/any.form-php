@@ -1,35 +1,33 @@
-<div class="col-xs-12 std-pad">
+<school class="col-xs-12 std-pad">
+
 	<table class="questions col-xs-12"
 		   st-table="displayedResults"
 		   st-safe-src="results">
 		<tr >
-			<th colspan="1">ชั้น</th>
-			<th colspan="1">ห้อง</th>
 			<th colspan="1">ความเสี่ยง</th>
-			<th colspan="1">เฉลี่ยทั้งชั้นปี</th>
+			<th colspan="1">จำนวน (คน)</th>
+			<th colspan="1">%</th>
+			<th colspan="1">เฉลี่ยทั้งโรงเรียน</th>
 		</tr>
-		<tbody ng-repeat="rr in displayedResults">
-			<tr>
-				<td class="text-center col-xs-1"
-					style="font-size: 4em; font-weight: 900; color: #075083"
-					rowspan="[[ rr.results.length+1 ]]">
-					[[ rr.class ]]
+		<tbody ng-repeat="school in displayedResults">
+			<tr ng-repeat="criterion in school.criteria">
+				<td class="text-left col-xs-2">
+					[[ criterion.label ]]
 				</td>
-			</tr>
-			<tr ng-repeat="r in rr.results">
 				<td class="text-center col-xs-1">
-					[[ r.room ]]
+					[[ criterion.number || 0 ]]
 				</td>
-				<td class="text-left col-xs-8">
-					[[ r.risk ]] ([[ r.value ]])
+				<td class="text-center col-xs-1">
+					[[ criterion.percent ]]
 				</td>
-				<td class="text-center col-xs-2"
+				<td class="text-center col-xs-1"
 					style="font-size: 2em; font-weight: 900; color: #075083"
-					ng-if="$index == 0"
-					rowspan="[[ rr.results.length+1 ]]">
-					[[ rr.avgRisk ]] ([[ rr.avgValue ]])
+					rowspan="[[ school.criteria.length ]]"
+					ng-if="$index == 0">
+					[[ school.avgRisk ]] ([[ school.avgValue ]])
+					<p style="font-size: 0.7">จากนักเรียนจำนวน [[ school.total ]] คน</p>
 				</td>
 			</tr>
 		</tbody>
 	</table>
-</div>
+</school>
