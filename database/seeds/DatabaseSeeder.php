@@ -17,9 +17,27 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-		$this->call('ParticipantSeeder');
-		$this->call('ResultSeeder');
+        $this->call('FormSeeder');
+		// $this->call('ParticipantSeeder');
+		// $this->call('ResultSeeder');
 	}
+
+}
+
+class FormSeeder extends Seeder {
+    
+    public function run()
+    {
+        $this->command->info("สร้างแบบฟอร์ม");
+
+        $path = database_path().'/seeds/forms.sql';
+        DB::unprepared(file_get_contents($path));
+
+        $path = database_path().'/seeds/questions_meta.sql';
+        DB::unprepared(file_get_contents($path));
+
+        $this->command->info("สร้างแบบฟอร์มเสร็จสิ้น");
+    }
 
 }
 

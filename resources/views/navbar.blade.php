@@ -30,7 +30,7 @@
 						<table>
 						<tr>
 							<td><span class="fa fa-lock"></span></td>
-							<td>ล็อกอิน</td>
+							<td>เข้าสู่ระบบ</td>
 						</tr>
 						</table>
 					</a>
@@ -43,6 +43,16 @@
 						<tr>
 							<td><span class="fa fa-file-text"></span></td>
 							<td>รายงาน</td>
+						</tr>
+						</table>
+					</a>
+				</li>
+				<li id="logout">
+					<a href="auth/logout">
+						<table>
+						<tr>
+							<td><span class="fa fa-sign-out"></span></td>
+							<td>ออกจากระบบ</td>
 						</tr>
 						</table>
 					</a>

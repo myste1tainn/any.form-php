@@ -58,6 +58,4 @@ $response = $kernel->handle(
 
 $response->send();
 
-\Session::save();
-
 $kernel->terminate($request, $response);

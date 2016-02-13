@@ -140,7 +140,14 @@ class ReportController extends Controller {
 			$sumval += $c->value;
 			$sumnum += $c->number;
 		}
-
+        
+        if ($sumnum < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ไม่พบข้อมูลรายงาน'
+            ]);
+        }
+        
 		$avg = round($sumval / $sumnum, 2);
 
 		foreach ($criteria as $c) {
@@ -262,25 +269,32 @@ class ReportController extends Controller {
 			$sumnum += $c->number;
 		}
 
-		$avg = round($sumval / $sumnum, 2);
+        if ($sumnum > 0) {
+            $avg = round($sumval / $sumnum, 2);
 
-		foreach ($criteria as $c) {
-			$c->percent = round($c->number / $sumnum * 100, 2);
-		}
+            foreach ($criteria as $c) {
+                $c->percent = round($c->number / $sumnum * 100, 2);
+            }
 
-		$carr = $criteria->toArray();
-		usort($carr, function($a, $b){
-			return $a['percent'] < $b['percent'];
-		});
+            $carr = $criteria->toArray();
+            usort($carr, function($a, $b){
+                return $a['percent'] < $b['percent'];
+            });
 
-		return response()->json([
-			'success' => true,
-			'data' => [[
-				'avgRisk' => Criterion::riskString($criteria, $avg),
-				'avgValue' => $avg,
-				'total' => $sumnum,
-				'criteria' => $carr
-			]]
-		]);
+            return response()->json([
+                'success' => true,
+                'data' => [[
+                    'avgRisk' => Criterion::riskString($criteria, $avg),
+                    'avgValue' => $avg,
+                    'total' => $sumnum,
+                    'criteria' => $carr
+                ]]
+            ]);
+        } else {
+            return response()->json([
+                'success' => true,
+                'data' => [[]]
+            ]);
+        }
 	}
 }
