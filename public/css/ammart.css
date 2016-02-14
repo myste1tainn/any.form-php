@@ -7,6 +7,21 @@ div.body {
 	overflow: scroll;
 }
 
+.font-weight-light {
+	font-weight: 100;
+}
+
+.font-weight-regular {
+	font-weight: 300;
+}
+
+.font-weight-bold {
+	font-weight: 500;
+}
+
+.indent-left { padding-left: 4em !important; }
+.space-left { margin-left: 1em !important; }
+
 .small-pad { padding: 6px; }
 .std-pad { padding: 8px; }
 .std-margin { margin: 8px; }
@@ -38,13 +53,27 @@ td {
 .do table.questions td.selected {
 	background: #555;
 }
-th {
+table.form th {
 	text-align: center;
 	font-size: 1.1em;
 	padding: 15px;
 	color: white;
 	background: #075083;
 	border: 1px solid #ddd;
+}
+table th {
+	text-align: center;
+	font-size: 1.1em;
+	padding: 15px;
+}
+table.item td:first-child {
+	width: 10%;
+}
+table.item td:last-child {
+	width: 90%;
+}
+table.subject td {
+	vertical-align: top;
 }
 tr.classified td {
 	padding: 10px;

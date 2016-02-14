@@ -1,4 +1,4 @@
-<table class="questions" 
+<table class="form questions" 
 	   st-table="displayedResults" 
 	   st-safe-src="results">
 	<thead>

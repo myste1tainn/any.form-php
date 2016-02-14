@@ -37,7 +37,7 @@
 		</table>
 	</div>
 
-	<table class="questions">
+	<table class="form questions">
 		<tr ng-repeat="r in questionaire.header.rows">
 			<th ng-repeat="c in r.cols"
 				rowspan="[[ c.rowspan ]]" 

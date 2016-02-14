@@ -1,6 +1,6 @@
 <school class="col-xs-12 std-pad">
 
-	<table class="questions col-xs-12"
+	<table class="form questions col-xs-12"
 		   st-table="displayedResults"
 		   st-safe-src="results">
 		<tr >

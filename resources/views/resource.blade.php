@@ -28,6 +28,7 @@
 <script src="{{ asset('/js/question.js') }}"></script>
 <script src="{{ asset('/js/criterion.js') }}"></script>
 <script src="{{ asset('/js/choice.js') }}"></script>
+<script src="{{ asset('/js/screening.js') }}"></script>
 
 <!-- Report Module -->
 <script src="{{ asset('/js/report.js') }}"></script>

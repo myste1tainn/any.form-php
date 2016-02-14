@@ -37,6 +37,16 @@
 				</li>
 				@else
 				<li class="section">อาจารย์</li>
+				<li id="risk-screening">
+					<a href="teacher/risk-screening">
+						<table>
+						<tr>
+							<td><span class="fa fa-file-text"></span></td>
+							<td>แบบคัดกรอง</td>
+						</tr>
+						</table>
+					</a>
+				</li>
 				<li id="report">
 					<a href="report">
 						<table>

@@ -27,6 +27,9 @@ Route::get('/api/questionaires', 'FormController@all');
 Route::get('/questionaire/{id}', 'FormController@show');
 Route::post('/form/save', 'FormController@store');
 Route::post('/api/questionaire/submit', 'FormController@submit');
+Route::get('teacher/risk-screening', 'RiskScreeningController@form');
+
+// Reports
 Route::get('/report', 'ReportController@index');
 Route::get('/report/{name}', 'ReportController@index');
 Route::get('/report/results', 'ReportController@result');

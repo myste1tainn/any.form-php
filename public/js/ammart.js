@@ -2,7 +2,7 @@
 	
 	var module = angular.module('ammart', [
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar',
-		'questionaire', 'question', 'criterion', 'choice', 'report'
+		'questionaire', 'question', 'criterion', 'choice', 'report', 'screening'
 	])
 
 	.config(function(
@@ -42,6 +42,9 @@
 			})
 			.when('/form/edit/:questionaireID', {
 				templateUrl: 'form/edit/:questionaireID',
+			})
+			.when('/teacher/risk-screening', {
+				templateUrl: 'teacher/risk-screening',
 			})
 			.when('/questionaire/:questionaireID', {
 				templateUrl: 'questionaire/:questionaireID',
