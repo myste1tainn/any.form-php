@@ -59,6 +59,10 @@
 					<td>
 						<input name="choice-value" ng-model="choice.value" type="text" />
 					</td>
+					<td>ประเภท</td>
+					<td>
+						<input name="choice-type" ng-model="choice.type" type="text" />
+					</td>
 					<td>หมายเหตุ</td>
 					<td>
 						<input name="choice-note" ng-model="choice.note" type="text" />
@@ -70,7 +74,7 @@
 						<input name="choice-name" ng-model="choice.name" type="text" />
 					</td>
 					<td colspan="1">คำบรรยาย</td>
-					<td colspan="3">
+					<td colspan="5">
 						<input name="choice-description" ng-model="choice.description" type="text" />
 					</td>
 				</tr>

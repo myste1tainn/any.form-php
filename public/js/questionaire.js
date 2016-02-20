@@ -20,6 +20,7 @@
 				name: "แบบฟอร์มใหม่",
 				criteria: [$criterion.newInstance()],
 				questions: [$question.newInstance()],
+				type: 0,
 				level: 0
 			}
 		}
@@ -155,6 +156,8 @@
 							plain: true,
 							template: (res.message) ? res.message : res
 						})
+
+						$scope.questionaire = res.data;
 					})
 					.error(function(res, status, headers, config){
 						console.log(res, status, headers);

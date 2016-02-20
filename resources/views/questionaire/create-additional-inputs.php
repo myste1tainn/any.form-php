@@ -13,11 +13,6 @@
 		ng-if="!choice.folded">
 
 		<td colspan="1" class="choice">
-			<input input-enabled-toggler
-				   ng-model="input.enabled"
-				   ng-change="toggleEnabled(input)"
-				   ng-checked="input.enabled == 1"
-				   type="checkbox" /> enabled
 		</td>
 
 		<td colspan="6">

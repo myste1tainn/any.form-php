@@ -40,9 +40,16 @@ class FormController extends Controller {
 	}
 
 	public function load($id) {
-		$questionaire = Questionaire::with('criteria', 'questions.choices', 'questions.meta')
-									->where('id', $id)
+		$questionaire = Questionaire::with('criteria', 'questions')
+									->where('id', $id)	
 									->first();
+
+		foreach ($questionaire->questions as $q) {
+			$q->choices = Choice::with('subchoices', 'inputs')
+								->where('questionID', $q->id)
+								->whereNull('parentID')
+								->get();
+		}
 
 		return response()->json($questionaire);
 	}
@@ -70,14 +77,43 @@ class FormController extends Controller {
 		$inputType = Request::input('type');
 
 		if ($inputID > -1) {
-			$this->updateQuestionaire($inputID, $inputName, $inputType, $inputHeader, $inputCriteria, $inputQuestions);
+			$questionaire = $this->updateQuestionaire($inputID, 
+			                                          $inputName, 
+			                                          $inputType, 
+			                                          $inputHeader, 
+			                                          $inputCriteria, 
+			                                          $inputQuestions);
 		} else {
-			$this->createQuestionaire($inputName, $inputType, $inputHeader, $inputCriteria, $inputQuestions);
+			$questionaire = $this->createQuestionaire($inputName, 
+			                                          $inputType, 
+			                                          $inputHeader, 
+			                                          $inputCriteria, 
+			                                          $inputQuestions);
+		}
+
+		$ans = $questionaire->toArray();
+		foreach ($ans['questions'] as &$qq) {
+			$qq = $qq->toArray();
+			foreach ($qq['choices'] as &$c) {
+				$c = $c->toArray();
+
+				if (isset($c['subchoices'])) {
+					foreach ($c['subchoices'] as &$sc) {
+						$sc = $sc->toArray();
+					}
+				}
+				if (isset($c['inputs'])) {
+					foreach ($c['inputs'] as &$i) {
+						$i = $i->toArray();
+					}
+				}
+			}
 		}
 
 		return response()->json([
 			'success' => true,
-			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์'
+			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์',
+			'data' => $ans
 		]);
 	}
 
@@ -94,6 +130,8 @@ class FormController extends Controller {
 
 		$questionaire->criteria = Criterion::createWith($questionaire, $iCriteria);
 		$questionaire->questions = Question::createWith($questionaire, $iQuestions);
+
+		return $questionaire;
 	}
 
 	public function updateQuestionaire($iID, $iName, $iType, $iHeader, $iCriteria, $iQuestions) {
@@ -109,11 +147,23 @@ class FormController extends Controller {
 
 		$questionaire->criteria = Criterion::updateWith($questionaire, $iCriteria);
 		$questionaire->questions = Question::updateWith($questionaire, $iQuestions);
+
+		return $questionaire;
 	}
 
 	public function all()
 	{
-		$questionaires = Questionaire::with('criteria', 'questions.choices')->get();
+		$questionaires = Questionaire::with('criteria', 'questions')->get();
+
+		foreach ($questionaires as $qq) {
+			foreach ($qq->questions as $q) {
+				$q->choices = Choice::with('subchoices', 'inputs')
+									->where('questionID', $q->id)
+									->whereNull('parentID')
+									->get();
+			}
+		}
+
 		return response()->json([
 			'success' => true,
 			'data' => $questionaires

@@ -4,7 +4,8 @@
 	</div>
 	<div class="col-xs-11">
 		<input class="col-xs-8" name="name" ng-model="questionaire.name" type="text" />
-		<input class="col-xs-2 col-xs-offset-1" type="number" ng-model="questionaire.level" value="0" />
+		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="questionaire.level" value="0" />
+		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="questionaire.type" value="0" />
 	</div>
 </div>
 <div class="std-pad col-xs-12">

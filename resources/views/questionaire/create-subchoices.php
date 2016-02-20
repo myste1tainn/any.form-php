@@ -31,6 +31,10 @@
 					<td>
 						<input name="subchoice-value" ng-model="subchoice.value" type="text" />
 					</td>
+					<td>ประเภท</td>
+					<td>
+						<input name="subchoice-type" ng-model="subchoice.type" type="text" />
+					</td>
 					<td>หมายเหตุ</td>
 					<td>
 						<input name="subchoice-note" ng-model="subchoice.note" type="text" />
@@ -42,7 +46,7 @@
 						<input name="subchoice-name" ng-model="subchoice.name" type="text" />
 					</td>
 					<td colspan="1">คำบรรยาย</td>
-					<td colspan="3">
+					<td colspan="5">
 						<input name="subchoice-description" ng-model="subchoice.description" type="text" />
 					</td>
 				</tr>

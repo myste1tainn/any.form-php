@@ -13,23 +13,13 @@ class FilterFormDataModel extends Migration {
 	public function up()
 	{
 		Schema::table('questionaires', function (Blueprint $table) {
+			$table->tinyInteger('type')->default(0)->after('header');
 			$table->tinyInteger('level')->default(0)->after('header');
 		});
 
 		Schema::table('choices', function (Blueprint $table) {
 			$table->integer('parentID')->unsigned()->nullable()->after('questionID');
 			$table->integer('type')->default(0)->after('value');
-		});
-
-		Schema::create('additional_inputs', function (Blueprint $table) {
-			$table->increments('id');
-			$table->string('name', 64);
-			$table->string('placeholder', 128);
-			$table->string('type', 16);
-			$table->integer('choiceID')->unsigned();
-			$table->timestamps();
-
-			$table->foreign('choiceID')->references('id')->on('choices');
 		});
 	}
 
@@ -48,8 +38,6 @@ class FilterFormDataModel extends Migration {
 			$table->dropColumn('parentID');
 			$table->dropColumn('type');
 		});
-
-		Schema::drop('additional_inputs');
 	}
 
 }
