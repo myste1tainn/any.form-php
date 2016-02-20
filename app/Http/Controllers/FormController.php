@@ -51,6 +51,10 @@ class FormController extends Controller {
 		return view('questionaire/do');
 	}
 
+	public function template($type, $subType) {
+		return view('questionaire/'.$type.'-'.$subType);
+	}
+
 	/**
 	 * Store a newly created resource in storage.
 	 *
@@ -63,11 +67,12 @@ class FormController extends Controller {
 		$inputHeader = Request::input('header');
 		$inputCriteria = Request::input('criteria');
 		$inputQuestions = Request::input('questions');
+		$inputType = Request::input('type');
 
 		if ($inputID > -1) {
-			$this->updateQuestionaire($inputID, $inputName, $inputHeader, $inputCriteria, $inputQuestions);
+			$this->updateQuestionaire($inputID, $inputName, $inputType, $inputHeader, $inputCriteria, $inputQuestions);
 		} else {
-			$this->createQuestionaire($inputName, $inputHeader, $inputCriteria, $inputQuestions);
+			$this->createQuestionaire($inputName, $inputType, $inputHeader, $inputCriteria, $inputQuestions);
 		}
 
 		return response()->json([
@@ -76,9 +81,10 @@ class FormController extends Controller {
 		]);
 	}
 
-	public function createQuestionaire($iName, $iHeader, $iCriteria, $iQuestions) {
+	public function createQuestionaire($iName, $iType, $iHeader, $iCriteria, $iQuestions) {
 		$questionaire = new Questionaire();
 		$questionaire->name = $iName;
+		$questionaire->type = $iType;
 		if ($iHeader) {
 			$questionaire->header = json_encode($iHeader);
 		} else {
@@ -90,9 +96,10 @@ class FormController extends Controller {
 		$questionaire->questions = Question::createWith($questionaire, $iQuestions);
 	}
 
-	public function updateQuestionaire($iID, $iName, $iHeader, $iCriteria, $iQuestions) {
+	public function updateQuestionaire($iID, $iName, $iType, $iHeader, $iCriteria, $iQuestions) {
 		$questionaire = Questionaire::find($iID);
 		$questionaire->name = $iName;
+		$questionaire->type = $iType;
 		if ($iHeader) {
 			$questionaire->header = json_encode($iHeader);
 		} else {

@@ -26,7 +26,7 @@ div.body {
 .std-pad { padding: 8px; }
 .std-margin { margin: 8px; }
 .min-w-100 { width: 100px; }
-table {
+table, div.table {
 	width: 100%;
 }
 input {
@@ -38,6 +38,12 @@ input[type=radio] {
 }
 tr.classified {
 	border-top: 2px solid #555;
+	border-bottom: 2px solid #555;
+}
+div.classified {
+	border-top: 2px solid #555;
+}
+div.classified:last-child {
 	border-bottom: 2px solid #555;
 }
 td {
@@ -75,27 +81,30 @@ table.item td:last-child {
 table.subject td {
 	vertical-align: top;
 }
-tr.classified td {
+tr.classified td,
+div.classified div.col {
 	padding: 10px;
 }
-tr.classified.cri {
+tr.classified.cri,
+div.classified.cri {
 	border-color: #bbbbff;
 }
-tr.classified.que {
+tr.classified.que,
+div.classified.que div.col {
 	border-color: #bbffbb;
 }
-tr.classified.cho {
+tr.classified.cho,
+div.classified.cho div.col {
 	border-color: #ffbbbb;
 }
-.criterion {
-	background: #bbbbff;
-}
-.question {
-	background: #bbffbb;
-}
-.choice {
-	background: #ffbbbb;
-}
+.col.criterion { height: 50px; }
+.criterion { background: #bbbbff; }
+
+.col.question { height: 182px; }
+.question { background: #bbffbb; }
+
+.col.choice { height: 150px; }
+.choice { background: #ffbbbb; }
 
 th[st-sort] {
 	cursor: pointer;

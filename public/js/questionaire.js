@@ -2,13 +2,25 @@
 	
 	var module = angular.module('questionaire', [])
 
+	.service('$input', function() {
+		this.newInstance = function() {
+			return {
+				id: -1,
+				name: "New Input",
+				placeholder: "New Input Placeholder",
+				type: 0,
+			}
+		}
+	})
+
 	.service('$questionaire', function($http, $question, $criterion, ngDialog) {
 		this.newInstance = function() {
 			return {
 				id: -1,
 				name: "แบบฟอร์มใหม่",
 				criteria: [$criterion.newInstance()],
-				questions: [$question.newInstance()]
+				questions: [$question.newInstance()],
+				level: 0
 			}
 		}
 
@@ -112,10 +124,7 @@
 		})
 	})
 
-	.directive('questionaireCreate', function(
-		$route, ngDialog,
-		$questionaire, $question, $criterion, $choice
-	){
+	.directive('questionaireCreate', function($route, ngDialog, $questionaire){
 		return {
 			restrict: 'E',
 			controllerAs: 'questionaireCreate',
@@ -156,28 +165,45 @@
 					});
 				}
 
+				$scope.toggleFold = function (question) {
+					if (typeof question.folded == 'undefined') {
+						question.folded = true;
+					} else {
+						question.folded = !question.folded;
+					}
+				}
+			}
+		}
+	})
+
+	.directive('questionaireInfo', function($http){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/info',
+			controllerAs: 'questionaireBody',
+			controller: function($scope, $element, $attrs){
+				
+			}
+		}
+	})
+
+	.directive('questionaireCriteria', function($http, $criterion){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/criteria',
+			controllerAs: 'questionaireCriteria',
+			controller: function($scope, $element, $attrs){
 				var copyOfPreviousCriterion = function() {
 					var length = $scope.questionaire.criteria.length;
 					var previous = $scope.questionaire.criteria[length - 1];
-					var copy = angular.copy(previous);
-					copy.id = -1;
-					return copy;
-				}
-
-				var copyOfPreviousQuestion = function() {
-					var length = $scope.questionaire.questions.length;
-					var previous = $scope.questionaire.questions[length - 1];
-					var copy = angular.copy(previous)
-					copy.id = -1;
-					copy.order = parseInt(copy.order);
-					copy.order += 1;
-					copy.label = copy.order + ".";
-					return copy;
-				}
-
-				var copyOfPreviousChoice = function(question) {
-					var length = question.choices.length;
-					var previous = question.choices[length - 1];
 					var copy = angular.copy(previous);
 					copy.id = -1;
 					return copy;
@@ -190,6 +216,31 @@
 						$scope.questionaire.criteria.push($criterion.newInstance());
 					}
 				}
+			}
+		}
+	})
+
+	.directive('questionaireQuestions', function($http, $question){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/questions',
+			controllerAs: 'questionaireQuestions',
+			controller: function($scope, $element, $attrs){
+
+				var copyOfPreviousQuestion = function() {
+					var length = $scope.questionaire.questions.length;
+					var previous = $scope.questionaire.questions[length - 1];
+					var copy = angular.copy(previous)
+					copy.id = -1;
+					copy.order = parseInt(copy.order);
+					copy.order += 1;
+					copy.label = copy.order + ".";
+					return copy;
+				}
 
 				$scope.addQuestion = function() {
 					if ($scope.questionaire.questions.length > 0) {
@@ -197,6 +248,29 @@
 					} else {
 						$scope.questionaire.questions.push($question.newInstance());
 					}
+				}
+
+			}
+		}
+	})
+
+	.directive('questionaireChoices', function($http, $choice){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/choices',
+			controllerAs: 'questionaireChoices',
+			controller: function($scope, $element, $attrs){
+
+				var copyOfPreviousChoice = function(question) {
+					var length = question.choices.length;
+					var previous = question.choices[length - 1];
+					var copy = angular.copy(previous);
+					copy.id = -1;
+					return copy;
 				}
 
 				$scope.addChoice = function(question) {
@@ -207,13 +281,76 @@
 					}
 				}
 
-				$scope.toggleFold = function (question) {
-					if (typeof question.folded == 'undefined') {
-						question.folded = true;
+			}
+		}
+	})
+
+	.directive('questionaireSubchoices', function($http, $choice){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/subchoices',
+			controllerAs: 'questionaireSubchoices',
+			controller: function($scope, $element, $attrs){
+
+				var copyOfPreviousSubchoice = function(choice) {
+					var length = choice.subchoices.length;
+					var previous = choice.subchoices[length - 1];
+					var copy = angular.copy(previous);
+					copy.id = -1;
+					return copy;
+				}
+
+				$scope.addSubchoice = function(choice) {
+					if (choice.subchoices === undefined) {
+						choice.subchoices = [];
+					}
+
+					if (choice.subchoices.length > 0) {
+						choice.subchoices.push(copyOfPreviousSubchoice(choice));
 					} else {
-						question.folded = !question.folded;
+						choice.subchoices.push($choice.newInstance());
 					}
 				}
+
+			}
+		}
+	})
+
+	.directive('questionaireAdditionalInputs', function($http, $choice, $input){
+		return {
+			restrict: 'E',
+			require: '^questionaireCreate',
+			link: function($scope, $element, $attrs, $controller) {
+				// For the purpose of scope linking assurance
+			},
+			templateUrl: 'template/questionaire/create/additional-inputs',
+			controllerAs: 'questionaireAdditionalInputs',
+			controller: function($scope, $element, $attrs){
+
+				var copyOfPreviousInput = function(choice) {
+					var length = choice.inputs.length;
+					var previous = choice.inputs[length - 1];
+					var copy = angular.copy(previous);
+					copy.id = -1;
+					return copy;
+				}
+
+				$scope.addAdditionalInputs = function(choice) {
+					if (choice.inputs === undefined) {
+						choice.inputs = [];
+					}
+
+					if (choice.inputs.length > 0) {
+						choice.inputs.push(copyOfPreviousInput(choice));
+					} else {
+						choice.inputs.push($input.newInstance());
+					}
+				}
+
 			}
 		}
 	})
