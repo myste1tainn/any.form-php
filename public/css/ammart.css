@@ -194,3 +194,12 @@ button.submit {
 	background: #075083;
 	color: white;
 }
+
+.content-center { text-align: center; }
+.content-left { text-align: left; }
+.content-right { text-align: right; }
+
+.indent-1 { padding-left: 2em; }
+.indent-2 { padding-left: 4em; }
+.indent-3 { padding-left: 6em; }
+.indent-4 { padding-left: 8em; }

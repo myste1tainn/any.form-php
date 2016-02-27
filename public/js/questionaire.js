@@ -1,6 +1,8 @@
 (function(){
 	
-	var module = angular.module('questionaire', [])
+	var module = angular.module('questionaire', ['risk-screening'])
+
+	.constant('RISK_ID', 34)
 
 	.service('$input', function() {
 		this.newInstance = function() {
