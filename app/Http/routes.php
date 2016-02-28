@@ -24,10 +24,12 @@ Route::get('/form/create', 'FormController@create');
 Route::get('/form/edit/{questionaireID}', 'FormController@edit');
 Route::get('/api/questionaire/{id}', 'FormController@load');
 Route::get('/api/questionaires', 'FormController@all');
+Route::get('/api/answers/{questionaireID}/{participantID}', 'FormController@answers');
 Route::get('/questionaire/{id}', 'FormController@show');
 Route::post('/form/save', 'FormController@store');
 Route::post('/api/questionaire/submit', 'FormController@submit');
 Route::get('teacher/risk-screening', 'RiskScreeningController@form');
+Route::get('teacher/risk-screening/{studentID}', 'RiskScreeningController@form');
 Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
 
 // Reports

@@ -15,6 +15,23 @@
 		}
 	})
 
+	.service('$answer', function($http, sys) {
+		this.load = function(questionaireID, participantID, callback) {
+			$http.get('api/answers/'+questionaireID+'/'+participantID)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.data);
+				} else {
+					var msg = (res.message) ? res.message : res;
+					sys.error(msg)
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res);
+			});
+		}
+	})
+
 	.service('$questionaire', function($http, $question, $criterion, ngDialog) {
 		this.newInstance = function() {
 			return {
@@ -360,13 +377,47 @@
 		}
 	})
 
+	.directive('participantInfo', function($http, ngDialog){
+		return {
+			restrict: 'EA',
+			controllerAs: 'participantInfo',
+			controller: function($scope, $element, $attrs){
+				$scope.participant = { 
+					identifier: null, 
+					choices: []
+				};
+
+				$scope.validateFormInput = function() {
+					var valid = (
+								$scope.participant.identifier != null && 
+								$scope.participant.identifier != ""
+								);
+
+					if (!valid) {
+						ngDialog.open({
+							plain: true,
+							template: 'กรุณาใส่หมายเลขประจำตัวนักเรียน'
+						});
+					}
+
+					return valid;
+				}
+
+				$scope.mockupInput = function() {
+					$scope.participant.identifier = 22611;
+					$scope.participant.firstname = "อานนท์";
+					$scope.participant.lastname = "คีรีนะ";
+					$scope.participant.class = 6;
+					$scope.participant.room = 4;
+					$scope.participant.number = 26;
+				}
+			}
+		}
+	})
+
 	.controller('QuestionaireDoController', function($scope, $route, $questionaire, ngDialog) {
 		var id = $route.current.params.questionaireID
 
-		$scope.participant = { 
-			identifier: null, 
-			choices: []
-		};
 		$scope.questionaire = {};
 		$questionaire.load(id, function(questionaire){
 			$scope.questionaire = questionaire;
@@ -394,22 +445,6 @@
 			return choices;
 		}
 
-		var validateFormInput = function() {
-			var valid = (
-						$scope.participant.identifier != null && 
-						$scope.participant.identifier != ""
-						);
-
-			if (!valid) {
-				ngDialog.open({
-					plain: true,
-					template: 'กรุณาใส่หมายเลขประจำตัวนักเรียน'
-				});
-			}
-
-			return valid;
-		}
-
 		var validateChoosenChoices = function(choices) {
 			var valid = choices.length == $scope.questionaire.questions.length;
 
@@ -426,7 +461,7 @@
 		$scope.submit = function() {
 			var choices = choosenChoices();
 
-			if (validateFormInput()) {
+			if ($scope.validateFormInput()) {
 				if (validateChoosenChoices(choices)) {
 					$scope.participant.choices = choices;
 					$scope.participant.questionaireID = $scope.questionaire.id;

@@ -233,4 +233,18 @@ class FormController extends Controller {
 		return $questionaire;
 	}
 
+	public function answers($questionaireID, $participantID)
+	{
+		$participant = Participant::where('identifier', $participantID)->first();
+		if ($participant) {
+			$answers = ParticipantAnswer::where('questionaireID', $questionaireID)
+									->where('participantID', $participant->id)
+									->get();
+		}
+
+		return response()->json([
+		                        'success' => true,
+		                        'data' => $answers
+		                        ]);
+	}
 }
