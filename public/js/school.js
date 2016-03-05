@@ -25,11 +25,14 @@
 				}
 
 				$scope.getData = function() {
-					var cb = $report.school;
-					var clazz = $scope.school.value;
-					cb($scope.activeForm.id, function(result){
-						$scope.results = result;
-					})
+					if ($scope.activeForm !== undefined &&
+					    $scope.activeForm.id !== undefined) {
+						var cb = $report.school;
+						var clazz = $scope.school.value;
+						cb($scope.activeForm.id, function(result){
+							$scope.results = result;
+						})
+					}
 				}
 
 				if ($scope.activeForm) {

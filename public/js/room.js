@@ -35,13 +35,16 @@
 				}
 
 				$scope.getData = function(clazz, room) {
-					var cb = $report.room;
-					var clazz = $scope.class.value;
-					var room = $scope.room.value;
-					cb($scope.activeForm.id, clazz, room, function(result){
-						$scope.results = result;
-						console.log(result);
-					})
+					if ($scope.activeForm !== undefined &&
+					    $scope.activeForm.id !== undefined) {
+						var cb = $report.room;
+						var clazz = $scope.class.value;
+						var room = $scope.room.value;
+						cb($scope.activeForm.id, clazz, room, function(result){
+							$scope.results = result;
+							console.log(result);
+						})
+					}
 				}
 
 				$class.all(function(res) {

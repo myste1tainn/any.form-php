@@ -58,7 +58,10 @@
 				templateUrl: 'report',
 			})
 			.when('/report/:type', {
-				templateUrl: 'report/:type',
+				templateUrl: 'report'
+			})
+			.when('/report/:type/:id', {
+				templateUrl: 'report'
 			})
 	})
 

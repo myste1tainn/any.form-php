@@ -230,15 +230,23 @@ class ReportController extends Controller {
 									 ->where('id', $id)
 									 ->first();
 
-		foreach ($q->results as $r) {
-			$rs = Criterion::riskString($q->criteria, $r->value);
-			$r->risk =$rs;
+		if ($q) {
+			foreach ($q->results as $r) {
+				$rs = Criterion::riskString($q->criteria, $r->value);
+				$r->risk =$rs;
+			}
+			return response()->json([
+				'success' => true,
+				'data' => $q->results
+			]);
+		} else {
+			return response()->json([
+				'success' => false,
+				'message' => 'result is empty'
+			]);
 		}
 
-		return response()->json([
-			'success' => true,
-			'data' => $q->results
-		]);
+		
 	}
 
 	public function resultBySchool($id) {

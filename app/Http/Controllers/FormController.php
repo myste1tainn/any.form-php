@@ -170,6 +170,12 @@ class FormController extends Controller {
 		]);
 	}
 
+	/**
+	 * Submit form results this implies the followings
+	 * - Saving answers (the choices that user made)
+	 * - Saving answers' addiontal inputs (if any)
+	 * - Saving results (the value of the calculation)
+	 */
 	public function submit()
 	{
 		$choices 		= Request::input('choices');

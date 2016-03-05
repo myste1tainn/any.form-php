@@ -83,19 +83,10 @@
 			controllerAs: 'report',
 			controller: function($scope, $element, $attrs){
 				var _ = this;
-				var _type = $route.current.params.type;
 
 				$scope.forms = [];
-				$scope.activeType = 0;
-				$scope.activeForm = null;
-
-				switch (_type) {
-					case 'person': 	$scope.activeType = 0; break;
-					case 'room': 	$scope.activeType = 1; break;
-					case 'class': 	$scope.activeType = 2; break;
-					case 'school': 	$scope.activeType = 3; break;
-					default: break;
-				}
+				$scope.activeType = $route.current.params.type;
+				$scope.activeForm = {id: $route.current.params.id};
 
 				var createDisplayedResult = function() {
 					for (var i = $scope.forms.length - 1; i >= 0; i--) {
@@ -111,30 +102,37 @@
 
 				$scope.reportChange = function(e){
 					if ($scope.activeForm) {
-						switch ($scope.activeType) {
-							case 0: _.personReport.getData(); break;
-							case 1: _.roomReport.getData(); break;
-							case 2: _.classReport.getData(); break;
-							case 3: _.schoolReport.getData(); break;
-							default: break;
-						}
+						changeURL();
+					}
+				}
+
+				var changeURL = function() {
+					if ($scope.activeForm === undefined ||
+					    $scope.activeForm.id === undefined) {
+						$location.url('/report/'+$scope.activeType)
+					} else {
+						$location.url('/report/'+$scope.activeType+'/'+$scope.activeForm.id)
 					}
 				}
 
 				$scope.personReport = function(el) {
-					$scope.activeType = 0;
+					$scope.activeType = 'person';
+					changeURL();
 				}
 
 				$scope.roomReport = function (el) {
-					$scope.activeType = 1;
+					$scope.activeType = 'room';
+					changeURL();
 				}
 
 				$scope.classReport = function (el) {
-					$scope.activeType = 2;
+					$scope.activeType = 'class';
+					changeURL();
 				}
 
 				$scope.schoolReport = function (el) {
-					$scope.activeType = 3;
+					$scope.activeType = 'school';
+					changeURL();
 				}
 
 				this.getActiveForm = function() {
@@ -162,10 +160,13 @@
 				}
 
 				$scope.getData = function() {
-					var cb = $report.person;
-					cb($scope.activeForm.id, function(result){
-						$scope.results = result;
-					})
+					if ($scope.activeForm !== undefined &&
+					    $scope.activeForm.id !== undefined) {
+						var cb = $report.person;
+						cb($scope.activeForm.id, function(result){
+							$scope.results = result;
+						})
+					}
 				}
 
 				if ($scope.activeForm) {

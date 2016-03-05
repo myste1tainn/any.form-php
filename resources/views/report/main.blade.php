@@ -12,22 +12,22 @@
 
 	<div class="col-xs-6" style="margin-top: 20px">
 		<button class="small-pad"
-				ng-class="{'selected' : activeType == 0}"
+				ng-class="{'selected' : activeType == 'person'}"
 				ng-click="personReport()">
 				รายบุคคล
 		</button>
 		<button class="small-pad"
-				ng-class="{'selected' : activeType == 1}"
+				ng-class="{'selected' : activeType == 'room'}"
 				ng-click="roomReport()">
 				รายห้องเรียน
 		</button>
 		<button class="small-pad"
-				ng-class="{'selected' : activeType == 2}"
+				ng-class="{'selected' : activeType == 'class'}"
 				ng-click="classReport()">
 				รายชั้นปี
 		</button>
 		<button class="small-pad"
-				ng-class="{'selected' : activeType == 3}"
+				ng-class="{'selected' : activeType == 'school'}"
 				ng-click="schoolReport()">
 				ภาพรวมทั้งโรงเรียน
 		</button>
@@ -37,9 +37,9 @@
 	<br /><br /><br /><br />
 
 	<div ng-switch="activeType">
-		<room-report ng-switch-when="1"></room-report>
-		<class-report ng-switch-when="2"></class-report>
-		<school-report ng-switch-when="3"></school-report>
+		<room-report ng-switch-when="room"></room-report>
+		<class-report ng-switch-when="class"></class-report>
+		<school-report ng-switch-when="school"></school-report>
 		<person-report ng-switch-default></person-report>
 	</div>
 </div>

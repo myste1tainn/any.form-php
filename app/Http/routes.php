@@ -34,7 +34,8 @@ Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
 
 // Reports
 Route::get('/report', 'ReportController@index');
-Route::get('/report/{name}', 'ReportController@index');
+// Route::get('/report/{name}', 'ReportController@index');
+// Route::get('/report/{name}/{id}', 'ReportController@index');
 Route::get('/report/results', 'ReportController@result');
 Route::get('/report/results/{id}/person', 'ReportController@resultByPerson');
 Route::get('/report/results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');

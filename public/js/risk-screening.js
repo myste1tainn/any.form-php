@@ -129,6 +129,8 @@
 						$scope.participant.choices = choices;
 						$scope.participant.questionaireID = $scope.screening.id;
 
+						console.log($scope.participant);
+
 						$questionaire.submit($scope.participant, function (response) {
 							ngDialog.open({
 								plain: true,

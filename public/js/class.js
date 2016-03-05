@@ -52,11 +52,14 @@
 				}
 
 				$scope.getData = function() {
-					var cb = $report.class;
-					var clazz = $scope.class.value;
-					cb($scope.activeForm.id, clazz, function(result){
-						$scope.results = result;
-					})
+					if ($scope.activeForm !== undefined &&
+					    $scope.activeForm.id !== undefined) {
+						var cb = $report.class;
+						var clazz = $scope.class.value;
+						cb($scope.activeForm.id, clazz, function(result){
+							$scope.results = result;
+						})
+					}
 				}
 
 				$class.all(function(res) {

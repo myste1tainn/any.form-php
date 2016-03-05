@@ -17,6 +17,12 @@ class ParticipantAnswer extends Model {
 			$pa->choiceID = $ichoice['id'];
 			$pa->save();
 
+			if (array_key_exists('inputs', $ichoice)) {
+				$pa->inputs = AnswerAddtionalInput::createWith($pa, $ichoice['inputs']);
+			} else {
+				$pa->inputs = [];
+			}
+
 			$pas[] = $pa;
 		}
 
