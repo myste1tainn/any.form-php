@@ -7,8 +7,6 @@
 			restrict: 'E',
 			require: '^report',
 			link: function ($scope, $element, $attrs, $controller) {
-				console.log($controller);
-				console.log($scope);
 				$controller.roomReport = $scope;
 			},
 			controllerAs: 'roomReport',
@@ -42,7 +40,6 @@
 						var room = $scope.room.value;
 						cb($scope.activeForm.id, clazz, room, function(result){
 							$scope.results = result;
-							console.log(result);
 						})
 					}
 				}

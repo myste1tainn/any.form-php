@@ -5,6 +5,8 @@
 	])
 
 	.service('$report', function($http, sys){
+		this.session = { activeForm: null };
+
 		this.results = function(callback) {
 			$http.get('report/results')
 			.success(function(res, status, headers, config){
@@ -77,16 +79,18 @@
 		}
 	})
 
-	.directive('report', function($questionaire, $report, $compile, $route, $location){
+	.directive('report', function($questionaire, $report, $compile, $state, $stateParams){
 		return {
 			restrict: 'C',
 			controllerAs: 'report',
 			controller: function($scope, $element, $attrs){
 				var _ = this;
 
+				console.log($stateParams);
+
 				$scope.forms = [];
-				$scope.activeType = $route.current.params.type;
-				$scope.activeForm = {id: $route.current.params.id};
+				$scope.activeType = $stateParams.type || 'person';
+				$scope.activeForm = $report.session.activeForm;
 
 				var createDisplayedResult = function() {
 					for (var i = $scope.forms.length - 1; i >= 0; i--) {
@@ -101,18 +105,14 @@
 				})
 
 				$scope.reportChange = function(e){
+					$report.session.activeForm = $scope.activeForm;
 					if ($scope.activeForm) {
 						changeURL();
 					}
 				}
 
 				var changeURL = function() {
-					if ($scope.activeForm === undefined ||
-					    $scope.activeForm.id === undefined) {
-						$location.url('/report/'+$scope.activeType)
-					} else {
-						$location.url('/report/'+$scope.activeType+'/'+$scope.activeForm.id)
-					}
+					$state.go('report.type', { type: $scope.activeType, form: $scope.activeForm })
 				}
 
 				$scope.personReport = function(el) {
@@ -142,7 +142,7 @@
 		}
 	})
 
-	.directive('personReport', function($report){
+	.directive('personReport', function($report, $state, $stateParams){
 		return {
 			restrict: 'E',
 			require: '^report',
