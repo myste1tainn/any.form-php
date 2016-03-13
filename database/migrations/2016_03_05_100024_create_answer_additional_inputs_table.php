@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAnswerAddtionalInputsTable extends Migration {
+class CreateAnswerAdditionalInputsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,7 +12,7 @@ class CreateAnswerAddtionalInputsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('answer_addtional_inputs', function(Blueprint $table)
+		Schema::create('answer_additional_inputs', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->string('value', 1024);
@@ -39,7 +39,7 @@ class CreateAnswerAddtionalInputsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('answer_addtional_inputs');
+		Schema::drop('answer_additional_inputs');
 	}
 
 }

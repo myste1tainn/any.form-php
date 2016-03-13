@@ -24,7 +24,7 @@
 	
 	@include('navbar')
 	
-	<div class="body" ng-view>
+	<div class="body" ui-view>
 	</div>
 </body>
 </html>

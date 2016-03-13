@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class AnswerAddtionalInput extends Model {
+class AnswerAdditionalInput extends Model {
 
 	public function input()
 	{
@@ -18,7 +18,7 @@ class AnswerAddtionalInput extends Model {
 	{
 		$ansInputs = [];
 		foreach ($iAnsInputs as $iAnsInput) {
-			$ansInput = new AnswerAddtionalInput();
+			$ansInput = new AnswerAdditionalInput();
 			$ansInput->value = $iAnsInput['value'];
 			$ansInput->inputID = $iAnsInput['id'];
 			$ansInput->answerID = $answer->id;

@@ -7,7 +7,7 @@
 			restrict: 'E',
 			require: '^report',
 			link: function ($scope, $element, $attrs, $controller) {
-				$controller.roomReport = $scope;
+				$controller.currentTabController = $scope;
 			},
 			controllerAs: 'roomReport',
 			templateUrl: 'report/template/room',

@@ -32,6 +32,7 @@ class FilterFormDataModel extends Migration {
 	{
 		Schema::table('questionaires', function (Blueprint $table) {
 			$table->dropColumn('level');
+			$table->dropColumn('type');
 		});
 
 		Schema::table('choices', function (Blueprint $table) {

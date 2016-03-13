@@ -5,7 +5,7 @@
 	<h3>[[ questionaire.name ]]</h3>
 	<hr />
 
-	<div class="col-xs-12" style="padding: 0">
+	<div class="col-xs-12" style="padding: 0" participant-info>
 		<!-- <table class="name col-xs-4 pull-right"> -->
 		<table class="name col-xs-12">
 			<tr>

@@ -52,9 +52,9 @@
 			url: '/teacher/risk-screening',
 			templateUrl: 'teacher/risk-screening',
 		})
-		.state('teacher/risk-screening/:studentID', {
-			url: '/teacher/risk-screening/:studentID',
-			templateUrl: 'teacher/risk-screening/:studentID',
+		.state('teacher/risk-screening/year/:year/student/:studentID', {
+			url: '/teacher/risk-screening/year/:year/student/:studentID',
+			templateUrl: 'teacher/risk-screening/year/:year/student/:studentID',
 		})
 		.state('questionaire/:questionaireID', {
 			url: '/questionaire/:questionaireID',
@@ -73,8 +73,9 @@
 			params: { type: 'person', form: null },
 		})
 		.state('report.type.form', {
-			url: '/:type/:formId',
-			templateUrl: 'report'
+			url: '/:formId',
+			templateUrl: 'report',
+			params: { form: null },
 		})
 	})
 
@@ -84,6 +85,66 @@
 				plain: true,
 				template: msg
 			})
+		}
+	})
+
+	.service('req', function($http, sys){
+		this.getData = function(url, callback) {
+			$http.get(url)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.data);
+				} else {
+					var err = (res.message) ? res.message : res;
+					sys.error(err);
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res);
+			});
+		}
+		this.getMessage = function(url, callback) {
+			$http.get(url)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.message);
+				} else {
+					var err = (res.message) ? res.message : res;
+					sys.error(err);
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res);
+			});
+		}
+
+		this.postData = function(url, payload, callback) {
+			$http.post(url, payload)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.data);
+				} else {
+					var err = (res.message) ? res.message : res;
+					sys.error(err);
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res);
+			});
+		}
+		this.postMessage = function(url, payload, callback) {
+			$http.post(url, payload)
+			.success(function(res, status, headers, config){
+				if (res.success) {
+					callback(res.message);
+				} else {
+					var err = (res.message) ? res.message : res;
+					sys.error(err);
+				}
+			})
+			.error(function(res, status, headers, config){
+				sys.error(res);
+			});
 		}
 	})
 

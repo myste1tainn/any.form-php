@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-        $this->call('FormSeeder');
-		// $this->call('ParticipantSeeder');
-		// $this->call('ResultSeeder');
+        // $this->call('FormSeeder');
+		$this->call('ParticipantSeeder');
+		$this->call('ResultSeeder');
 	}
 
 }
@@ -90,8 +90,13 @@ class ResultSeeder extends Seeder {
         $form2->id = 33;
         $form2->max = 60;
 
+        $form3 = new stdClass();
+        $form3->id = 34;
+        $form3->max = 30;
+
         $forms[] = $form1;
         $forms[] = $form2;
+        $forms[] = $form3;
 
         $participants = Participant::all();
         foreach ($forms as $f) {

@@ -41,14 +41,14 @@
 					<a href="teacher/risk-screening">
 						<table>
 						<tr>
-							<td><span class="fa fa-file-text"></span></td>
+							<td><span class="fa fa-pencil-square-o"></span></td>
 							<td>แบบคัดกรอง</td>
 						</tr>
 						</table>
 					</a>
 				</li>
 				<li id="report">
-					<a href="report">
+					<a ui-sref="report({type:'person'})">
 						<table>
 						<tr>
 							<td><span class="fa fa-file-text"></span></td>

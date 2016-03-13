@@ -79,66 +79,76 @@
 		}
 	})
 
-	.directive('report', function($questionaire, $report, $compile, $state, $stateParams){
+	.directive('report', function(){
 		return {
 			restrict: 'C',
 			controllerAs: 'report',
-			controller: function($scope, $element, $attrs){
-				var _ = this;
+			controller: 'ReportController'
+		}
+	})
+	.controller('ReportController', function($scope, $questionaire, $report, 
+	                                         $compile, $state, $stateParams) {
+		var _ = this;
 
-				console.log($stateParams);
+		$scope.forms = [];
+		$scope.activeType = $stateParams.type || 'person';
+		$scope.activeForm = $report.session.activeForm;
 
-				$scope.forms = [];
-				$scope.activeType = $stateParams.type || 'person';
-				$scope.activeForm = $report.session.activeForm;
+		var createDisplayedResult = function() {
+			for (var i = $scope.forms.length - 1; i >= 0; i--) {
+				var f = $scope.forms[i];
+				f.displayedResults = [].concat(f.results);
+			};
+		}
 
-				var createDisplayedResult = function() {
-					for (var i = $scope.forms.length - 1; i >= 0; i--) {
-						var f = $scope.forms[i];
-						f.displayedResults = [].concat(f.results);
-					};
-				}
+		$questionaire.all(function(forms) {
+			$scope.forms = forms;
+			createDisplayedResult();
+		})
 
-				$questionaire.all(function(forms) {
-					$scope.forms = forms;
-					createDisplayedResult();
-				})
-
-				$scope.reportChange = function(e){
-					$report.session.activeForm = $scope.activeForm;
-					if ($scope.activeForm) {
-						changeURL();
-					}
-				}
-
-				var changeURL = function() {
-					$state.go('report.type', { type: $scope.activeType, form: $scope.activeForm })
-				}
-
-				$scope.personReport = function(el) {
-					$scope.activeType = 'person';
-					changeURL();
-				}
-
-				$scope.roomReport = function (el) {
-					$scope.activeType = 'room';
-					changeURL();
-				}
-
-				$scope.classReport = function (el) {
-					$scope.activeType = 'class';
-					changeURL();
-				}
-
-				$scope.schoolReport = function (el) {
-					$scope.activeType = 'school';
-					changeURL();
-				}
-
-				this.getActiveForm = function() {
-					return $scope.activeForm;
-				}
+		$scope.reportChange = function(e){
+			$report.session.activeForm = $scope.activeForm;
+			if ($scope.activeForm) {
+				changeURL();
 			}
+		}
+
+		var changeURL = function() {
+			if ($scope.activeForm) {
+				$state.go('report.type.form', { 
+					type: $scope.activeType, 
+					form: $scope.activeForm, 
+					formId: $scope.activeForm.id 
+				}).then(function() {
+					$scope.report.currentTabController.getData();
+				})
+			} else {
+				$state.go('report.type', { type: $scope.activeType });
+			}
+		}
+
+		$scope.personReport = function(el) {
+			$scope.activeType = 'person';
+			changeURL();
+		}
+
+		$scope.roomReport = function (el) {
+			$scope.activeType = 'room';
+			changeURL();
+		}
+
+		$scope.classReport = function (el) {
+			$scope.activeType = 'class';
+			changeURL();
+		}
+
+		$scope.schoolReport = function (el) {
+			$scope.activeType = 'school';
+			changeURL();
+		}
+
+		this.getActiveForm = function() {
+			return $scope.activeForm;
 		}
 	})
 
@@ -147,7 +157,7 @@
 			restrict: 'E',
 			require: '^report',
 			link: function ($scope, $element, $attrs, $controller) {
-				$controller.personReport = $scope;
+				$controller.currentTabController = $scope;
 			},
 			controllerAs: 'personReport',
 			templateUrl: 'report/template/person',

@@ -9,6 +9,7 @@
 
 <!-- Angular Route -->
 <script src="{{ asset('/bower_components/angular-route/angular-route.js') }}"></script>
+<script src="{{ asset('/bower_components/angular-ui-router/release/angular-ui-router.js') }}"></script>
 
 <!-- Angular Loading Bar -->
 <script src="{{ asset('/bower_components/angular-loading-bar/src/loading-bar.js') }}"></script>

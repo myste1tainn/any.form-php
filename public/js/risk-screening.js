@@ -2,7 +2,8 @@
 	
 	var module = angular.module('risk-screening', [])
 
-	.directive('riskScreening', function($questionaire, $answer, $routeParams, ngDialog, RISK_ID){
+	.directive('riskScreening', function($questionaire, $participant, $answer, $stateParams, 
+	                                     ngDialog, RISK_ID, ACADEMIC_YEAR){
 		return {
 			restrict: 'EA',
 			controllerAs: 'riskScreening',
@@ -14,10 +15,21 @@
 			controller: function($scope, $element, $attrs){
 				$scope.screening = null;
 
+				// Find out if the specify choice existed in answers
 				var choiceExistsInAnswers = function(c, ans) {
 					for (var i = ans.length - 1; i >= 0; i--) {
 						var a = ans[i];
 						if (a.choiceID == c.id) {
+
+							if (c.inputs) {
+								if (c.inputs.length > 0) {
+									for (var j = c.inputs.length - 1; j >= 0; j--) {
+										var input = c.inputs[j];
+										input.value = a.inputs[j].value;
+									}
+								}
+							}
+
 							return true;
 						}
 					}
@@ -25,37 +37,50 @@
 					return false;
 				}
 
-				$questionaire.load(RISK_ID, function(questionaire){
-					$scope.screening = questionaire;
-
-					if ($routeParams.studentID) {
-						$answer.load(RISK_ID, $routeParams.studentID, function(answers) {
-							for (var i = questionaire.questions.length - 1; i >= 0; i--) {
-								var q = questionaire.questions[i];
-
-								if (q.type == 0) {
-									for (var j = q.choices.length - 1; j >= 0; j--) {
-										var c = q.choices[j];
-										if (choiceExistsInAnswers(c, answers)) {
-											q.selected = c;
-										}
-									}
-								} else {
-									for (var j = q.choices.length - 1; j >= 0; j--) {
-										var c = q.choices[j];
-										if (choiceExistsInAnswers(c, answers)) {
-											c.checked = true;
-										}
-										
-										for (var k = c.subchoices.length - 1; k >= 0; k--) {
-											var sc = c.subchoices[k];
-											if (choiceExistsInAnswers(sc, answers)) {
-												sc.checked = true
-											}
-										}
+				// Match between answers and questions
+				// To create answered questions matrix
+				// qq is questionaire, aa is answers
+				var createAnsweredQuestionMatrix = function (qq, aa) {
+					for (var i = qq.questions.length - 1; i >= 0; i--) {
+						var q = qq.questions[i];
+						if (q.type == 0) {
+							for (var j = q.choices.length - 1; j >= 0; j--) {
+								var c = q.choices[j];
+								if (choiceExistsInAnswers(c, aa)) {
+									q.selected = c;
+								}
+							}
+						} else {
+							for (var j = q.choices.length - 1; j >= 0; j--) {
+								var c = q.choices[j];
+								if (choiceExistsInAnswers(c, aa)) {
+									c.checked = true;
+								}
+								
+								for (var k = c.subchoices.length - 1; k >= 0; k--) {
+									var sc = c.subchoices[k];
+									if (choiceExistsInAnswers(sc, aa)) {
+										sc.checked = true
 									}
 								}
 							}
+						}
+					}
+				}
+
+				// Load the questionaire questions
+				$questionaire.load(RISK_ID, function(questionaire){
+					$scope.screening = questionaire;
+
+					if ($stateParams.studentID) {
+						$participant.load($stateParams.studentID, function(participant){
+							participant.identifier = parseInt(participant.identifier);
+							$scope.participant = participant;
+						})
+
+						$answer.load(RISK_ID, $stateParams.year, $stateParams.studentID, function(answers) {
+							console.log(answers);
+							createAnsweredQuestionMatrix(questionaire, answers)
 						});
 					}
 				});
@@ -128,8 +153,6 @@
 					if ($scope.validateFormInput()) {
 						$scope.participant.choices = choices;
 						$scope.participant.questionaireID = $scope.screening.id;
-
-						console.log($scope.participant);
 
 						$questionaire.submit($scope.participant, function (response) {
 							ngDialog.open({

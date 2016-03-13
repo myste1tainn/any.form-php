@@ -11,6 +11,7 @@ use App\ParticipantAnswer;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
 use Request;
 
 class FormController extends Controller {
@@ -40,7 +41,7 @@ class FormController extends Controller {
 	}
 
 	public function load($id) {
-		$questionaire = Questionaire::with('criteria', 'questions')
+		$questionaire = Questionaire::with('criteria', 'questions.meta')
 									->where('id', $id)	
 									->first();
 
@@ -198,6 +199,7 @@ class FormController extends Controller {
 		$qr->participantID 	= $participant->id;
 		$qr->questionaireID = $questionaire->id;
 		$qr->value			= $summation;
+		$qr->academicYear 	= Cache::get('settings.current_academic_year');
 		$qr->save(); 
 
 		return response()->json([
@@ -239,13 +241,21 @@ class FormController extends Controller {
 		return $questionaire;
 	}
 
-	public function answers($questionaireID, $participantID)
+	public function answers($questionaireID, $academicYear, $participantID)
 	{
-		$participant = Participant::where('identifier', $participantID)->first();
+		if ($academicYear == -999) {
+			$academicYear = Cache::get('settings.current_academic_year');
+		}
+
+		$participant = Participant::where('identifier', $participantID)
+								  ->first();
+
 		if ($participant) {
-			$answers = ParticipantAnswer::where('questionaireID', $questionaireID)
-									->where('participantID', $participant->id)
-									->get();
+			$answers = ParticipantAnswer::with('inputs')
+										->where('questionaireID', $questionaireID)
+										->where('participantID', $participant->id)
+										->where('academicYear', $academicYear)
+										->get();
 		}
 
 		return response()->json([

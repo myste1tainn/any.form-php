@@ -2,7 +2,11 @@
 	
 	var module = angular.module('questionaire', ['risk-screening'])
 
+	// ID of the risk screening questionaire
 	.constant('RISK_ID', 34)
+
+	// Default number that indicate "Use the current academic year"
+	.constant('ACADEMIC_YEAR', -999)
 
 	.service('$input', function() {
 		this.newInstance = function() {
@@ -15,24 +19,14 @@
 		}
 	})
 
-	.service('$answer', function($http, sys) {
-		this.load = function(questionaireID, participantID, callback) {
-			$http.get('api/answers/'+questionaireID+'/'+participantID)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					var msg = (res.message) ? res.message : res;
-					sys.error(msg)
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.error(res);
-			});
+	.service('$answer', function($http, req, sys) {
+		this.load = function(questionaireID, academicYear, participantID, callback) {
+			var url = 'api/answers/'+questionaireID+'/'+academicYear+'/'+participantID;
+			req.getData(url, callback);
 		}
 	})
 
-	.service('$questionaire', function($http, $question, $criterion, ngDialog) {
+	.service('$questionaire', function($http, $question, $criterion, ngDialog, req) {
 		this.newInstance = function() {
 			return {
 				id: -1,
@@ -78,10 +72,7 @@
 						};
 						callback(res);
 					} else {
-						ngDialog.open({
-							plain: true,
-							template: res
-						})
+						sys.error(res);
 					}
 				})
 				.error(function(res, status, headers, config){
@@ -93,47 +84,21 @@
 		}
 
 		this.all = function(callback) {
-			$http.get('api/questionaires')
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					ngDialog.open({
-						plain: true,
-						template: res
-					});	
-				}
-			})
-			.error(function(res, status, headers, config){
-				ngDialog.open({
-					plain: true,
-					template: res
-				});
-			});
+			req.getData('api/questionaires', callback)
 		}
 
-		this.save = function(questionaire) {
-			return $http.post('form/save', questionaire);
+		this.save = function(questionaire, callback) {
+			req.postData('form/save', questionaire, callback);
 		}
 
 		this.submit = function(result, callback) {
-			$http.post('api/questionaire/submit', result)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.message)
-				} else {
-					ngDialog.open({
-						plain: true,
-						template: res
-					})
-				}
-			})
-			.error(function(res, status, headers, config){
-				ngDialog.open({
-					plain: true,
-					template: res
-				})
-			});
+			req.postMessage('api/questionaire/submit', result, callback);
+		}
+	})
+
+	.service('$participant', function($http, req) {
+		this.load = function(id, callback) {
+			req.getData('api/participant/'+id, callback);
 		}
 	})
 
@@ -144,12 +109,12 @@
 		})
 	})
 
-	.directive('questionaireCreate', function($route, ngDialog, $questionaire){
+	.directive('questionaireCreate', function($stateParams, ngDialog, $questionaire){
 		return {
 			restrict: 'E',
 			controllerAs: 'questionaireCreate',
 			controller: function($scope, $element, $attrs){
-				var id = $route.current.params.questionaireID
+				var id = $stateParams.questionaireID
 
 				$questionaire.load(id, function(questionaire) {
 					$scope.questionaire = questionaire;
@@ -169,22 +134,9 @@
 
 				$scope.submit = function() {
 					compileHeader();
-					$questionaire.save($scope.questionaire)
-					.success(function(res, status, headers, config){
-						ngDialog.open({
-							plain: true,
-							template: (res.message) ? res.message : res
-						})
-
-						$scope.questionaire = res.data;
+					$questionaire.save($scope.questionaire, function(data) {
+						$scope.questionaire = data;
 					})
-					.error(function(res, status, headers, config){
-						console.log(res, status, headers);
-						ngDialog.open({
-							plain: true,
-							template: res
-						})
-					});
 				}
 
 				$scope.toggleFold = function (question) {
@@ -415,12 +367,13 @@
 		}
 	})
 
-	.controller('QuestionaireDoController', function($scope, $route, $questionaire, ngDialog) {
-		var id = $route.current.params.questionaireID
+	.controller('QuestionaireDoController', function($scope, $stateParams, $questionaire, ngDialog) {
+		var id = $stateParams.questionaireID
 
 		$scope.questionaire = {};
 		$questionaire.load(id, function(questionaire){
 			$scope.questionaire = questionaire;
+			console.log(questionaire);
 		})
 
 		$scope.toggleChoose = function(question, choice) {

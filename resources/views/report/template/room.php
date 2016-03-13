@@ -6,7 +6,7 @@
 		<select class="form-control"
 				ng-model="class"
 				ng-change="classChange()"
-				ng-options="c as c.value for c in classes">
+				ng-options="class as class.value for class in classes">
 		</select>
 	</div>
 	<div class="col-xs-1 text-right" style="margin-top: 6px">ห้อง</div>

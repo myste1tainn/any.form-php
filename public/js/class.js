@@ -30,7 +30,7 @@
 			restrict: 'E',
 			require: '^report',
 			link: function ($scope, $element, $attrs, $controller) {
-				$controller.classReport = $scope;
+				$controller.currentTabController = $scope;
 			},
 			controllerAs: 'classReport',
 			templateUrl: 'report/template/class',
