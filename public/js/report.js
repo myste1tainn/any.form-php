@@ -5,7 +5,13 @@
 	])
 
 	.service('$report', function($http, sys){
-		this.session = { activeForm: null };
+
+		this.functionForType = function(type) {
+			if (type === 'person') { return this.person; }
+			else if (type === 'room') { return this.room; }
+			else if (type === 'class') { return this.class; }
+			else if (type === 'school') { return this.school; }
+		}
 
 		this.results = function(callback) {
 			$http.get('report/results')
@@ -21,8 +27,8 @@
 			});
 		}
 
-		this.person = function(id, callback) {
-			$http.get('report/results/'+id+'/person')
+		this.person = function(payload, callback) {
+			$http.get('report/results/'+payload.id+'/person')
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -35,8 +41,8 @@
 			});
 		}
 
-		this.school = function(id, callback) {
-			$http.get('report/results/'+id+'/school')
+		this.school = function(payload, callback) {
+			$http.get('report/results/'+payload.id+'/school')
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -50,8 +56,8 @@
 		}
 
 		// this.room = function(id, callback) {
-		this.room = function(id, clazz, room, callback) {
-			$http.get('report/results/'+id+'/room/'+clazz+'/'+room)
+		this.room = function(payload, callback) {
+			$http.get('report/results/'+payload.id+'/room/'+payload.class+'/'+payload.room)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -64,8 +70,8 @@
 			});
 		}
 
-		this.class = function(id, clazz, callback) {
-			$http.get('report/results/'+id+'/class/'+clazz)
+		this.class = function(payload, callback) {
+			$http.get('report/results/'+payload.id+'/class/'+payload.class)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -79,20 +85,25 @@
 		}
 	})
 
-	.directive('report', function(){
-		return {
-			restrict: 'C',
-			controllerAs: 'report',
-			controller: 'ReportController'
-		}
-	})
 	.controller('ReportController', function($scope, $questionaire, $report, 
-	                                         $compile, $state, $stateParams) {
+	                                         $compile, $state, $state, 
+	                                         $class, RISK_ID) {
 		var _ = this;
 
-		$scope.forms = [];
-		$scope.activeType = $stateParams.type || 'person';
-		$scope.activeForm = $report.session.activeForm;
+		$scope.forms 	= [];
+		$scope.type 	= $state.current.type || 'person';
+		$scope.form 	= $state.current.form || null;
+		$scope.rooms 	= [];
+		$scope.classes 	= [];
+		$scope.room 	= null;
+		$scope.class 	= null;
+
+		if ($state.current.name == 'report.type' &&
+		    $state.url === undefined) {
+			var components = window.location.pathname.split('/');
+			var count = components.length;
+			$scope.type = components[count - 1];
+		}
 
 		var createDisplayedResult = function() {
 			for (var i = $scope.forms.length - 1; i >= 0; i--) {
@@ -106,10 +117,46 @@
 			createDisplayedResult();
 		})
 
-		$scope.reportChange = function(e){
-			$report.session.activeForm = $scope.activeForm;
-			if ($scope.activeForm) {
-				changeURL();
+		$scope.$on('$stateChangeStart', function(state, controller, params) {
+			controller.params = params;
+		})
+
+		$scope.stateChange = function(state) {
+			$scope.type = state;
+
+			var changeStateBlock = function() {
+				if ($scope.form) {
+					$state.go('report.type.form', { type: state, form: $scope.form, formID: $scope.form.id })
+				} else {
+					$state.go('report.type', { type: state, form: $scope.form });
+				}
+			}
+
+			if ($scope.type == 'room' ||
+			    $scope.type == 'class') {
+
+				if ($scope.classes.length > 0) {
+					changeStateBlock();
+				} else {
+					$class.all(function(res) {
+						for (var i = res.classes.length - 1; i >= 0; i--) {
+							var c = res.classes[i];
+							$scope.classes.push({text:c.class, value:c.class});
+						};
+
+						for (var i = res.rooms.length - 1; i >= 0; i--) {
+							var r = res.rooms[i];
+							$scope.rooms.push({text:r.room, value:r.room});
+						};
+
+						$scope.class = $scope.classes[0];
+						$scope.room = $scope.rooms[0];
+
+						changeStateBlock();
+					})
+				}
+			} else {
+				changeStateBlock();
 			}
 		}
 
@@ -126,63 +173,58 @@
 				$state.go('report.type', { type: $scope.activeType });
 			}
 		}
-
-		$scope.personReport = function(el) {
-			$scope.activeType = 'person';
-			changeURL();
-		}
-
-		$scope.roomReport = function (el) {
-			$scope.activeType = 'room';
-			changeURL();
-		}
-
-		$scope.classReport = function (el) {
-			$scope.activeType = 'class';
-			changeURL();
-		}
-
-		$scope.schoolReport = function (el) {
-			$scope.activeType = 'school';
-			changeURL();
-		}
-
-		this.getActiveForm = function() {
-			return $scope.activeForm;
-		}
 	})
 
-	.directive('personReport', function($report, $state, $stateParams){
-		return {
-			restrict: 'E',
-			require: '^report',
-			link: function ($scope, $element, $attrs, $controller) {
-				$controller.currentTabController = $scope;
-			},
-			controllerAs: 'personReport',
-			templateUrl: 'report/template/person',
-			controller: function($scope, $element, $attrs){
-				$scope.results = [];
-				$scope.displayedResults = [];
+	.controller('ReportTabController', function($scope, $report, $state) {
+		$scope.results 			= [];
+		$scope.displayedResults = [];
+		$scope.type 			= $state.current.params.type;
+		$scope.form 			= $state.current.params.form;
 
-				var createDisplayedResult = function() {
-					$scope.displayedResults = [].concat($scope.results);
+		$scope.getData = function() {
+			if ($scope.form !== undefined) {
+				var fn = $report.functionForType($scope.type);
+				var payload = {};
+
+				if ($scope.type == 'person') {
+					payload.id = $scope.form.id;
+				} else if ($scope.type == 'room') {
+					payload.id = $scope.form.id;
+					payload.class = $scope.class.value;
+					payload.room = $scope.room.value;
+				} else if ($scope.type == 'class') {
+					payload.id = $scope.form.id;
+					payload.class = $scope.class.value;
+				} else if ($scope.type == 'school') {
+					payload.id = $scope.form.id;
 				}
 
-				$scope.getData = function() {
-					if ($scope.activeForm !== undefined &&
-					    $scope.activeForm.id !== undefined) {
-						var cb = $report.person;
-						cb($scope.activeForm.id, function(result){
-							$scope.results = result;
-						})
-					}
-				}
-
-				if ($scope.activeForm) {
-					$scope.getData();
-				}
+				fn(payload, function(result){
+					$scope.results = result;
+				})
 			}
+		}
+
+		// Constructor behaviour depends on type
+		if ($scope.type == 'person') {
+			// Get Data Immediately
+			if ($scope.form) $scope.getData();
+		} else if ($scope.type == 'room') {			
+			// Get class & room first then get data
+			if ($scope.form) $scope.getData();
+		} else if ($scope.type == 'class') {
+			// Get class first then get data
+			if ($scope.form) $scope.getData();
+		} else if ($scope.type == 'school') {
+			if ($scope.form) $scope.getData();
+		}
+
+		// For type: class & room, select option controlling
+		$scope.classChange = function() {
+			$scope.getData();
+		}
+		$scope.roomChange = function() {
+			$scope.getData();
 		}
 	})
 

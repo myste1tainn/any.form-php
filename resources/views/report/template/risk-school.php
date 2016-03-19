@@ -1,5 +1,4 @@
-<school class="col-xs-12 std-pad"
-		ui-view="report.type.form">
+<school class="col-xs-12 std-pad">
 
 	<table class="form questions col-xs-12"
 		   st-table="displayedResults"

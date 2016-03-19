@@ -1,6 +1,7 @@
 <table class="form questions" 
 	   st-table="displayedResults" 
-	   st-safe-src="results">
+	   st-safe-src="results"
+	   ui-view="report.type.form">
 	<thead>
 		<tr>
 			<td colspan="5">

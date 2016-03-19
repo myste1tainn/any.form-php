@@ -1,5 +1,4 @@
-<room class="col-xs-12 std-pad" 
-	  ui-view="report.type.form">
+<room class="col-xs-12 std-pad">
 
 	<div class="col-xs-6"></div>
 	<div class="col-xs-1 text-right" style="margin-top: 6px">ชั้น</div>

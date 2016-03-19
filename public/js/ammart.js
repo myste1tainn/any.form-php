@@ -2,13 +2,14 @@
 	
 	var module = angular.module('ammart', [
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router',
-		'questionaire', 'question', 'criterion', 'choice', 'report'
+		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr'
 	])
 
 	.config(function(
 		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
-		$locationProvider, $routeProvider, CSRF_TOKEN
+		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider
 	){
+
 		$interpolateProvider.startSymbol('[[').endSymbol(']]');
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 		$httpProvider.defaults.headers.common['X-Csrf-Token'] = CSRF_TOKEN;
@@ -64,18 +65,39 @@
 		})
 		.state('report', {
 			url: '/report',
+			controller: 'ReportController',
+			controllerAS: 'report',
 			templateUrl: 'report',
-			deepStateRedirect: { default: { state: 'report.type'} },
+			deepStateRedirect: { 
+				default: { 
+					state: 'report.type',
+					params: { type: 'person' },
+				},
+			},
 		})
 		.state('report.type', {
 			url: '/:type',
+			controller: 'ReportController',
+			controllerAS: 'report',
 			templateUrl: 'report',
-			params: { type: 'person', form: null },
+			params: { type: null },
+			views: {
+				'report.type': {
+					templateUrl: function($stateParams) {
+						return 'report/template/'+$stateParams.type;
+					}
+				}
+			}
 		})
 		.state('report.type.form', {
-			url: '/:formId',
-			templateUrl: 'report',
-			params: { form: null },
+			url: '/:formID',
+			params: { type: null, form: null },
+			views: {
+				'report.type.form': {
+					controller: 'ReportTabController',
+					controllerAs: 'reportTab'
+				}
+			}
 		})
 	})
 
