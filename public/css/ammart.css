@@ -1,5 +1,14 @@
-/* #16006C : ammart blue */
-/* #075083 : table header */
+/* 
+#0B2171 : ammart blue
+#0C257E : Domniant 
+#1237BD : Secondary
+#FDC119 : Yellow Accent 
+#3A5392 : Pale blue Accent 
+#ffffff : Main Text
+#333333 : Secondary Text
+#ffffff : Text Background
+#808080 : Placeholder
+*/
 
 body { overflow: hidden; }
 div.body {
@@ -64,7 +73,7 @@ table.form th {
 	font-size: 1.1em;
 	padding: 15px;
 	color: white;
-	background: #075083;
+	background: #0B2171;
 	border: 1px solid #ddd;
 }
 table th {
@@ -191,7 +200,7 @@ button.submit.selected {
 }
 
 button.submit {
-	background: #075083;
+	background: #0B2171;
 	color: white;
 }
 

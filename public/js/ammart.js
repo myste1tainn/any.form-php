@@ -76,7 +76,7 @@
 			},
 		})
 		.state('report.type', {
-			url: '/:type',
+			url: '/type/:type',
 			controller: 'ReportController',
 			controllerAS: 'report',
 			templateUrl: 'report',
@@ -84,18 +84,39 @@
 			views: {
 				'report.type': {
 					templateUrl: function($stateParams) {
-						return 'report/template/'+$stateParams.type;
+						var components = window.location.pathname.split('/');
+						var count = components.length;
+						var lastpart =  components[count - 1];
+
+						if (lastpart == 'risk-screening') {
+							return 'template/report-risk/'+$stateParams.type;
+						} else {
+							return 'template/report/'+$stateParams.type;
+						}
 					}
 				}
 			}
 		})
 		.state('report.type.form', {
-			url: '/:formID',
+			url: '/form/:formID',
 			params: { type: null, form: null },
 			views: {
 				'report.type.form': {
 					controller: 'ReportTabController',
 					controllerAs: 'reportTab'
+				}
+			}
+		})
+		.state('report.type.risk', {
+			url: '/risk-screening',
+			params: { type: null, form: null },
+			views: {
+				'report.type.risk': {
+					templateUrl: function($stateParams) {
+						return 'template/report-risk/'+$stateParams.type;
+					},
+					controller: 'ReportRiskScreeningTabController',
+					controllerAs: 'reportRiskScreeningTab'
 				}
 			}
 		})

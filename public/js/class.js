@@ -33,7 +33,7 @@
 				$controller.currentTabController = $scope;
 			},
 			controllerAs: 'classReport',
-			templateUrl: 'report/template/class',
+			templateUrl: 'template/report/class',
 			controller: function($scope, $element, $attrs){
 				var _ = this;
 

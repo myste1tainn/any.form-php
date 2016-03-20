@@ -23,7 +23,7 @@
 		<tbody ng-repeat="class in displayedResults">
 			<tr ng-repeat="criterion in class.criteria">
 				<td class="text-center col-xs-1"
-					style="font-size: 4em; font-weight: 900; color: #075083"
+					style="font-size: 4em; font-weight: 900; color: #1237BD"
 					rowspan="[[ class.criteria.length ]]"
 					ng-if="$index == 0">
 					[[ criterion.class ]]
@@ -38,7 +38,7 @@
 					[[ criterion.percent ]]
 				</td>
 				<td class="text-center col-xs-1"
-					style="font-size: 2em; font-weight: 900; color: #075083"
+					style="font-size: 2em; font-weight: 900; color: #1237BD"
 					rowspan="[[ class.criteria.length ]]"
 					ng-if="$index == 0">
 					[[ class.avgRisk ]] ([[ class.avgValue ]])

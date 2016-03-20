@@ -14,7 +14,7 @@
 		}
 
 		this.results = function(callback) {
-			$http.get('report/results')
+			$http.get('report-results')
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -28,7 +28,7 @@
 		}
 
 		this.person = function(payload, callback) {
-			$http.get('report/results/'+payload.id+'/person')
+			$http.get('report-results/'+payload.id+'/person')
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -42,7 +42,7 @@
 		}
 
 		this.school = function(payload, callback) {
-			$http.get('report/results/'+payload.id+'/school')
+			$http.get('report-results/'+payload.id+'/school')
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -57,7 +57,7 @@
 
 		// this.room = function(id, callback) {
 		this.room = function(payload, callback) {
-			$http.get('report/results/'+payload.id+'/room/'+payload.class+'/'+payload.room)
+			$http.get('report-results/'+payload.id+'/room/'+payload.class+'/'+payload.room)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -71,7 +71,7 @@
 		}
 
 		this.class = function(payload, callback) {
-			$http.get('report/results/'+payload.id+'/class/'+payload.class)
+			$http.get('report-results/'+payload.id+'/class/'+payload.class)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
@@ -103,6 +103,18 @@
 			var components = window.location.pathname.split('/');
 			var count = components.length;
 			$scope.type = components[count - 1];
+		} else if ($state.current.name == 'report.type.form' &&
+		           $state.url === undefined) {
+			var components = window.location.pathname.split('/');
+			var count = components.length;
+			$scope.form = { id: components[count - 1] };
+			$scope.type = components[count - 3];
+		} else if ($state.current.name == 'report.type.risk' &&
+		           $state.url === undefined) {
+			var components = window.location.pathname.split('/');
+			var count = components.length;
+			$scope.form = { id: RISK_ID };
+			$scope.type = components[count - 2];
 		}
 
 		var createDisplayedResult = function() {
@@ -126,7 +138,23 @@
 
 			var changeStateBlock = function() {
 				if ($scope.form) {
-					$state.go('report.type.form', { type: state, form: $scope.form, formID: $scope.form.id })
+					if ($scope.form.id == RISK_ID) {
+						// Move to special state if the form id is
+						// Risk screening form id
+						$state.go('report.type.risk', 
+					          { 
+					          	type: state, 
+					          	form: $scope.form, 
+					          	formID: $scope.form.id 
+					          });
+					} else {
+						$state.go('report.type.form', 
+					          { 
+					          	type: state, 
+					          	form: $scope.form, 
+					          	formID: $scope.form.id 
+					          });
+					}
 				} else {
 					$state.go('report.type', { type: state, form: $scope.form });
 				}
@@ -226,6 +254,10 @@
 		$scope.roomChange = function() {
 			$scope.getData();
 		}
+	})
+
+	.controller('ReportRiskScreeningTabController', function($scope){
+		
 	})
 
 })();

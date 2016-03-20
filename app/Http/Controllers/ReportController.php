@@ -31,6 +31,10 @@ class ReportController extends Controller {
 		return view('report/template/'.$name);
 	}
 
+	public function riskTemplate($name) {
+		return view('report/template/risk-'.$name);
+	}
+
 	public function result()
 	{
 		$questionaires = Questionaire::with('results.participant', 'criteria')

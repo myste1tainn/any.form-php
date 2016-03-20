@@ -35,13 +35,16 @@ Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
 
 // Reports
 Route::get('/report', 'ReportController@index');
-Route::get('/report/{name}', 'ReportController@index');
-Route::get('/report/results', 'ReportController@result');
-Route::get('/report/results/{id}/person', 'ReportController@resultByPerson');
-Route::get('/report/results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');
-Route::get('/report/results/{id}/class/{class}', 'ReportController@resultByClass');
-Route::get('/report/results/{id}/school', 'ReportController@resultBySchool');
-Route::get('/report/template/{name}', 'ReportController@template');
+Route::get('/report/type/{name}', 'ReportController@index');
+Route::get('/report/type/{name}/form/{id}', 'ReportController@index');
+Route::get('/report/type/{name}/risk-screening', 'ReportController@index');
+Route::get('/report-results', 'ReportController@result');
+Route::get('/report-results/{id}/person', 'ReportController@resultByPerson');
+Route::get('/report-results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');
+Route::get('/report-results/{id}/class/{class}', 'ReportController@resultByClass');
+Route::get('/report-results/{id}/school', 'ReportController@resultBySchool');
+Route::get('/template/report/{name}', 'ReportController@template');
+Route::get('/template/report-risk/{name}', 'ReportController@riskTemplate');
 
 Route::get('/class/all', 'ClassController@all');
 

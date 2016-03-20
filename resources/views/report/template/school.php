@@ -22,7 +22,7 @@
 					[[ criterion.percent ]]
 				</td>
 				<td class="text-center col-xs-1"
-					style="font-size: 2em; font-weight: 900; color: #075083"
+					style="font-size: 2em; font-weight: 900; color: #1237BD"
 					rowspan="[[ school.criteria.length ]]"
 					ng-if="$index == 0">
 					[[ school.avgRisk ]] ([[ school.avgValue ]])
