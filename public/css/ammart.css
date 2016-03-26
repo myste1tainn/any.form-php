@@ -1,15 +1,3 @@
-/* 
-#0B2171 : ammart blue
-#0C257E : Domniant 
-#1237BD : Secondary
-#FDC119 : Yellow Accent 
-#3A5392 : Pale blue Accent 
-#ffffff : Main Text
-#333333 : Secondary Text
-#ffffff : Text Background
-#808080 : Placeholder
-*/
-
 body { overflow: hidden; }
 div.body {
 	height: 100%;
@@ -39,6 +27,7 @@ div.body {
 .small-pad { padding: 6px; }
 .std-pad { padding: 8px; }
 .std-margin { margin: 8px; }
+.auto-margin { margin: auto; }
 .std-margin-top { margin-top: 8px !important; }
 .std-margin-left { margin-left: 8px !important; }
 .std-margin-right { margin-right: 8px !important; }
@@ -309,34 +298,53 @@ table.risk td {
 	/*border: 1px solid #eee;*/
 	width: 20%;
 	color: black;
+	padding: 0px;
+	border: 1px solid #ddd;
+	cursor: pointer;
 }
-table.risk td h1.normal {
-	background: #0f0;
-	width: 100px; height: 100px;
-	color: #000;
-	line-height: 100px;
-	border-radius: 2%;
-	margin: auto;
-	margin-top: 0.1em;
-
+table.risk tr td:first-child {
+	border-left: none;
 }
-table.risk td h1.problem {
-	background: #ff0;
-	width: 100px; height: 100px;
-	color: #000;
-	line-height: 100px;
-	border-radius: 2%;
-	margin: auto;
-	margin-top: 0.1em;
-
+table.risk tr td:last-child {
+	border-right: none;
 }
-table.risk td h1.risk {
-	background: red;
-	width: 100px; height: 100px;
-	color: #000;
+table.risk td h1 {
+	transition: 0.2s linear all;
+	color: white;
+	background: #fbfbfb;
+	/*background: #555;*/
+	width: 100%;
+	height: 175px;
 	line-height: 100px;
-	border-radius: 2%;
 	margin: auto;
-	margin-top: 0.1em;
+}
+table.risk td h1:hover,
+table.risk td h1.selected {
+	background: white;
+}
+table.risk td h1::before {
+	border-bottom: 1px solid #ddd;
+	color: #555;
+	/*background: #fdfdfd;*/
+	content: attr(data-type);
+	display: block;
+	float: left;
+	font-size: 0.25em;
+	width: 100%;
+	height: 40px;
+	line-height: 36px;
+	padding: 0px;
+	margin: 0px;
+}
+table.risk td h1.rnormal 	{ color: green; }
+table.risk td h1.rhigh 		{ color: #fdd200; }
+table.risk td h1.rveryhigh 	{ color: #ec0f0f; }
+/*table.risk td h1.normal::before 	{ background: green; }
+table.risk td h1.high::before { background: #fdd200; }
+table.risk td h1.rveryhigh::before 	{ background: #ec0f0f; }*/
 
+.vertical-align {
+	height: 100%; height: 70vh;
+	display: flex;
+	align-items: center;
 }

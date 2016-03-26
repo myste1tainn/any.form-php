@@ -109,14 +109,14 @@
 		})
 		.state('report.type.risk', {
 			url: '/risk-screening',
-			params: { type: null, form: null },
+			templateUrl: function($stateParams) {
+				return 'template/report-risk/'+$stateParams.type;
+			},
+			params: { type: null, form: null, aspectName: null, aspect: null },
 			views: {
-				'report.type.risk': {
-					templateUrl: function($stateParams) {
-						return 'template/report-risk/'+$stateParams.type;
-					},
+				'risk-main': {
 					controller: 'ReportRiskScreeningTabController',
-					controllerAs: 'reportRiskScreeningTab'
+					controllerAs: 'tab'
 				}
 			}
 		})
