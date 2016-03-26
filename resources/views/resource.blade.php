@@ -6,6 +6,7 @@
 
 <!-- Angular  -->
 <script src="{{ asset('/bower_components/angular/angular.js') }}"></script>
+<script src="{{ asset('/bower_components/angular-animate/angular-animate.js') }}"></script>
 
 <!-- Angular Route -->
 <script src="{{ asset('/bower_components/angular-route/angular-route.js') }}"></script>

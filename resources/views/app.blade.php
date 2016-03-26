@@ -24,7 +24,9 @@
 	
 	@include('navbar')
 	
-	<div class="body" ui-view>
+	<div ui-view
+		 class="body"
+		 style="overflow-x: hidden;">
 	</div>
 </body>
 </html>

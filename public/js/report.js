@@ -257,7 +257,27 @@
 	})
 
 	.controller('ReportRiskScreeningTabController', function($scope){
-		
+		$scope.participant = {
+			identifier: 22611,
+			firstname: 'อานนท์',
+			lastname: 'คีรีนะ',
+			class: '6',
+			room: '4',
+			number: '26',
+			talent: 'บาสเก็ตบอล',
+			disabilities: 'n/a',
+			risks: {
+				study: [],
+				health: [1,1,1,1],
+				aggressiveness: [1,1,1],
+				economy: [1,1,1,1,1,1,1],
+				security: [1],
+				drugs: [],
+				sexuality: [1,1],
+				games: [],
+				electronics: [1,1,1,1],
+			}
+		}
 	})
 
 })();

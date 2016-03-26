@@ -1,7 +1,7 @@
 (function(){
 	
 	var module = angular.module('ammart', [
-		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router',
+		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router', 'ngAnimate',
 		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr'
 	])
 
@@ -188,6 +188,38 @@
 			.error(function(res, status, headers, config){
 				sys.error(res);
 			});
+		}
+	})
+
+	.directive('selectOption', function($http){
+		return {
+			restrict: 'A',
+			controllerAs: 'select',
+			controller: function($scope, $element, $attrs){
+				var self = this;
+
+				this.expanded = false;
+				this.toggleExpand = function() {
+					this.expanded = !this.expanded;
+					if (this.expanded) {
+						setTimeout(function() {
+							angular.element('body').click(function(){
+								$scope.$apply(function(){
+									self.expanded = false;
+									angular.element('body').off();
+								});
+							})
+						}, 10);
+					} else {
+						angular.element('body').off();
+					}
+				}
+
+				this.select = function(form) {
+					$scope.form = form;
+					$scope.stateChange($scope.type);
+				}
+			}
 		}
 	})
 

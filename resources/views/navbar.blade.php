@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default col-xs-2">
+<nav class="navbar navbar-default col-xs-3 col-lg-2">
 	<div>
 		<div class="navbar-header col-xs-12" style="padding-bottom: 25px">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">

@@ -28,12 +28,21 @@ div.body {
 	font-weight: 500;
 }
 
-.indent-left { padding-left: 4em !important; }
+.border-top-bottom { border: 1px solid black; }
+.border-lightgray { border-color: #eee; }
+.indent-left-1 { padding-left: 1em !important; }
+.indent-left-2 { padding-left: 2em !important; }
+.indent-left-3 { padding-left: 3em !important; }
+.indent-left-4 { padding-left: 4em !important; }
 .space-left { margin-left: 1em !important; }
 
 .small-pad { padding: 6px; }
 .std-pad { padding: 8px; }
 .std-margin { margin: 8px; }
+.std-margin-top { margin-top: 8px !important; }
+.std-margin-left { margin-left: 8px !important; }
+.std-margin-right { margin-right: 8px !important; }
+.std-margin-bottom { margin-bottom: 8px !important; }
 .min-w-100 { width: 100px; }
 table, div.table {
 	width: 100%;
@@ -212,3 +221,122 @@ button.submit {
 .indent-2 { padding-left: 4em; }
 .indent-3 { padding-left: 6em; }
 .indent-4 { padding-left: 8em; }
+
+.no-margin { margin: 0px; }
+
+
+.container.report.do {
+	padding: 0px;
+}
+.report.header {
+	padding: 10px;
+	background: #fbfbfb;
+}
+
+.button-bar.bar-bottom {
+	bottom: 0;
+}
+.button-bar button {
+	box-shadow: none;
+	border-radius: 0px;
+	border-top: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	color: #777;
+	background: #fbfbfb;
+}
+.button-bar button:last-child {
+	border-right: none;
+}
+.button-bar button.selected {
+	border-bottom: none;
+	background: white;
+	color: #555;
+	font-size: 1.05em;
+}
+.button-bar button:hover {
+	color: #555;
+	/*font-size: 1.05em;	*/
+}
+.button-bar.bar-bottom button.selected {
+	border-bottom: none;
+}
+.select-box {
+	z-index: 99999;
+	position: absolute;
+	background: white;
+	border-radius: 4px;
+	padding: 10px;
+	left: 50%; 
+	width: 300px; margin-left: -150px;
+	box-shadow: 0px 4px 8px rgba(0,0,0,0.15);
+}
+.select-box .item {
+	cursor: pointer;
+}
+.select-box .item:hover,
+.select-box .item.selected {
+	color: #29d;
+}
+.select-box-triangle {
+	
+}
+.anim-fade.ng-enter, .anim-fade.ng-leave {
+  transition:0.15s linear all;
+}
+.anim-fade.ng-enter {
+  opacity: 0;
+}
+.anim-fade.ng-leave,
+.anim-fade.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+.anim-fade.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -khtml-user-select: none;    /* Konqueror */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently
+                                  not supported by any browser */
+}
+
+/* Risk Screening Report */
+table.risk td {
+	/*border: 1px solid #eee;*/
+	width: 20%;
+	color: black;
+}
+table.risk td h1.normal {
+	background: #0f0;
+	width: 100px; height: 100px;
+	color: #000;
+	line-height: 100px;
+	border-radius: 2%;
+	margin: auto;
+	margin-top: 0.1em;
+
+}
+table.risk td h1.problem {
+	background: #ff0;
+	width: 100px; height: 100px;
+	color: #000;
+	line-height: 100px;
+	border-radius: 2%;
+	margin: auto;
+	margin-top: 0.1em;
+
+}
+table.risk td h1.risk {
+	background: red;
+	width: 100px; height: 100px;
+	color: #000;
+	line-height: 100px;
+	border-radius: 2%;
+	margin: auto;
+	margin-top: 0.1em;
+
+}
