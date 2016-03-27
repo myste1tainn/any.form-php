@@ -35,6 +35,7 @@
 
 <!-- Report Module -->
 <script src="{{ asset('/js/report.js') }}"></script>
+<script src="{{ asset('/js/report.risk.js') }}"></script>
 <script src="{{ asset('/js/room.js') }}"></script>
 <script src="{{ asset('/js/class.js') }}"></script>
 <script src="{{ asset('/js/school.js') }}"></script>

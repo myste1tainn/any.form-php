@@ -39,6 +39,7 @@ Route::get('/report/type/{name}', 'ReportController@index');
 Route::get('/report/type/{name}/form/{id}', 'ReportController@index');
 Route::get('/report/type/{name}/risk-screening', 'ReportController@index');
 Route::get('/report/type/{name}/risk-screening/{aspect}', 'ReportController@index');
+Route::get('/report/type/{name}/risk-screening/year/{year}', 'ReportController@index');
 Route::get('/report-results', 'ReportController@result');
 Route::get('/report-results/{id}/person', 'ReportController@resultByPerson');
 Route::get('/report-results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');

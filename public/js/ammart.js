@@ -82,26 +82,18 @@
 			templateUrl: 'report',
 			params: { type: null },
 			views: {
-				'report.type': {
-					templateUrl: function($stateParams) {
-						var components = window.location.pathname.split('/');
-						var count = components.length;
-						var lastpart =  components[count - 1];
-
-						if (lastpart == 'risk-screening') {
-							return 'template/report-risk/'+$stateParams.type;
-						} else {
-							return 'template/report/'+$stateParams.type;
-						}
-					}
-				}
+				// Placed here to make sub-ui-view run (report.type.form)
+				'report.type': {}
 			}
 		})
 		.state('report.type.form', {
 			url: '/form/:formID',
-			params: { type: null, form: null },
+			params: { type: null, form: null, formID: null },
 			views: {
 				'report.type.form': {
+					templateUrl: function($stateParams) {
+						return 'template/report/'+$stateParams.type;
+					},
 					controller: 'ReportTabController',
 					controllerAs: 'reportTab'
 				}
@@ -109,13 +101,44 @@
 		})
 		.state('report.type.risk', {
 			url: '/risk-screening',
-			templateUrl: function($stateParams) {
-				return 'template/report-risk/'+$stateParams.type;
+			params: { 
+				// For report pulling
+				type: null, form: null, formID: null,
+				// For person detail
+				aspectName: null, aspect: null 
 			},
-			params: { type: null, form: null, aspectName: null, aspect: null },
 			views: {
-				'risk-main': {
-					controller: 'ReportRiskScreeningTabController',
+				'report.type.form': {
+					templateUrl: function($stateParams) {
+						console.log($stateParams);
+						return 'template/report-risk/'+$stateParams.type;
+					},
+					controller: 'ReportRiskTabController',
+					controllerAs: 'report'
+				},
+			}
+		})
+		.state('report.type.risk.show', {
+			url: '/year/:year',
+			views: {
+				'report.type.risk.show': {
+					templateUrl: function($stateParams) {
+						return 'template/report-risk/'+$stateParams.type+'-body';
+					},
+					controller: 'ReportRiskTabController',
+					controllerAs: 'report'
+				},
+			}
+		})
+		.state('report.type.risk.detail', {
+			url: '/view/participant/:pID',
+			params: { participant: null, pID: null },
+			views: {
+				'report.type.risk.detail': {
+					templateUrl: function($stateParams) {
+						return 'template/report-risk/'+$stateParams.type+'-detail';
+					},
+					controller: 'ReportRiskPersonDetailController',
 					controllerAs: 'tab'
 				}
 			}

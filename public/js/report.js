@@ -1,7 +1,7 @@
 (function(){
 	
 	var module = angular.module('report', [
-		'room', 'class', 'school'
+		'room', 'class', 'school', 'report.risk'
 	])
 
 	.service('$report', function($http, sys){
@@ -129,8 +129,8 @@
 			createDisplayedResult();
 		})
 
-		$scope.$on('$stateChangeStart', function(state, controller, params) {
-			controller.params = params;
+		$scope.$on('$stateChangeStart', function(e,t,tp,f,fp){
+			console.log('###tp',tp,'###fp',fp);
 		})
 
 		$scope.stateChange = function(state) {
@@ -253,140 +253,6 @@
 		}
 		$scope.roomChange = function() {
 			$scope.getData();
-		}
-	})
-
-	.controller('ReportRiskScreeningTabController', function($scope, $state){
-		this.selectedAspect = $state.params.aspect || null;
-		$scope.participant = {
-			identifier: 22611,
-			firstname: 'อานนท์',
-			lastname: 'คีรีนะ',
-			class: '6',
-			room: '4',
-			number: '26',
-			talent: 'บาสเก็ตบอล',
-			disabilities: 'n/a',
-			risks: {
-				study: {
-					high: [],
-					veryHigh: []
-				},
-				health: {
-					high: [],
-					veryHigh: [{
-						name: 'very high item 1 health'
-					}, {
-						name: 'very high item 2 health'
-					}, {
-						name: 'very high item 3 health'
-					}]
-				},
-				aggressiveness: {
-					high: [{
-						name: 'high item 1 aggressiveness'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 aggressiveness'
-					}, {
-						name: 'very high item 2 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}]
-				},
-				economy: {
-					high: [],
-					veryHigh: []
-				},
-				security: {
-					high: [{
-						name: 'high item 1 security'
-					}, {
-						name: 'high item 2 security'
-					}, {
-						name: 'very high item 1 security'
-					}, {
-						name: 'very high item 2 security'
-					}, {
-						name: 'very high item 3 security'
-					}],
-					veryHigh: []
-				},
-				drugs: {
-					high: [{
-						name: 'high item 1 drugs'
-					}, {
-						name: 'high item 2 drugs'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 drugs'
-					}, {
-						name: 'very high item 2 drugs'
-					}, {
-						name: 'very high item 3 drugs'
-					}]
-				},
-				sexuality: {
-					high: [{
-						name: 'high item 1 sexuality'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 sexuality'
-					}]
-				},
-				games: {
-					high: [{
-						name: 'high item 1 games'
-					}, {
-						name: 'high item 2 games'
-					}],
-					veryHigh: []
-				},
-				electronics: {
-					high: [],
-					veryHigh: [{
-						name: 'very high item 1 electronics'
-					}, {
-						name: 'very high item 2 electronics'
-					}, {
-						name: 'very high item 3 electronics'
-					}]
-				},
-			}
-		}
-
-		this.selectAspect = function(aspect) {
-			this.selectedAspect = aspect;
-
-			var params = { aspectName: null, aspect: aspect };
-			switch (aspect) {
-				case $scope.participant.risks.study: params.aspectName = 'study'; break;
-				case $scope.participant.risks.health: params.aspectName = 'health'; break;
-				case $scope.participant.risks.aggressiveness: params.aspectName = 'aggressiveness'; break;
-				case $scope.participant.risks.economy: params.aspectName = 'economy'; break;
-				case $scope.participant.risks.security: params.aspectName = 'security'; break;
-				case $scope.participant.risks.drugs: params.aspectName = 'drugs'; break;
-				case $scope.participant.risks.sexuality: params.aspectName = 'sexuality'; break;
-				case $scope.participant.risks.games: params.aspectName = 'games'; break;
-				case $scope.participant.risks.electronics: params.aspectName = 'electronics'; break;
-				default: break;
-			}
-		}
-
-		this.isSelected = function(aspect) {
-			return this.selectedAspect == aspect;
 		}
 	})
 

@@ -7,7 +7,7 @@
 		<div class="col-xs-12 text-center no-margin std-pad std-margin-bottom noselect" 
 			 select-option>
 			<span style='cursor: pointer' ng-click="select.toggleExpand()">
-				<span>[[form.name || 'เลือกชินดรายงาน']]</span>
+				<span>[[form.name || 'เลือกชนิดรายงาน']]</span>
 				<span class="fa fa-caret-down" style="font-size: 0.7em"></span>
 			</span>
 			<div ng-if="select.expanded"
@@ -50,8 +50,9 @@
 
 	</div>
 
-	<div class="col-xs-12"
-		 ui-view="report.type">
+	<div class="row" ui-view="report.type">
+		<div class="col-xs-12 no-pad" ui-view="report.type.form">
+		</div>
 	</div>
 	<!-- <div ng-switch="type">
 		<room-report ng-switch-when="room"></room-report>
