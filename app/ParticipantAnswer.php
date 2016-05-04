@@ -11,6 +11,14 @@ class ParticipantAnswer extends Model {
 		return $this->hasMany('App\AnswerAdditionalInput', 'answerID');
 	}
 
+	public function question() {
+		return $this->belongsTo('App\Question', 'questionID');
+	}
+
+	public function choice() {
+		return $this->belongsTo('App\Choice', 'choiceID');
+	}
+
 	public static function createWith($questionaire, $participant, $ichoices)
 	{
 		$pas = [];

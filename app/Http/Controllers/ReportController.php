@@ -28,7 +28,11 @@ class ReportController extends Controller {
 	}
 
 	public function template($name) {
-		return view('report/template/'.$name);
+		if ($name == 'main') {
+			return view('report/main');
+		} else {
+			return view('report/template/'.$name);
+		}
 	}
 
 	public function riskTemplate($name) {

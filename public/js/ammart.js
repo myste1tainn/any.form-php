@@ -21,76 +21,48 @@
 			url: '/home',
 			templateUrl: ''
 		})
-		.state('auth/login', {
+		.state('auth.login', {
 			url: '/auth/login',
 			templateUrl: 'auth/login'
 		})
-		.state('auth/logout', {
+		.state('auth.logout', {
 			url: '/auth/logout',
 			redirectTo: function(){
 				window.location.href = 'auth/logout'
 			}
 		})
-		.state('auth/register', {
+		.state('auth.register', {
 			url: '/auth/register',
 			templateUrl: 'auth/register'
 		})
 		.state('forms', {
 			url: '/forms',
-			templateUrl: 'forms',
+			templateUrl: 'template/forms',
 			controller: 'QuestionaireListController',
 			controllerAs: 'questionaireList'
 		})
-		.state('form/create', {
-			url: '/form/create',
-			templateUrl: 'form/create',
-		})
-		.state('form/edit/:questionaireID', {
-			url: '/form/edit/:questionaireID',
-			templateUrl: 'form/edit/:questionaireID',
-		})
-		.state('teacher/risk-screening', {
+		.state('risk-screening', {
 			url: '/teacher/risk-screening',
-			templateUrl: 'teacher/risk-screening',
-		})
-		.state('teacher/risk-screening/year/:year/student/:studentID', {
-			url: '/teacher/risk-screening/year/:year/student/:studentID',
-			templateUrl: 'teacher/risk-screening/year/:year/student/:studentID',
-		})
-		.state('questionaire/:questionaireID', {
-			url: '/questionaire/:questionaireID',
-			templateUrl: 'questionaire/:questionaireID',
+			templateUrl: 'template/risk/do',
 			controller: 'QuestionaireDoController',
-			controllerAs: 'questionaireDo'
+			controllerAs: 'form',
 		})
 		.state('report', {
 			url: '/report',
-			controller: 'ReportController',
-			controllerAS: 'report',
-			templateUrl: 'report',
+			controller: 'ReportNavigationController',
+			controllerAs: 'nav',
+			templateUrl: 'template/report/main',
 			deepStateRedirect: { 
 				default: { 
-					state: 'report.type',
-					params: { type: 'person' },
+					state: 'report.overview',
+					params: { type: 'person', form: null, formID: null },
 				},
 			},
 		})
-		.state('report.type', {
+		.state('report.overview', {
 			url: '/type/:type',
-			controller: 'ReportController',
-			controllerAS: 'report',
-			templateUrl: 'report',
-			params: { type: null },
 			views: {
-				// Placed here to make sub-ui-view run (report.type.form)
-				'report.type': {}
-			}
-		})
-		.state('report.type.form', {
-			url: '/form/:formID',
-			params: { type: null, form: null, formID: null },
-			views: {
-				'report.type.form': {
+				'report': {
 					templateUrl: function($stateParams) {
 						return 'template/report/'+$stateParams.type;
 					},
@@ -99,43 +71,37 @@
 				}
 			}
 		})
-		.state('report.type.risk', {
-			url: '/risk-screening',
-			params: { 
-				// For report pulling
-				type: null, form: null, formID: null,
-				// For person detail
-				aspectName: null, aspect: null 
-			},
+		.state('report.risk', {
+			url: '/:type/risk-screening',
 			views: {
-				'report.type.form': {
+				'report': {
 					templateUrl: function($stateParams) {
-						console.log($stateParams);
 						return 'template/report-risk/'+$stateParams.type;
 					},
-					controller: 'ReportRiskTabController',
-					controllerAs: 'report'
-				},
+					controller: 'ReportPersonRiskToolbarController',
+					controllerAs: 'toolbar'
+				}
 			}
 		})
-		.state('report.type.risk.show', {
-			url: '/year/:year',
+		.state('report.risk.list', {
+			url: '/list/:year',
 			views: {
-				'report.type.risk.show': {
+				'report.risk.body': {
 					templateUrl: function($stateParams) {
 						return 'template/report-risk/'+$stateParams.type+'-body';
 					},
-					controller: 'ReportRiskTabController',
-					controllerAs: 'report'
-				},
+					controller: 'ReportPersonRiskListController',
+					controllerAs: 'list'
+				}
 			}
 		})
-		.state('report.type.risk.detail', {
-			url: '/view/participant/:pID',
-			params: { participant: null, pID: null },
+		.state('report.risk.detail', {
+			url: '/participant/:participantID/year/:year',
+			params: { participant: null, participantID: null },
 			views: {
-				'report.type.risk.detail': {
+				'report.risk': {
 					templateUrl: function($stateParams) {
+						console
 						return 'template/report-risk/'+$stateParams.type+'-detail';
 					},
 					controller: 'ReportRiskPersonDetailController',
@@ -145,12 +111,39 @@
 		})
 	})
 
-	.service('sys', function(ngDialog){
-		this.error = function(msg) {
-			ngDialog.open({
-				plain: true,
-				template: msg
-			})
+	.service('sys', function(ngDialog, $rootScope){
+		this.dialog = {
+			info: function(title, message) {
+				ngDialog.open({
+					template: message,
+					plain: true
+				})
+			},
+			error: function(object){
+				ngDialog.open({
+					template: (object.message === undefined) ? object : object.message,
+					plain: true
+				})
+			},
+			confirm: function(title, message, callback, autoDismiss) {
+				if (autoDismiss === undefined) autoDismiss = true;
+				ngDialog.open({
+					template: 'template/dialog/confirm',
+					controllerAs: 'dialog',
+					controller: function($scope){
+						this.title = title;
+						this.message = message;
+						this.confirm = function() {
+							callback(this, true);
+							if (autoDismiss) $scope.closeThisDialog();
+						}
+						this.decline = function() {
+							callback(this, false);
+							if (autoDismiss) $scope.closeThisDialog();
+						}
+					}
+				})
+			}
 		}
 	})
 
@@ -211,38 +204,6 @@
 			.error(function(res, status, headers, config){
 				sys.error(res);
 			});
-		}
-	})
-
-	.directive('selectOption', function($http){
-		return {
-			restrict: 'A',
-			controllerAs: 'select',
-			controller: function($scope, $element, $attrs){
-				var self = this;
-
-				this.expanded = false;
-				this.toggleExpand = function() {
-					this.expanded = !this.expanded;
-					if (this.expanded) {
-						setTimeout(function() {
-							angular.element('body').click(function(){
-								$scope.$apply(function(){
-									self.expanded = false;
-									angular.element('body').off();
-								});
-							})
-						}, 10);
-					} else {
-						angular.element('body').off();
-					}
-				}
-
-				this.select = function(form) {
-					$scope.form = form;
-					$scope.stateChange($scope.type);
-				}
-			}
 		}
 	})
 

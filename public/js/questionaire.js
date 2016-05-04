@@ -373,7 +373,6 @@
 		$scope.questionaire = {};
 		$questionaire.load(id, function(questionaire){
 			$scope.questionaire = questionaire;
-			console.log(questionaire);
 		})
 
 		$scope.toggleChoose = function(question, choice) {

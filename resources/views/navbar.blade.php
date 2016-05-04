@@ -38,7 +38,7 @@
 				@else
 				<li class="section">อาจารย์</li>
 				<li id="risk-screening">
-					<a href="teacher/risk-screening">
+					<a ui-sref="risk-screening">
 						<table>
 						<tr>
 							<td><span class="fa fa-pencil-square-o"></span></td>

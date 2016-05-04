@@ -85,100 +85,99 @@
 		}
 	})
 
-	.controller('ReportController', function($scope, $questionaire, $report, 
-	                                         $compile, $state, $state, 
-	                                         $class, RISK_ID) {
-		var _ = this;
+	.controller('ReportNavigationController', function($scope, $questionaire, $report, $state, $class, RISK_ID)
+	{
+		var self = this;
+		var _currentID = $state.params.formID || null;
+		this.forms 	= $scope.forms = [];
+		this.type 	= $state.params.type || 'person';
+		this.form 	= $state.params.form || null;
+		this.rooms 	= [];
+		this.classes 	= [];
+		this.room 	= null;
+		this.class 	= null;
 
-		$scope.forms 	= [];
-		$scope.type 	= $state.current.type || 'person';
-		$scope.form 	= $state.current.form || null;
-		$scope.rooms 	= [];
-		$scope.classes 	= [];
-		$scope.room 	= null;
-		$scope.class 	= null;
+		/** Constructor
+		 * Initial state controlling
+		 */
+		var components = window.location.pathname.split('/');
+		var count = components.length;
 
-		if ($state.current.name == 'report.type' &&
-		    $state.url === undefined) {
-			var components = window.location.pathname.split('/');
-			var count = components.length;
-			$scope.type = components[count - 1];
-		} else if ($state.current.name == 'report.type.form' &&
-		           $state.url === undefined) {
-			var components = window.location.pathname.split('/');
-			var count = components.length;
-			$scope.form = { id: components[count - 1] };
-			$scope.type = components[count - 3];
-		} else if ($state.current.name == 'report.type.risk' &&
-		           $state.url === undefined) {
-			var components = window.location.pathname.split('/');
-			var count = components.length;
-			$scope.form = { id: RISK_ID };
-			$scope.type = components[count - 2];
+		if ($state.current.name == 'report.overview' &&
+			$state.url === undefined) {
+			this.form = { id: components[count - 1] };
 		}
 
 		var createDisplayedResult = function() {
-			for (var i = $scope.forms.length - 1; i >= 0; i--) {
-				var f = $scope.forms[i];
+			for (var i = self.forms.length - 1; i >= 0; i--) {
+				var f = self.forms[i];
 				f.displayedResults = [].concat(f.results);
 			};
 		}
 
 		$questionaire.all(function(forms) {
-			$scope.forms = forms;
+			self.forms = forms;
 			createDisplayedResult();
-		})
 
-		$scope.$on('$stateChangeStart', function(e,t,tp,f,fp){
-			console.log('###tp',tp,'###fp',fp);
-		})
-
-		$scope.stateChange = function(state) {
-			$scope.type = state;
-
-			var changeStateBlock = function() {
-				if ($scope.form) {
-					if ($scope.form.id == RISK_ID) {
-						// Move to special state if the form id is
-						// Risk screening form id
-						$state.go('report.type.risk', 
-					          { 
-					          	type: state, 
-					          	form: $scope.form, 
-					          	formID: $scope.form.id 
-					          });
-					} else {
-						$state.go('report.type.form', 
-					          { 
-					          	type: state, 
-					          	form: $scope.form, 
-					          	formID: $scope.form.id 
-					          });
+			if (_currentID) {
+				for (var i = self.forms.length - 1; i >= 0; i--) {
+					var f = self.forms[i]
+					if (f.id == _currentID) {
+						self.form = f;
+						break;
 					}
-				} else {
-					$state.go('report.type', { type: state, form: $scope.form });
+				}
+			} else {
+				if ($state.current.name.indexOf('risk') > 1) {
+					for (var i = self.forms.length - 1; i >= 0; i--) {
+						var f = self.forms[i]
+						if (f.id == RISK_ID) {
+							self.form = f;
+							break;
+						}
+					}	
 				}
 			}
+		})
 
-			if ($scope.type == 'room' ||
-			    $scope.type == 'class') {
+		/**
+		 * State channging and controlling
+		 */
+		this.selectType = function(type) {
+			this.type = type;
 
-				if ($scope.classes.length > 0) {
+			var changeStateBlock = function() {
+				var stateName = 'report.risk';
+				if (self.form) stateName = (self.form.id == RISK_ID) ? 'report.risk' : 'report.overview';
+
+				var form = self.form || null;
+				var formID = (form == null) ? null : form.id;
+
+				$state.go(stateName, { type: type, form: form, formID: formID });
+			}
+
+
+			// If this is of type room or class, loads all possible rooms & classes.
+			if (this.type == 'room' ||
+			    this.type == 'class') {
+
+				if (this.classes.length > 0) {
 					changeStateBlock();
 				} else {
 					$class.all(function(res) {
 						for (var i = res.classes.length - 1; i >= 0; i--) {
 							var c = res.classes[i];
-							$scope.classes.push({text:c.class, value:c.class});
+							self.classes.push({text:c.class, value:c.class});
 						};
 
 						for (var i = res.rooms.length - 1; i >= 0; i--) {
 							var r = res.rooms[i];
-							$scope.rooms.push({text:r.room, value:r.room});
+							self.rooms.push({text:r.room, value:r.room});
 						};
 
-						$scope.class = $scope.classes[0];
-						$scope.room = $scope.rooms[0];
+						// Default select the first row found
+						self.class = self.classes[0];
+						self.room = self.rooms[0];
 
 						changeStateBlock();
 					})
@@ -189,25 +188,50 @@
 		}
 
 		var changeURL = function() {
-			if ($scope.activeForm) {
-				$state.go('report.type.form', { 
-					type: $scope.activeType, 
-					form: $scope.activeForm, 
-					formId: $scope.activeForm.id 
+			if (self.activeForm) {
+				$state.go('report.overview', { 
+					type: self.activeType, 
+					form: self.activeForm, 
+					formId: self.activeForm.id 
 				}).then(function() {
-					$scope.report.currentTabController.getData();
+					self.report.currentTabController.getData();
 				})
 			} else {
-				$state.go('report.type', { type: $scope.activeType });
+				$state.go('report.overview', { type: self.activeType });
 			}
+		}
+
+		/**
+		 * UI Controlling part
+		 */
+		this.expanded = false;
+		this.toggleExpand = function() {
+			this.expanded = !this.expanded;
+			if (this.expanded) {
+				setTimeout(function() {
+					angular.element('body').click(function(){
+						$scope.$apply(function(){
+							self.expanded = false;
+							angular.element('body').off();
+						});
+					})
+				}, 10);
+			} else {
+				angular.element('body').off();
+			}
+		}
+
+		this.select = function(form) {
+			this.form = form;
+			this.selectType(this.type);
 		}
 	})
 
 	.controller('ReportTabController', function($scope, $report, $state) {
 		$scope.results 			= [];
 		$scope.displayedResults = [];
-		$scope.type 			= $state.current.params.type;
-		$scope.form 			= $state.current.params.form;
+		$scope.type 			= $state.params.type;
+		$scope.form 			= $state.params.form;
 
 		$scope.getData = function() {
 			if ($scope.form !== undefined) {

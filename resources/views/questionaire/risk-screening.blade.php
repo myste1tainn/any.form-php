@@ -1,5 +1,3 @@
-@extends((Request::ajax()) ? 'nilview' : 'app')
-@section('content')
 <div class="container form-list" risk-screening>
 	<h3>แบบคัดกรองนักเรียนรายบุคคล</h3>
 	<hr />
@@ -137,4 +135,3 @@
 	</form>
 
 </div>
-@endsection

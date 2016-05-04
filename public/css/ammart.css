@@ -16,26 +16,6 @@ div.body {
 	font-weight: 500;
 }
 
-.border-top-bottom { 
-	border-top: 1px solid black; 
-	border-bottom: 1px solid black;
-}
-.border-lightgray { border-color: #eee; }
-.indent-left-1 { padding-left: 1em !important; }
-.indent-left-2 { padding-left: 2em !important; }
-.indent-left-3 { padding-left: 3em !important; }
-.indent-left-4 { padding-left: 4em !important; }
-.space-left { margin-left: 1em !important; }
-
-.small-pad { padding: 6px; }
-.std-pad { padding: 15px; }
-.std-margin { margin: 8px; }
-.auto-margin { margin: auto; }
-.std-margin-top { margin-top: 8px !important; }
-.std-margin-left { margin-left: 8px !important; }
-.std-margin-right { margin-right: 8px !important; }
-.std-margin-bottom { margin-bottom: 8px !important; }
-.min-w-100 { width: 100px; }
 table, div.table {
 	width: 100%;
 }
@@ -125,35 +105,6 @@ th[st-sort]:after {
 	content: " \f0dc";
 }
 
-.space-bottom {margin-bottom: 10px;}
-.space-right {margin-right: 10px;}
-.space-left {margin-left: 10px;}
-.space-top {margin-top: 10px;}
-.space {margin: 10px;}
-
-.h-pad {padding: 5px 0px;}
-.v-pad {padding: 0px 5px;}
-.pad {padding: 5px;}
-
-.no-pad {padding: 0px;}
-.no-pad-left {padding-left: 0px;}
-.no-pad-right {padding-right: 0px;}
-.no-pad-top {padding-top: 0px;}
-.no-pad-bottom {padding-bottom: 0px;}
-.std-pad-top { padding-top: 15px !important; }
-.std-pad-left { padding-left: 15px !important; }
-.std-pad-right { padding-right: 15px !important; }
-.std-pad-bottom { padding-bottom: 15px !important; }
-
-.text-light {font-weight: 500;}
-.text-small {font-size: 0.95em;}
-.text-big {font-size: 1.1em;}
-.text-bigger {font-size: 1.2em;}
-.text-xl {font-size: 1.3em;}
-.text-xxl {font-size: 1.4em;}
-.text-xxxl {font-size: 1.5em;}
-.text-xxxxl {font-size: 2em;}
-
 input {
 	border: none;
 	outline: none;
@@ -209,18 +160,6 @@ button.submit {
 	background: #0B2171;
 	color: white;
 }
-
-.content-center { text-align: center; }
-.content-left { text-align: left; }
-.content-right { text-align: right; }
-
-.indent-1 { padding-left: 2em; }
-.indent-2 { padding-left: 4em; }
-.indent-3 { padding-left: 6em; }
-.indent-4 { padding-left: 8em; }
-
-.no-margin { margin: 0px; }
-
 
 .container.report.do {
 	padding: 0px;
@@ -290,6 +229,19 @@ button.submit {
 .anim-fade.ng-leave.ng-leave-active {
   opacity: 0;
 }
+.anim-grow.ng-enter, .anim-grow.ng-leave {
+  transition:0.25s ease all;
+}
+.anim-grow.ng-enter {
+  transform: scale(0);
+}
+.anim-grow.ng-leave,
+.anim-grow.ng-enter.ng-enter-active {
+  transform: scale(1);
+}
+.anim-grow.ng-leave.ng-leave-active {
+  transform: scale(0);
+}
 [ui-view].ng-enter {
   transition:0.2s linear all;
 }
@@ -316,7 +268,7 @@ table.risk td {
 	width: 20%;
 	color: black;
 	padding: 0px;
-	border: 1px solid #ddd;
+	border: 1px solid #eee;
 	cursor: pointer;
 }
 table.risk tr td:first-child {
@@ -340,7 +292,7 @@ table.risk td h1.selected {
 	background: white;
 }
 table.risk td h1::before {
-	border-bottom: 1px solid #ddd;
+	border-bottom: 1px solid #eee;
 	color: #555;
 	/*background: #fdfdfd;*/
 	content: attr(data-type);

@@ -28,9 +28,19 @@ class HomeController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index()
+	public function home()
 	{
 		return view('home');
+	}
+
+	/**
+	 * Show the application dashboard to the user.
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		return view('app');
 	}
 
 }

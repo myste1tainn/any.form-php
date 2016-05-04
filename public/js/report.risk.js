@@ -2,7 +2,48 @@
 	
 	var module = angular.module('report.risk', [])
 
-	.controller('ReportRiskTabController', function($scope, $state){
+	.service('$participant', function($http, sys, RISK_ID){
+		var successHandlerObject = {
+			callback: null,
+			handler: function(res, status, headers, config, callback){
+				if (res.success) {
+					if (res.data !== undefined) {
+						successHandlerObject.callback(res.data);
+					} else {
+						successHandlerObject.callback();
+					}
+					successHandlerObject.callback = null;
+				} else {
+					sys.dialog.error(res)
+				}
+			}
+		}
+		var errorHandler = function(res, status, headers, config){
+			sys.dialog.error(res)
+		};
+
+		this.get = function(identifier, callback){
+			$http.get('api/v1/participant/'+identifier)
+			.success(function(res, status, headers, config){
+				callback(res);
+			})
+			.error(errorHandler);
+		}
+
+		this.result = function(id, year, callback){
+			$http.get('api/v1/participant/'+id+'/form/'+RISK_ID+'/year/'+year)
+			.success(function(res, status, headers, config){
+				callback(res);
+			})
+			.error(errorHandler);
+		}
+	})
+
+	.controller('ReportPersonRiskToolbarController', function($scope, $state){
+		this.year = $state.params.year;
+	})
+
+	.controller('ReportPersonRiskListController', function($scope, $state){
 		this.year = $state.params.year;
 		this.results = [];
 		this.displays = [
@@ -136,9 +177,10 @@
 		}
 
 		this.select = function(participant) {
-			$state.go('report.type.risk.detail', {
-				pID: participant.identifier,
-				participant: participant
+			$state.go('^.detail', {
+				participantID: participant.identifier,
+				participant: participant,
+				year: this.year
 			})
 		}
 	})
@@ -198,123 +240,48 @@
 
 
 
-	.controller('ReportRiskPersonDetailController', function($scope, $state){
-		this.selectedAspect = $state.params.aspect || null;
-		$scope.participant = {
-			identifier: 22611,
-			firstname: 'อานนท์',
-			lastname: 'คีรีนะ',
-			class: '6',
-			room: '4',
-			number: '26',
-			talent: 'บาสเก็ตบอล',
-			disabilities: 'n/a',
-			risks: {
-				study: {
-					high: [],
-					veryHigh: []
-				},
-				health: {
-					high: [],
-					veryHigh: [{
-						name: 'very high item 1 health'
-					}, {
-						name: 'very high item 2 health'
-					}, {
-						name: 'very high item 3 health'
-					}]
-				},
-				aggressiveness: {
-					high: [{
-						name: 'high item 1 aggressiveness'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 aggressiveness'
-					}, {
-						name: 'very high item 2 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}, {
-						name: 'very high item 3 aggressiveness'
-					}]
-				},
-				economy: {
-					high: [],
-					veryHigh: []
-				},
-				security: {
-					high: [{
-						name: 'high item 1 security'
-					}, {
-						name: 'high item 2 security'
-					}, {
-						name: 'very high item 1 security'
-					}, {
-						name: 'very high item 2 security'
-					}, {
-						name: 'very high item 3 security'
-					}],
-					veryHigh: []
-				},
-				drugs: {
-					high: [{
-						name: 'high item 1 drugs'
-					}, {
-						name: 'high item 2 drugs'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 drugs'
-					}, {
-						name: 'very high item 2 drugs'
-					}, {
-						name: 'very high item 3 drugs'
-					}]
-				},
-				sexuality: {
-					high: [{
-						name: 'high item 1 sexuality'
-					}],
-					veryHigh: [{
-						name: 'very high item 1 sexuality'
-					}]
-				},
-				games: {
-					high: [{
-						name: 'high item 1 games'
-					}, {
-						name: 'high item 2 games'
-					}],
-					veryHigh: []
-				},
-				electronics: {
-					high: [],
-					veryHigh: [{
-						name: 'very high item 1 electronics'
-					}, {
-						name: 'very high item 2 electronics'
-					}, {
-						name: 'very high item 3 electronics'
-					}]
-				},
-			}
-		}
+	.controller('ReportRiskPersonDetailController', function($scope, $state, $participant){
+		var self = this;
 
-		$scope.participant.identifier = $state.params.participant.identifier;
-		$scope.participant.firstname = $state.params.participant.firstname;
-		$scope.participant.lastname = $state.params.participant.lastname;
-		$scope.participant.class = $state.params.participant.class;
-		$scope.participant.room = $state.params.participant.room;
-		$scope.participant.number = $state.params.participant.number;
+		this.selectedAspect = $state.params.aspect || null;
+		this.year = $state.params.year || null;
+		$scope.participant = {};
+
+		if ($state.params.participant) {
+			$scope.participant.identifier = $state.params.participant.identifier;
+			$scope.participant.firstname = $state.params.participant.firstname;
+			$scope.participant.lastname = $state.params.participant.lastname;
+			$scope.participant.class = $state.params.participant.class;
+			$scope.participant.room = $state.params.participant.room;
+			$scope.participant.number = $state.params.participant.number;
+		} else {
+			$participant.get($state.params.participantID, function(res){
+				if (res.success) {
+					var participant = res.data;
+					$scope.participant.id 			= participant.id;
+					$scope.participant.identifier 	= participant.identifier;
+					$scope.participant.firstname 	= participant.firstname;
+					$scope.participant.lastname 	= participant.lastname;
+					$scope.participant.class 		= participant.class;
+					$scope.participant.room 		= participant.room;
+					$scope.participant.number 		= participant.number;
+
+					// Get the result of the participant
+					$participant.result(participant.id, self.year, function(res){
+						if (res.success) {
+							$scope.participant.risks = res.data.answers;
+							console.log($scope.participant);
+						} else {
+							$scope.errorMessage = res.message;
+							$scope.participant = null;		
+						}
+					})
+				} else {
+					$scope.errorMessage = res.message;
+					$scope.participant = null;
+				}
+			})
+		}
 
 		this.selectAspect = function(aspect) {
 			this.selectedAspect = aspect;

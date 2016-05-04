@@ -19,35 +19,41 @@ Route::controllers([
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
-Route::get('/forms', 'FormController@index');
+Route::get('/forms', 'HomeController@index');
 Route::get('/form/create', 'FormController@create');
 Route::get('/form/edit/{questionaireID}', 'FormController@edit');
 Route::get('/api/questionaire/{id}', 'FormController@load');
 Route::get('/api/questionaires', 'FormController@all');
-Route::get('/api/participant/{identifier}', 'ParticipantController@load');
 Route::get('/api/answers/{questionaireID}/{academicYear}/{participantID}', 'FormController@answers');
 Route::get('/questionaire/{id}', 'FormController@show');
 Route::post('/form/save', 'FormController@store');
 Route::post('/api/questionaire/submit', 'FormController@submit');
-Route::get('teacher/risk-screening', 'RiskScreeningController@form');
-Route::get('teacher/risk-screening/year/{year}/student/{studentID}', 'RiskScreeningController@form');
+Route::get('teacher/risk-screening', 'HomeController@index');
+Route::get('teacher/risk-screening/year/{year}/participant/{studentID}', 'HomeController@index');
+Route::get('teacher/risk-screening/year/{year}', 'HomeController@index');
 Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
 
 // Reports
-Route::get('/report', 'ReportController@index');
-Route::get('/report/type/{name}', 'ReportController@index');
-Route::get('/report/type/{name}/form/{id}', 'ReportController@index');
-Route::get('/report/type/{name}/risk-screening', 'ReportController@index');
-Route::get('/report/type/{name}/risk-screening/{aspect}', 'ReportController@index');
-Route::get('/report/type/{name}/risk-screening/year/{year}', 'ReportController@index');
+Route::get('/report', 'HomeController@index');
+Route::get('/report/type/{name}', 'HomeController@index');
+Route::get('/report/type/{name}/form/{id}', 'HomeController@index');
+Route::get('/report/{name}/risk-screening', 'HomeController@index');
+Route::get('/report/{name}/risk-screening/{aspect}', 'HomeController@index');
+Route::get('/report/{name}/risk-screening/list/{year}', 'HomeController@index');
+Route::get('/report/{name}/risk-screening/participant/{number}/year/{year}', 'HomeController@index');
 Route::get('/report-results', 'ReportController@result');
 Route::get('/report-results/{id}/person', 'ReportController@resultByPerson');
 Route::get('/report-results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');
 Route::get('/report-results/{id}/class/{class}', 'ReportController@resultByClass');
 Route::get('/report-results/{id}/school', 'ReportController@resultBySchool');
+
+Route::get('template/forms', 'FormController@index');
 Route::get('/template/report/{name}', 'ReportController@template');
+Route::get('/template/risk/do', 'RiskScreeningController@form');
 Route::get('/template/report-risk/{name}', 'ReportController@riskTemplate');
 
 Route::get('/class/all', 'ClassController@all');
 
-
+// APIs
+Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
+Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
