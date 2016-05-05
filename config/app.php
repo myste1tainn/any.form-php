@@ -2,6 +2,8 @@
 
 return [
 
+	'riskIDs' => explode(',', env('APP_CHOICE_RISK_IDS')),
+
 	/*
 	|--------------------------------------------------------------------------
 	| Application Debug Mode

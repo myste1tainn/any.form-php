@@ -128,7 +128,7 @@
 
 		<button type="submit" 
 				ng-click="submit()"
-				class="pull-right std-pad std-margin min-w-100 submit" 
+				class="pull-right std-pad std-margin submit" 
 				style="margin-bottom:100px">
 			บันทึกข้อมูล
 		</button>

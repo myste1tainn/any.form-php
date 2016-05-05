@@ -26,7 +26,7 @@
 				</li>
 				@if (Auth::guest())
 				<li id="login">
-					<a href="auth/login">
+					<a ui-sref="login">
 						<table>
 						<tr>
 							<td><span class="fa fa-lock"></span></td>

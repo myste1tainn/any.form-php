@@ -40,139 +40,26 @@
 	})
 
 	.controller('ReportPersonRiskToolbarController', function($scope, $state){
-		this.year = $state.params.year;
+		var currentYear = (new Date()).getFullYear() + 543;
+		this.year = $state.params.year || currentYear;
 	})
 
-	.controller('ReportPersonRiskListController', function($scope, $state){
+	.controller('ReportPersonRiskListController', function($scope, $state, $report, RISK_ID){
+		var self = this;
+
 		this.year = $state.params.year;
 		this.results = [];
-		this.displays = [
-			{
-				identifier: '00001', firstname: 'Myra', lastname: 'Caldwell',
-				class: 4, room: 12, number: 6,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00002', firstname: 'Corey', lastname: 'Graves',
-				class: 5, room: 7, number: 17,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00003', firstname: 'Morris', lastname: 'Houston',
-				class: 4, room: 12, number: 25,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00004', firstname: 'Kenneth', lastname: 'Frank',
-				class: 4, room: 4, number: 3,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00005', firstname: 'Lori', lastname: 'Ballard',
-				class: 5, room: 2, number: 24,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00006', firstname: 'Bernard', lastname: 'Osborne',
-				class: 5, room: 2, number: 3,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00007', firstname: 'Roman', lastname: 'Sutton',
-				class: 3, room: 7, number: 5,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00008', firstname: 'Alma', lastname: 'Gibbs',
-				class: 2, room: 3, number: 25,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00009', firstname: 'Mercedes', lastname: 'Lane',
-				class: 2, room: 8, number: 14,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00010', firstname: 'Chad', lastname: 'Beck',
-				class: 4, room: 4, number: 22,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00011', firstname: 'Jessie', lastname: 'Jones',
-				class: 3, room: 8, number: 21,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00012', firstname: 'Arnold', lastname: 'Moore',
-				class: 2, room: 11, number: 12,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00013', firstname: 'Aubrey', lastname: 'Jefferson',
-				class: 1, room: 9, number: 3,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00014', firstname: 'Rolando', lastname: 'Ramsey',
-				class: 3, room: 7, number: 36,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00015', firstname: 'Blanche', lastname: 'Thomas',
-				class: 3, room: 4, number: 4,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00016', firstname: 'Darnell', lastname: 'Hampton',
-				class: 3, room: 10, number: 22,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00017', firstname: 'Vickie', lastname: 'Francis',
-				class: 3, room: 12, number: 9,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00018', firstname: 'Juan', lastname: 'Reed',
-				class: 5, room: 11, number: 9,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00019', firstname: 'Sonja', lastname: 'Carlson',
-				class: 5, room: 4, number: 31,
-				talent: null, disabilities: []
-			},
-			{
-				identifier: '00020', firstname: 'Elizabeth', lastname: 'Clayton',
-				class: 2, room: 1, number: 8,
-				talent: null, disabilities: []
-			},
-		];
+		this.displays = [];
 
-		for (var i = this.displays.length - 1; i >= 0; i--) {
-			var p = this.displays[i];
-			p.countRisk = function(type) {
-				var count = 0;
-				if (type == 'normal') {
-					for (var j = this.risks.length - 1; j >= 0; j--) {
-						count += this.risks[j].normal.length
-					}
-				} else if (type == 'normal') {
-					for (var j = this.risks.length - 1; j >= 0; j--) {
-						count += this.risks[j].high.length
-					}
-				} else if (type == 'normal') {
-					for (var j = this.risks.length - 1; j >= 0; j--) {
-						count += this.risks[j].veryHigh.length
-					}
+		var prepareDisplaysData = function() {
+			for (var i = self.displays.length - 1; i >= 0; i--) {
+				var p = self.displays[i];
+				p.hasTalent = function() {
+					return self.talent != null
 				}
-				return count;
-			}
-			p.hasTalent = function() {
-				return this.talent != null
-			}
-			p.hasDisability = function() {
-				return this.disabilities.length > 0;
+				p.hasDisability = function() {
+					return self.disabilities.length > 0;
+				}
 			}
 		}
 
@@ -183,6 +70,12 @@
 				year: this.year
 			})
 		}
+
+		var payload = { id: RISK_ID, year: this.year };
+		$report.person(payload, function(participants){
+			self.results = self.displays = participants;
+			console.log(participants);
+		})
 	})
 
 
@@ -248,12 +141,7 @@
 		$scope.participant = {};
 
 		if ($state.params.participant) {
-			$scope.participant.identifier = $state.params.participant.identifier;
-			$scope.participant.firstname = $state.params.participant.firstname;
-			$scope.participant.lastname = $state.params.participant.lastname;
-			$scope.participant.class = $state.params.participant.class;
-			$scope.participant.room = $state.params.participant.room;
-			$scope.participant.number = $state.params.participant.number;
+			$scope.participant = $state.params.participant;
 		} else {
 			$participant.get($state.params.participantID, function(res){
 				if (res.success) {
@@ -269,8 +157,10 @@
 					// Get the result of the participant
 					$participant.result(participant.id, self.year, function(res){
 						if (res.success) {
-							$scope.participant.risks = res.data.answers;
-							console.log($scope.participant);
+							$scope.participant.risks = res.data.risks;
+							$scope.participant.talent = res.data.talent;
+							$scope.participant.disabilities = res.data.disabilities;
+							console.log(res.data);
 						} else {
 							$scope.errorMessage = res.message;
 							$scope.participant = null;		

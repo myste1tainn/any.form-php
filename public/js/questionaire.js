@@ -2,12 +2,6 @@
 	
 	var module = angular.module('questionaire', ['risk-screening'])
 
-	// ID of the risk screening questionaire
-	.constant('RISK_ID', 34)
-
-	// Default number that indicate "Use the current academic year"
-	.constant('ACADEMIC_YEAR', -999)
-
 	.service('$input', function() {
 		this.newInstance = function() {
 			return {
@@ -72,7 +66,7 @@
 						};
 						callback(res);
 					} else {
-						sys.error(res);
+						sys.dialog.error(res);
 					}
 				})
 				.error(function(res, status, headers, config){

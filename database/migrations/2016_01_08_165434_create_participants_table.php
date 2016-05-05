@@ -20,6 +20,7 @@ class CreateParticipantsTable extends Migration {
 			$table->string('lastname', 64);
 			$table->string('class', 3);
 			$table->string('room', 3);
+			$table->integer('number');
 			$table->timestamps();
 		});
 	}

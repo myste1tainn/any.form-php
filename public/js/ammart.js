@@ -21,7 +21,7 @@
 			url: '/home',
 			templateUrl: ''
 		})
-		.state('auth.login', {
+		.state('login', {
 			url: '/auth/login',
 			templateUrl: 'auth/login'
 		})
@@ -155,11 +155,11 @@
 					callback(res.data);
 				} else {
 					var err = (res.message) ? res.message : res;
-					sys.error(err);
+					sys.dialog.error(err);
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res);
+				sys.dialog.error(res);
 			});
 		}
 		this.getMessage = function(url, callback) {
@@ -169,11 +169,11 @@
 					callback(res.message);
 				} else {
 					var err = (res.message) ? res.message : res;
-					sys.error(err);
+					sys.dialog.error(err);
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res);
+				sys.dialog.error(res);
 			});
 		}
 
@@ -184,11 +184,11 @@
 					callback(res.data);
 				} else {
 					var err = (res.message) ? res.message : res;
-					sys.error(err);
+					sys.dialog.error(err);
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res);
+				sys.dialog.error(res);
 			});
 		}
 		this.postMessage = function(url, payload, callback) {
@@ -198,11 +198,11 @@
 					callback(res.message);
 				} else {
 					var err = (res.message) ? res.message : res;
-					sys.error(err);
+					sys.dialog.error(err);
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res);
+				sys.dialog.error(res);
 			});
 		}
 	})

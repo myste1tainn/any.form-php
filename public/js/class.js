@@ -15,11 +15,11 @@
 						_classes = res.data;
 						callback(res.data);
 					} else {
-						sys.error(res);
+						sys.dialog.error(res);
 					}
 				})
 				.error(function(res, status, headers, config){
-					sys.error(res);
+					sys.dialog.error(res);
 				});
 			}
 		}

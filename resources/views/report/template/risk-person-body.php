@@ -19,8 +19,8 @@
 		<td class="text-left">[[ p.firstname ]] [[ p.lastname ]]</td>
 		<td class="text-center">[[ p.class ]]/[[ p.room ]]</td>
 		<td class="text-center">[[ p.number ]]</td>
-		<td class="text-center">[[ p.countRisk('high') ]]</td>
-		<td class="text-center">[[ p.countRisk('veryHigh')]]</td>
+		<td class="text-center">[[ p.risks.countHighRisk || 0]]</td>
+		<td class="text-center">[[ p.risks.countVeryHighRisk || 0]]</td>
 		<td class="text-center">[[ p.hasTalent() ]]</td>
 		<td class="text-center">[[ p.hasDisability() ]]</td>
 	</tr>

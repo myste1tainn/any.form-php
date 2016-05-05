@@ -233,25 +233,58 @@ class ReportController extends Controller {
 		]);
 	}
 
-	public function resultByPerson($id) {
-		$q = Questionaire::with('results.participant', 'criteria')
-									 ->where('id', $id)
-									 ->first();
+	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 
-		if ($q) {
-			foreach ($q->results as $r) {
-				$rs = Criterion::riskString($q->criteria, $r->value);
-				$r->risk =$rs;
+		if ($id == env('APP_RISK_ID')) {
+			// Risk screening reports shows with different info
+			Questionaire::$PAGED_FROM = $from;
+			Questionaire::$PAGED_NUM = $num;
+			$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent')->find($id);
+			
+			if ($questionaire) {
+				$participants = [];
+				foreach ($questionaire->pagedResults as $res) {
+					$p = $res->participant;
+					$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+
+					$p->talent = $mappedAnswers['talent'];
+					$p->disabilities = $mappedAnswers['disabilities'];
+					$p->risks = $mappedAnswers['risks'];
+					$participants[] = $p;
+				}
+
+				if ($participants) {
+					return response()->json([
+						'success' => true,
+						'data' => $participants
+					]);
+				}
 			}
-			return response()->json([
-				'success' => true,
-				'data' => $q->results
-			]);
-		} else {
+
 			return response()->json([
 				'success' => false,
-				'message' => 'result is empty'
+				'message' => 'ไม่พบข้อมูลรายงาน'
 			]);
+		} else {
+			$q = Questionaire::with('results.participant', 'criteria')
+							 ->where('id', $id)
+							 ->first();
+
+			if ($q) {
+				foreach ($q->results as $r) {
+					$rs = Criterion::riskString($q->criteria, $r->value);
+					$r->risk =$rs;
+				}
+				return response()->json([
+					'success' => true,
+					'data' => $q->results
+				]);
+			} else {
+				return response()->json([
+					'success' => false,
+					'message' => 'result is empty'
+				]);
+			}
 		}
 
 		

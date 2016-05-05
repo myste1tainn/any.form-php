@@ -4,6 +4,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Questionaire extends Model {
 
+	public static $PAGED_FROM = 0;
+	public static $PAGED_NUM = 20;
+
 	public function criteria() {
 		return $this->hasMany('App\Criterion', 'questionaireID');
 	}
@@ -14,6 +17,12 @@ class Questionaire extends Model {
 
 	public function results() {
 		return $this->hasMany('App\QuestionaireResult', 'questionaireID');
+	}
+
+	public function pagedResults() {
+		return $this->hasMany('App\QuestionaireResult', 'questionaireID')
+					->skip(static::$PAGED_FROM)
+					->take(static::$PAGED_NUM);
 	}
 
 	public function parent() {

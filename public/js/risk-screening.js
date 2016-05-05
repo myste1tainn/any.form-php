@@ -79,7 +79,6 @@
 						})
 
 						$answer.load(RISK_ID, $stateParams.year, $stateParams.studentID, function(answers) {
-							console.log(answers);
 							createAnsweredQuestionMatrix(questionaire, answers)
 						});
 					}

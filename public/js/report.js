@@ -19,68 +19,68 @@
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.error(res);
+					sys.dialog.error(res);
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res);
+				sys.dialog.error(res);
 			});
 		}
 
 		this.person = function(payload, callback) {
-			$http.get('report-results/'+payload.id+'/person')
+			$http.get('report/by-person/'+payload.id+'/year/'+payload.year)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.error(res)
+					sys.dialog.error(res)
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res)
+				sys.dialog.error(res)
 			});
 		}
 
 		this.school = function(payload, callback) {
-			$http.get('report-results/'+payload.id+'/school')
+			$http.get('report/by-school/'+payload.id+'/year/'+payload.year)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.error(res)
+					sys.dialog.error(res)
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res)
+				sys.dialog.error(res)
 			});
 		}
 
 		// this.room = function(id, callback) {
 		this.room = function(payload, callback) {
-			$http.get('report-results/'+payload.id+'/room/'+payload.class+'/'+payload.room)
+			$http.get('report/by-room/'+payload.id+'/class/'+payload.class+'/room/'+payload.room+'/year/'+payload.year)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.error(res)
+					sys.dialog.error(res)
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res)
+				sys.dialog.error(res)
 			});
 		}
 
 		this.class = function(payload, callback) {
-			$http.get('report-results/'+payload.id+'/class/'+payload.class)
+			$http.get('report/by-class/'+payload.id+'/class/'+payload.class+'/year/'+payload.year)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.error(res)
+					sys.dialog.error(res)
 				}
 			})
 			.error(function(res, status, headers, config){
-				sys.error(res)
+				sys.dialog.error(res)
 			});
 		}
 	})

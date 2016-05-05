@@ -16,7 +16,17 @@
 	<![endif]-->
 
 	<script type="text/javascript">
+		// CSRF_TOKEN for accessing APIs
 		angular.module('ammart').constant('CSRF_TOKEN', '{{ csrf_token() }}');
+
+		// ID of the risk screening questionaire
+		angular.module('ammart').constant('RISK_ID', {{ env('APP_RISK_ID') }});
+
+		// Default number that indicate "Use the current academic year"
+		angular.module('ammart').constant('ACADEMIC_YEAR', {{ env('APP_ACADEMIC_DEFAULT') }});
+
+		//
+		// angular.module('ammart').constant('', );
 	</script>
 </head>
 <body>

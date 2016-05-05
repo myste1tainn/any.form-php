@@ -26,6 +26,8 @@ class ParticipantController extends Controller {
 	}
 
 	public function result($participantID, $formID, $year) {
+		$talent = null;
+		$disabilities = [];
 		$participant = Participant::find($participantID);
 		$form = Questionaire::find($formID);
 		$result = $participant->results()
@@ -34,86 +36,21 @@ class ParticipantController extends Controller {
 							  ->get();
 
 		$answers = $participant->answers()
+							   ->with('choice.parent')
 							   ->where('questionaireID', $formID)
 							   ->where('academicYear', $year)
 							   ->get();
 
-		$mappedAnswers = [
-			'study' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'health' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'aggressiveness' 	=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'economy' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'security' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'drugs' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'sexuality' 		=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'games' 			=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-			'electronics' 		=> [
-										'high' => [], 
-										'veryHigh' => [],
-										'level' => []
-									],
-		];
-		foreach ($answers as $ans) {
-			$key = $ans->question()->first()->id;
-			$choice = $ans->choice()->first();
-			$level = $choice->value;
-
-			if (!array_key_exists($key, Participant::$riskMap))  continue;	
-
-			$name = Participant::$riskMap[$key];
-			
-			if ($level == 0) {
-				$parent = $choice->parent()->first();
-				if ($parent) {
-					if ($parent->value == 1) {
-						$mappedAnswers[$name]['high'][] = $choice;
-					} else if ($parent->value == 2) {
-						$mappedAnswers[$name]['veryHigh'][] = $choice;
-					}
-				}
-			}
-
-			$mappedAnswers[$name]['level'][] = $level;
-		}
+		$mappedAnswers = static::riskNameMappedAnswers($answers);		
 
 		if ($result && $answers) {
 			return response()->json([
 				'success' => true,
 				'data' => [
 					'result' => $result,
-					'answers' => $mappedAnswers
+					'talent' => $mappedAnswers['talent'],
+					'disabilities' => $mappedAnswers['disabilities'],
+					'risks' => $mappedAnswers['risks']
 				]
 			]);
 		} else {
@@ -122,6 +59,48 @@ class ParticipantController extends Controller {
 				'message' => 'ไม่พบข้อมูล '.$form->name.' สำหรับนักเรียนหมายเลข '.$participant->identifier.' ในปีการศึกษา '.$year
 			]);
 		}
+	}
+
+	public static function riskNameMappedAnswers($answers) {
+		$talent = null;
+		$disabilities = [];
+		$mappedAnswers = Participant::newMappedAnswer();
+		foreach ($answers as $ans) {
+			$key = $ans->question()->first()->id;
+			$choice = $ans->choice()->first();
+			$parent = $choice->parent;
+
+			if ($choice->isTalent()) {
+				$talent = $ans->inputs()->first()->value;
+			} else if ($choice->isDisability()) {
+				$disabilities[] = $choice->name;
+			} else if ($choice->isCustomDisability()) {
+				$disabilities[] = $ans->inputs->first()->value;
+			}
+
+			$parent = $ans->choice->parent;
+			if ($parent == null) continue;
+
+			if (!array_key_exists($key, Participant::$riskMap))  continue;	
+
+			$name = Participant::$riskMap[$key];
+			
+			if ($parent) {
+				if ($parent->isHighRisk()) {
+					$mappedAnswers['countHighRisk']++;
+					$mappedAnswers[$name]['high'][] = $choice;
+				} else if ($parent->isVeryHighRisk()) {
+					$mappedAnswers['countVeryHighRisk']++;
+					$mappedAnswers[$name]['veryHigh'][] = $choice;
+				}
+			}
+		}
+
+		return [
+			'talent' => $talent,
+			'disabilities' => $disabilities,
+			'risks' => $mappedAnswers
+		];
 	}
 
 }

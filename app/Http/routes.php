@@ -42,10 +42,11 @@ Route::get('/report/{name}/risk-screening/{aspect}', 'HomeController@index');
 Route::get('/report/{name}/risk-screening/list/{year}', 'HomeController@index');
 Route::get('/report/{name}/risk-screening/participant/{number}/year/{year}', 'HomeController@index');
 Route::get('/report-results', 'ReportController@result');
-Route::get('/report-results/{id}/person', 'ReportController@resultByPerson');
-Route::get('/report-results/{id}/room/{class}/{room}', 'ReportController@resultByRoom');
-Route::get('/report-results/{id}/class/{class}', 'ReportController@resultByClass');
-Route::get('/report-results/{id}/school', 'ReportController@resultBySchool');
+Route::get('/report/by-person/{id}/year/{year}', 'ReportController@resultByPerson');
+Route::get('/report/by-person/{id}/year/{year}/from/{from}/num/{num}', 'ReportController@resultByPerson');
+Route::get('/report/by-room/{id}/class/{class}/room/{room}/year/{year}', 'ReportController@resultByRoom');
+Route::get('/report/by-class/{id}/class/{class}/year/{year}', 'ReportController@resultByClass');
+Route::get('/report/by-school/{id}/year/{year}', 'ReportController@resultBySchool');
 
 Route::get('template/forms', 'FormController@index');
 Route::get('/template/report/{name}', 'ReportController@template');

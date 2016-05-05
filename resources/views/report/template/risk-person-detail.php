@@ -33,7 +33,7 @@
 						ความสามารถพิเศษ
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						[[participant.talent]]
+						[[participant.talent || 'ไม่มี']]
 					</p>
 				</div>
 			</div>
@@ -41,10 +41,19 @@
 				<div class="row text-center">
 					<p class="text-left color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						ความพิการอื่นๆ
+						ความต้องการพิเศษ
 					</p>
-					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
+					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
+						ng-if="participant.disabilities.length > 1">
+						พิการมากว่า 1 อย่าง
+					</p>
+					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
+						ng-if="participant.disabilities.length == 1">
 						[[participant.disabilities]]
+					</p>
+					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
+						ng-if="participant.disabilities.length == 0">
+						ไม่มี
 					</p>
 				</div>
 			</div>

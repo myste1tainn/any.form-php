@@ -4,6 +4,35 @@ use Illuminate\Database\Eloquent\Model;
 
 class Choice extends Model {
 
+	public function isHighRisk() {
+		return $this->value == 1;
+	}
+	public function isVeryHighRisk() {
+		return $this->value == 2;
+	}
+	public function isRisk() {
+		$riskIDs = \Config::get('app')['riskIDs'];
+		
+		foreach ($riskIDs as $id) {
+			if ($this->id == $id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	public function isTalent() {
+		return $this->id == env('APP_CHOICE_TALENT_ID');
+	}
+	public function isDisability() {
+		$start = env('APP_CHOICE_DISABILITY_START_ID');
+		$end = env('APP_CHOICE_DISABILITY_END_ID');
+		return $this->id >= $start && $this->id <= $end;
+	}
+	public function isCustomDisability() {
+		return $this->id == env('APP_CHOICE_DISABILITY_CUSTOM_ID');
+	}
+
 	public function question() {
 		return $this->belongsTo('App\Question', 'questionID');
 	}
