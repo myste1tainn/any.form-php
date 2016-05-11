@@ -1,7 +1,11 @@
 <?php
 
-use App\Participant;
+use App\Questionaire;
 use App\QuestionaireResult;
+use App\Participant;
+use App\ParticipantAnswer;
+use App\AnswerAdditionalInput;
+use App\Choice;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
@@ -17,9 +21,14 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-        // $this->call('FormSeeder');
-		$this->call('ParticipantSeeder');
-		$this->call('ResultSeeder');
+        try {
+            // $this->call('FormSeeder');
+            // $this->call('ParticipantSeeder');
+            // $this->call('ResultSeeder');
+            $this->call('RiskSeeder');
+        } catch (Exception $e) {
+            $this->command->info($e);
+        }
 	}
 
 }
@@ -115,6 +124,248 @@ class ResultSeeder extends Seeder {
 	        	$i++;
         	}
         }
+    }
+
+}
+
+class RiskSeeder extends Seeder {
+
+    public function run()
+    {
+        // Get the questionaire with all questions and availble choice to choose from
+        $f = Questionaire::with('questions.choices.subchoices')
+                         ->find(env('APP_RISK_ID'));
+
+        $participants = Participant::all();
+        $i = 0;
+        $c = count($participants);
+        foreach ($participants as $p) {
+            $this->createAnswers($f, $p);
+
+            // Points doesn't really matter alot in risk form
+            $this->createResults($f, $p, 999); 
+
+            $this->command->info("results ".($i+1)."/".$c." created");
+
+            $i++;
+        }
+    }
+
+    /// Create answers which comes randomly first
+    private function createAnswers($f, $p) {
+
+        // Simulate each qeustion answering
+        foreach ($f->questions as $q) {
+            if ($q->isAspect()) {
+                // If the question is about each aspect, answer like..
+
+                // Each aspects has 3 level: normal, high-risk, very-high-risk
+                // random to choose between those
+                $c = $this->getRandomChoice($q->choices, null, true);
+                if ($c->value == 0) {
+                    // Choose it and continue to next question
+                    $this->chooseChoice($f, $q, $c, $p);
+
+                    // next loop
+                } else {
+                    // Choose the choice
+                    $this->chooseChoice($f, $q, $c, $p);
+                    $this->chooseRandomSubchoices($f, $q, $c, $p);
+
+                    // and random again
+                    // Since high & very-high can be their simultaneously
+                    $nc = $this->getRandomChoice($q->choices, null, true);
+
+                    if ($nc->value > 0 && $nc->value != $c->value) {
+                        // Not the 'normal' and not the same choice, choose it
+                        $this->chooseChoice($f, $q, $nc, $p);
+                        $this->chooseRandomSubchoices($f, $q, $nc, $p);
+                    } else {
+                        // next loop
+                    }
+                }
+            } else if ($q->isAboutTalent()) {
+                // If the question is about talent answer like...
+
+                // Talent has only 2 choice, random between the two
+                $c = $this->getRandomChoice($q->choices, null);
+                $a = $this->chooseChoice($f, $q, $c, $p);
+                $ci = $c->inputs()->first();
+                if ($ci) {
+                    $this->createRandomTalent($a, $ci, $p);
+                }
+
+                // next loop
+
+            } else if ($q->isAboutDisability()) {
+                // If the question is about disability answer like...
+
+                // Non uniform random, low rate of having disability
+                $probHaveDis = rand(0, 100);
+
+                // Only 30% chance that a participant will have disability
+                if ($probHaveDis > 70) {
+
+                    $numDis = $this->randomNumberOfDisabilities();
+
+                    $choosenChoices = [];
+                    $numChoice = count($q->choices);
+                    for ($i=0; $i < $numDis; $i++) { 
+                        $c = $this->getRandomChoice($q->choices, $numChoice);
+                        
+                        if (Choice::choiceExistsInAnswers($c, $choosenChoices)) {
+                            // Allow no duplicates disabilities
+                            continue;
+                        } else {
+                            $a = $this->chooseChoice($f, $q, $c, $p);
+                            $ci = $c->inputs()->first();
+                            if ($ci) {
+                                $this->createRandomDisability($a, $ci);
+                            }
+                        }
+
+                        $choosenChoices[] = $a;
+                    }
+                }
+            }
+        }
+    }
+
+    private function getRandomChoice($cs, $max, $parentOnly = false) {
+        if (!$max) $max = count($cs);
+        if (!$max) exit;
+
+        $index = rand(0, $max-1);
+
+        if ($parentOnly) {
+            while ($cs[$index]->parent) {
+                $index = rand(0, $max-1);
+            }
+        }
+
+        return $cs[$index];
+    }
+
+    private function chooseChoice($f, $q, $c, $p) {
+        $a = new ParticipantAnswer();
+        $a->participantID = $p->id;
+        $a->questionaireID = $f->id;
+        $a->questionID = $q->id;
+        $a->choiceID = $c->id;
+        $a->academicYear = 2559;
+        $a->save();
+        return $a;
+    }
+
+    // Randomly select subchoices for the random-ed number of choices
+    private function chooseRandomSubchoices($f, $q, $c, $p) {
+        $count = count($c->subchoices) - 1;
+        $rcount = rand(0, $count);
+        if ($count > 0) {
+            $choosenChoices = [];
+            for ($i=0; $i < $rcount+1; $i++) { 
+                $rc = $this->getRandomChoice($c->subchoices, $count);
+
+                if (Choice::choiceExistsInAnswers($rc, $choosenChoices)) {
+                    continue;
+                } else {
+                    $choosenChoices[] = $this->chooseChoice($f, $q, $rc, $p);
+                }
+            }
+        }
+
+        return $choosenChoices;
+    }
+
+    private function createRandomTalent($a, $ci) {
+        $ai = new AnswerAdditionalInput();
+        $ai->value = $this->getRandomTalent();
+        $ai->inputID = $ci->id;
+        $ai->answerID = $a->id;
+        $ai->save();
+        return $ai;
+    }
+
+    private $talents = [
+        'บาสเก็ตบอล',
+        'แบดมินตัน',
+        'ฟตุบอล',
+        'ดนตรี กีตาร์',
+        'ดนตรี กลอง',
+        'ขับเสภา',
+        'ว่ายน้ำ',
+        'ดนตรีไทย ระนาด',
+        'ดนตรีไทย ขุล่ย',
+        'ภาษาอังกฤษ',
+        'วิทยาศาสตร์',
+        'คณิตศาสตร์',
+        'ศิลปะวาดรูป',
+    ];
+
+    private function getRandomTalent() {
+        $count = count($this->talents) - 1;
+        $rand = rand(0, $count);
+        return $this->talents[$rand];
+    }
+
+    private function createRandomDisability($a, $ci) {
+        $ai = new AnswerAdditionalInput();
+        $ai->value = $this->getRandomDisability();
+        $ai->inputID = $ci->id;
+        $ai->answerID = $a->id;
+        $ai->save();
+        return $ai;
+    }
+
+    private $disabilities = [
+        'ติดอ่าง',
+        'เหม่อลอยไม่มีสมาธิ',
+        'ตาบอดข้างซ้าย',
+        'ตาบอดข้างขวา',
+        'เป็นต้อตา',
+        'แขนไม่สมบูรณ์',
+        'ขาไม่สมบูรณ์',
+        'มีเนื้องอกบริเวณหลัง',
+    ];
+
+    private function getRandomDisability() {
+        $count = count($this->disabilities) - 1;
+        $rand = rand(0, $count);
+        return $this->disabilities[$rand];
+    }
+
+    private function randomNumberOfDisabilities() {
+        // Random number of disabilities
+        $numDis = 1;
+        $probNumDis = rand(0, 100);
+        if ($probNumDis > -1 && $probNumDis < 59) {
+            // 61% chances for having 1 dis
+            $numDis = 1;
+        } else if ($probNumDis > 59 && $probNumDis < 79) {
+            // 30% chances for having 2 dis
+            $numDis = 2;
+        } else if ($probNumDis > 79 && $probNumDis < 94) {
+            // 15% chances for having 3 dis
+            $numDis = 3;
+        } else if ($probNumDis > 94 && $probNumDis < 99) {
+            // 5% chances for having 4 dis
+            $numDis = 4;
+        } else if ($probNumDis > 99) {
+            // 1% chances for having 5 dis
+            $numDis = 5;
+        }
+        return $numDis;
+    }
+
+    /// Then create results from the random answers
+    private function createResults($f, $p, $points) {
+        $r = new QuestionaireResult();
+        $r->questionaireID = $f->id;
+        $r->participantID = $p->id;
+        $r->value = $points;
+        $r->academicYear = 2559;
+        $r->save();
+        return $r;
     }
 
 }

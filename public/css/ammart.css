@@ -312,6 +312,12 @@ table.risk td h1.rveryhigh 	{ color: #ec0f0f; }
 table.risk td h1.high::before { background: #fdd200; }
 table.risk td h1.rveryhigh::before 	{ background: #ec0f0f; }*/
 
+select {
+	font-family: 'Helvetica', 'Verdana' !important;
+	font-size: 0.6em !important;
+	min-width: 80px;
+}
+
 .vertical-align {
 	height: 100%; height: 70vh;
 	display: flex;

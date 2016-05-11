@@ -19,6 +19,10 @@ class ParticipantAnswer extends Model {
 		return $this->belongsTo('App\Choice', 'choiceID');
 	}
 
+	public function participant() {
+		return $this->belongsTo('App\Participant', 'participantID');
+	}
+
 	public static function createWith($questionaire, $participant, $ichoices)
 	{
 		$pas = [];

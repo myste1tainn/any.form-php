@@ -4,13 +4,87 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model {
 
+	public static $riskMap = [
+		'47' => [ 
+			'name' => 'ด้านการเรียน',
+			'shortName' => 'การเรียน',
+			'nodeName' => 'study'
+		],
+		'48' => [ 
+			'name' => 'ด้านสุขภาพ',
+			'shortName' => 'สุขภาพ',
+			'nodeName' => 'health'
+		],
+		'49' => [ 
+			'name' => 'ด้านความก้าวร้าวรุนแรง',
+			'shortName' => 'ความก้าวร้าว',
+			'nodeName' => 'aggressiveness'
+		],
+		'50' => [ 
+			'name' => 'ด้านเศรษฐกิจ',
+			'shortName' => 'ด้านเศรษฐกิจ',
+			'nodeName' => 'economy'
+		],
+		'51' => [ 
+			'name' => 'ด้านความปลอดภัย',
+			'shortName' => 'ความปลอดภัย',
+			'nodeName' => 'security'
+		],
+		'52' => [ 
+			'name' => 'ด้านสารเสพติด',
+			'shortName' => 'สารเสพติด',
+			'nodeName' => 'drugs'
+		],
+		'53' => [ 
+			'name' => 'ด้านพฤติกรรมทางเพศ',
+			'shortName' => 'พฤติกรรมทางเพศ',
+			'nodeName' => 'sexuality'
+		],
+		'54' => [ 
+			'name' => 'ด้านการติดเกม',
+			'shortName' => 'การติดเกม',
+			'nodeName' => 'games'
+		],
+		'56' => [ 
+			'name' => 'ด้านเครื่องมือสื่อสาร',
+			'shortName' => 'เครื่องมือสื่อสาร',
+			'nodeName' => 'electronics'
+		],
+	];
+
+	public function info($nodeName) {
+		return static::$riskMap[$this->id][$nodeName];
+	}
+
+	public function isAspect() {
+		$ids = \Config::get('app')['questionRiskIDs'];
+		
+		foreach ($ids as $id) {
+			if ($this->id == $id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+	public function isAboutTalent() {
+		return $this->id == env('APP_QUESTION_TALENT_ID');
+	}
+	public function isAboutDisability() {
+		return $this->id == env('APP_QUESTION_DISABILITY_ID');
+	}
+
 	public function meta()
 	{
 		return $this->hasOne('App\QuestionMeta', 'questionID');
 	}
 
-	public function choices() {
-		return $this->hasMany('App\Choice', 'questionID');
+	public function choices($mainChoicesOnly = false) {
+		if ($mainChoicesOnly) {
+			return $this->hasMany('App\Choice', 'questionID')->whereNull('parentID');
+		} else {
+			return $this->hasMany('App\Choice', 'questionID');
+		}
 	}
 
 	public static function createWith($questionaire, $iQuestions) {

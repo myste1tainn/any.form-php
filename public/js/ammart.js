@@ -35,11 +35,30 @@
 			url: '/auth/register',
 			templateUrl: 'auth/register'
 		})
-		.state('forms', {
-			url: '/forms',
-			templateUrl: 'template/forms',
-			controller: 'QuestionaireListController',
-			controllerAs: 'questionaireList'
+		.state('form', {
+			url: '/form',
+			templateUrl: 'template/head'
+		})
+		.state('form.list', {
+			url: '/list',
+			views: {
+				'head': {
+					templateUrl: 'template/form',
+					controller: 'QuestionaireListController',
+					controllerAs: 'list'
+				}
+			}
+		})
+		.state('form.do', {
+			url: '/do/:formID',
+			params: { formID: null, form: null },
+			views: {
+				'head': {
+					templateUrl: 'template/form/do',
+					controller: 'QuestionaireDoController',
+					controllerAs: 'form'
+				}
+			}
 		})
 		.state('risk-screening', {
 			url: '/teacher/risk-screening',
@@ -80,6 +99,15 @@
 					},
 					controller: 'ReportPersonRiskToolbarController',
 					controllerAs: 'toolbar'
+				},
+			}
+		})
+		.state('report.risk.overview', {
+			views: {
+				'report.risk.overview': {
+					templateUrl: 'template/report-risk/overview',
+					controller: 'ReportRiskOverviewController',
+					controllerAs: 'report'
 				}
 			}
 		})
@@ -92,7 +120,7 @@
 					},
 					controller: 'ReportPersonRiskListController',
 					controllerAs: 'list'
-				}
+				},
 			}
 		})
 		.state('report.risk.detail', {
@@ -101,7 +129,6 @@
 			views: {
 				'report.risk': {
 					templateUrl: function($stateParams) {
-						console
 						return 'template/report-risk/'+$stateParams.type+'-detail';
 					},
 					controller: 'ReportRiskPersonDetailController',

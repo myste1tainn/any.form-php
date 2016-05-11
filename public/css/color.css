@@ -17,9 +17,17 @@
 .color-highlight 	{ color: #2299DD; }
 .color-lowlight 	{ color: #999999; }
 
-.bgcolor-accent 	{ color: #3A5392; }
-.bgcolor-dominant 	{ color: #FFFFFF; }
-.bgcolor-secondary 	{ color: #555555; }
-.bgcolor-tertiary 	{ color: #FBFBFB; }
-.bgcolor-highlight 	{ color: #2299DD; }
-.bgcolor-lowlight 	{ color: #999999; }
+.bgcolor-accent 	{ background-color: #3A5392; }
+.bgcolor-dominant 	{ background-color: #FFFFFF; }
+.bgcolor-secondary 	{ background-color: #555555; }
+.bgcolor-tertiary 	{ background-color: #FBFBFB; }
+.bgcolor-highlight 	{ background-color: #2299DD; }
+.bgcolor-lowlight 	{ background-color: #999999; }
+
+.friendly			{ color: #44aa44; }
+.destructive		{ color: #aa4444; }
+.alarming			{ color: #ddcc00; }
+
+.bg-friendly		{ background-color: #44aa44; }
+.bg-destructive		{ background-color: #ff4444; }
+.bg-alarming		{ background-color: #ddcc00; }

@@ -55,7 +55,7 @@ class FormController extends Controller {
 		return response()->json($questionaire);
 	}
 
-	public function show($id) {
+	public function show($id = null) {
 		return view('questionaire/do');
 	}
 

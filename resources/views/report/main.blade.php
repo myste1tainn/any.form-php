@@ -39,7 +39,7 @@
 					รายชั้นปี
 			</button>
 			<button class="col-xs-3 small-pad"
-					ng-click="nav.changeType('school')"
+					ng-click="nav.selectType('school')"
 					ng-class="{'selected' : nav.type == 'school'}">
 					ภาพรวมทั้งโรงเรียน
 			</button>

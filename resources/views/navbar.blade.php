@@ -15,7 +15,7 @@
 			<ul class="nav navbar-nav col-xs-12">
 				<li class="section">นักเรียน</li>
 				<li id="form">
-					<a href="forms">
+					<a ui-sref="form.list">
 						<table>
 						<tr>
 							<td><span class="fa fa-pencil-square-o"></span></td>
@@ -53,6 +53,16 @@
 						<tr>
 							<td><span class="fa fa-file-text"></span></td>
 							<td>รายงาน</td>
+						</tr>
+						</table>
+					</a>
+				</li>
+				<li id="settings">
+					<a ui-sref="settings()">
+						<table>
+						<tr>
+							<td><span class="fa fa-gear"></span></td>
+							<td>ตั้งค่าระบบ</td>
 						</tr>
 						</table>
 					</a>

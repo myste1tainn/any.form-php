@@ -27,6 +27,9 @@ class CreateQuestionsTable extends Migration {
 			$table->string('name');
 
 			// e.g.
+			$table->string('nodeName')->nullable();
+
+			// e.g.
 			$table->string('description')->nullable();
 
 			// e.g. abcd choices, quality choices (poor - best)

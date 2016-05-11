@@ -7,18 +7,6 @@ class Participant extends Model {
 	public static $PAGED_FROM = 0;
 	public static $PAGED_NUM = 20;
 
-	public static $riskMap = [
-		'47' => 'study',
-		'48' => 'health',
-		'49' => 'aggressiveness',
-		'50' => 'economy',
-		'51' => 'security',
-		'52' => 'drugs',
-		'53' => 'sexuality',
-		'54' => 'games',
-		'56' => 'electronics',
-	];
-
 	public static function newMappedAnswer() {
 		return [
 			'study' 			=> ['high' => [], 'veryHigh' => [],'level' => []],
@@ -48,6 +36,17 @@ class Participant extends Model {
 
 	public function answers() {
 		return $this->hasMany('App\ParticipantAnswer', 'participantID');
+	}
+
+	public static function allThatChose(Choice $choice, $year = null, $class = null, $room = null) {
+		$query = static::join('participant_answers', 'participant_answers.participantID', '=', 'participants.id');
+		$query->where('choiceID', $choice->id);
+		
+		if ($year) $query->where('academicYear', $year);
+		if ($class) $query->where('class', $class);
+		if ($room) $query->where('room', $room);
+
+		return $query->get();
 	}
 
 }

@@ -19,13 +19,15 @@ Route::controllers([
 
 Route::get('/', 'HomeController@index');
 Route::get('/home', 'HomeController@index');
-Route::get('/forms', 'HomeController@index');
+Route::get('/form', 'HomeController@index');
+Route::get('/form/list', 'HomeController@index');
+Route::get('/form/do/{id}', 'HomeController@index');
+Route::get('/questionaire/{id}', 'FormController@show');
 Route::get('/form/create', 'FormController@create');
 Route::get('/form/edit/{questionaireID}', 'FormController@edit');
 Route::get('/api/questionaire/{id}', 'FormController@load');
 Route::get('/api/questionaires', 'FormController@all');
 Route::get('/api/answers/{questionaireID}/{academicYear}/{participantID}', 'FormController@answers');
-Route::get('/questionaire/{id}', 'FormController@show');
 Route::post('/form/save', 'FormController@store');
 Route::post('/api/questionaire/submit', 'FormController@submit');
 Route::get('teacher/risk-screening', 'HomeController@index');
@@ -48,7 +50,9 @@ Route::get('/report/by-room/{id}/class/{class}/room/{room}/year/{year}', 'Report
 Route::get('/report/by-class/{id}/class/{class}/year/{year}', 'ReportController@resultByClass');
 Route::get('/report/by-school/{id}/year/{year}', 'ReportController@resultBySchool');
 
-Route::get('template/forms', 'FormController@index');
+Route::get('/template/form', 'FormController@index');
+Route::get('/template/form/do', 'FormController@show');
+Route::get('/template/head', 'HomeController@head');
 Route::get('/template/report/{name}', 'ReportController@template');
 Route::get('/template/risk/do', 'RiskScreeningController@form');
 Route::get('/template/report-risk/{name}', 'ReportController@riskTemplate');

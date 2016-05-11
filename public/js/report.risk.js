@@ -2,6 +2,17 @@
 	
 	var module = angular.module('report.risk', [])
 
+	.service('$toolbar', function(){
+		var _callback = null;
+		this.valueChange = function(payload) {
+			if (_callback) _callback(payload);
+		}
+
+		this.onValueChange = function(callback) {
+			_callback = callback;
+		}
+	})
+
 	.service('$participant', function($http, sys, RISK_ID){
 		var successHandlerObject = {
 			callback: null,
@@ -39,9 +50,65 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function($scope, $state){
+	.controller('ReportPersonRiskToolbarController', function($scope, $toolbar, $state){
+		var self = this;
 		var currentYear = (new Date()).getFullYear() + 543;
 		this.year = $state.params.year || currentYear;
+		this.years = [];
+
+		var countBack = 10;
+		var startYear = currentYear - countBack;
+		var computedYear = 0;
+		for (var i = 0; i < countBack + 1; i++) {
+			computedYear = startYear + i;
+			yearObj = {value:computedYear};
+			this.years.push(yearObj);
+
+			if (computedYear == this.year) {
+				this.year = yearObj;
+			}
+		}
+
+		this.classes = [
+			{value:1},
+			{value:2},
+			{value:3},
+			{value:4},
+			{value:5},
+			{value:6},
+		];
+		this.rooms = [
+			{value:1},
+			{value:2},
+			{value:3},
+			{value:4},
+			{value:5},
+			{value:6},
+		];
+
+		this.classChange = function() {
+			$toolbar.valueChange({id:'class', value:this.class.value});
+		}
+		this.roomChange = function() {
+			$toolbar.valueChange({id:'room', value:this.room.value});
+		}
+		this.yearChange = function() {
+			$toolbar.valueChange({id:'year', value:this.year.value});
+		}
+
+		if ($state.params.type == "school" ||
+			$state.params.type == "class" ||
+			$state.params.type == "room") {
+			$state.go('report.risk.overview');
+		}
+
+		// Emit yearChange once if it is pre-determinded
+		// and emit only after all angular is loaded
+		if (typeof this.year == 'object') {
+			setTimeout(function() {
+				self.yearChange();
+			}, 500);
+		}
 	})
 
 	.controller('ReportPersonRiskListController', function($scope, $state, $report, RISK_ID){
@@ -55,10 +122,10 @@
 			for (var i = self.displays.length - 1; i >= 0; i--) {
 				var p = self.displays[i];
 				p.hasTalent = function() {
-					return self.talent != null
+					return this.talent != null
 				}
 				p.hasDisability = function() {
-					return self.disabilities.length > 0;
+					return this.disabilities.length > 0;
 				}
 			}
 		}
@@ -74,7 +141,7 @@
 		var payload = { id: RISK_ID, year: this.year };
 		$report.person(payload, function(participants){
 			self.results = self.displays = participants;
-			console.log(participants);
+			prepareDisplaysData();
 		})
 	})
 
@@ -157,10 +224,9 @@
 					// Get the result of the participant
 					$participant.result(participant.id, self.year, function(res){
 						if (res.success) {
-							$scope.participant.risks = res.data.risks;
+							$scope.participant.risks = res.data.aspects;
 							$scope.participant.talent = res.data.talent;
 							$scope.participant.disabilities = res.data.disabilities;
-							console.log(res.data);
 						} else {
 							$scope.errorMessage = res.message;
 							$scope.participant = null;		
@@ -195,5 +261,96 @@
 			return this.selectedAspect == aspect;
 		}
 	})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	.controller('ReportRiskOverviewController', function($scope, $toolbar, $state, $report, RISK_ID){
+		var self = this;
+		var _class = $state.params.class || null;
+		var _room = $state.params.room || null;
+		var _year = $state.params.year || null;
+		var _type = $state.params.type || null;
+
+		this.aspects = [];
+
+		$toolbar.onValueChange(function(payload) {
+			if (payload.id == 'class') {
+				_class = payload.value;
+			} else if (payload.id == 'room') {
+				_room = payload.value;
+			} else if (payload.id == 'year') {
+				_year = payload.value;
+			}
+
+			// Reload data if both argument is ready for type room
+			if (_type == 'room') {
+				if (_class != null && _room != null && _year != null) {
+					_reloadData();
+				}
+			} else if (_type == 'class') {
+				if (_class != null && _year != null) {
+					_reloadData();
+				}
+			} else {
+				// Reload immediately
+				_reloadData();
+			}
+		});
+
+		var _payload = null;
+		var _reportLoader = null;
+		var _callback = function(report){
+			self.aspects = report;
+		};
+
+		var _reloadData = function() {
+			if (_type == 'room') {
+				_payload = { id: RISK_ID, class: _class, room: _room, year: _year };
+				_reportLoader = $report.room;
+			} else if (_type == 'class') {
+				_payload = { id: RISK_ID, class: _class, year: _year };
+				_reportLoader = $report.class;
+			} else if (_type == 'school') {
+				_payload = { id: RISK_ID, year: _year };
+				_reportLoader = $report.school;
+			}
+
+			_reportLoader(_payload, _callback);
+		}
+	})
+
 
 })();

@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Participant;
+use App\Question;
 use App\Questionaire;
 use Illuminate\Http\Request;
 
@@ -50,7 +51,7 @@ class ParticipantController extends Controller {
 					'result' => $result,
 					'talent' => $mappedAnswers['talent'],
 					'disabilities' => $mappedAnswers['disabilities'],
-					'risks' => $mappedAnswers['risks']
+					'aspects' => $mappedAnswers['aspects']
 				]
 			]);
 		} else {
@@ -66,7 +67,8 @@ class ParticipantController extends Controller {
 		$disabilities = [];
 		$mappedAnswers = Participant::newMappedAnswer();
 		foreach ($answers as $ans) {
-			$key = $ans->question()->first()->id;
+			$question = $ans->question()->first();
+			$key = $question->id;
 			$choice = $ans->choice()->first();
 			$parent = $choice->parent;
 
@@ -81,17 +83,17 @@ class ParticipantController extends Controller {
 			$parent = $ans->choice->parent;
 			if ($parent == null) continue;
 
-			if (!array_key_exists($key, Participant::$riskMap))  continue;	
+			if (!array_key_exists($key, Question::$riskMap))  continue;	
 
-			$name = Participant::$riskMap[$key];
-			
+			$aspect = Question::$riskMap[$key];
+
 			if ($parent) {
 				if ($parent->isHighRisk()) {
 					$mappedAnswers['countHighRisk']++;
-					$mappedAnswers[$name]['high'][] = $choice;
+					$mappedAnswers[$aspect['nodeName']]['high'][] = $choice;
 				} else if ($parent->isVeryHighRisk()) {
 					$mappedAnswers['countVeryHighRisk']++;
-					$mappedAnswers[$name]['veryHigh'][] = $choice;
+					$mappedAnswers[$aspect['nodeName']]['veryHigh'][] = $choice;
 				}
 			}
 		}
@@ -99,7 +101,7 @@ class ParticipantController extends Controller {
 		return [
 			'talent' => $talent,
 			'disabilities' => $disabilities,
-			'risks' => $mappedAnswers
+			'aspects' => $mappedAnswers
 		];
 	}
 

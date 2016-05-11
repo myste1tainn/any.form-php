@@ -3,6 +3,7 @@
 return [
 
 	'riskIDs' => explode(',', env('APP_CHOICE_RISK_IDS')),
+	'questionRiskIDs' => explode(',', env('APP_QUESTION_RISK_IDS')),
 
 	/*
 	|--------------------------------------------------------------------------

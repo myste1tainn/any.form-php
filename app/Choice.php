@@ -49,6 +49,12 @@ class Choice extends Model {
 		return $this->belongsTo('App\Choice', 'parentID');
 	}
 
+	public function answers($year = null) {
+		$relation = $this->hasMany('App\ParticipantAnswer', 'choiceID');
+		if ($year) $relation->where('academicYear', $year);
+		return $relation;
+	}
+
 	public static function createWith($question, $iChoices, $parent = null) {
 		$choices = [];
 		foreach ($iChoices as $iChoice) {
@@ -139,6 +145,20 @@ class Choice extends Model {
 		}
 
 		return $sum;
+	}
+
+	public static function choiceExistsInChoices($needle, $haystack) {
+		foreach ($haystack as $h) {
+			if ($h->id == $needle->id) return true;
+		}
+		return false;
+	}
+
+	public static function choiceExistsInAnswers($needle, $haystack) {
+		foreach ($haystack as $h) {
+			if ($h->choiceID == $needle->id) return true;
+		}
+		return false;
 	}
 
 }

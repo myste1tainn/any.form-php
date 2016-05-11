@@ -3,6 +3,7 @@
 use App\Questionaire;
 use App\QuestionaireResult;
 use App\Criterion;
+use App\Participant;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -57,63 +58,74 @@ class ReportController extends Controller {
 		]);
 	}
 
-	public function resultByRoom($id, $class, $room) {
-		// $results = Questionaire::where('questionaires.id', $id)
-		// 						->join(
-		// 							'questionaire_results', 
-		// 							'questionaires.id', 
-		// 							'=', 
-		// 							'questionaire_results.questionaireID'
-		// 						)
-		// 						->join(
-		// 							'participants', 
-		// 							'questionaire_results.participantID', 
-		// 							'=', 
-		// 							'participants.id'
-		// 						)
-		// 						->groupBy(
-		// 							'participants.class', 
-		// 							'participants.room'
-		// 						)
-		// 						->selectRaw(
-		// 							'
-		// 							participants.class as class,
-		// 							participants.room as room,
-		// 							avg(questionaire_results.value) as value
-		// 							'
-		// 						)
-		// 						->get();
+	public function resultByRoom($id, $class, $room, $year) {
+		if ($id == env('APP_RISK_ID')) {
+			return $this->riskResult($id, $class, $room, $year);
+		} else {
+			return $this->normalResultByRoom($id, $class, $room, $year);
+		}
+	}
 
-		// $criteria = Criterion::where('questionaireID', $id)->get();
+	private function riskResult($id, $class, $room, $year) {
+		$results = [];
 
-		// $res = [[],[],[],[],[],[]];
-		// foreach ($results as $r) {
-		// 	$r->risk = Criterion::riskString($criteria, $r->value);
-		// 	$r->value = round($r->value, 2);
+		$questionaire = Questionaire::find($id);
 
-		// 	$res[$r->class - 1]['class'] = $r->class;
-		// 	$res[$r->class - 1]['results'][] = $r;
-		// }
+		$questions = $questionaire->questions()->get();
 
-		// foreach ($res as &$class) {
-		// 	usort($class['results'], function ($a, $b) {
-		// 		return intval($a->room) > intval($b->room);
-		// 	});
+		foreach ($questions as $question) {
+			$choices = $question->choices(true)->get();
 
-		// 	$sum = 0;
-		// 	$count = count($class['results']);
-		// 	foreach ($class['results'] as $r) {
-		// 		$sum += $r->value;
-		// 	}
-		// 	$class['avgValue'] = round($sum / $count, 2);
-		// 	$class['avgRisk'] = Criterion::riskString($criteria, $class['avgValue']);
-		// }
+			$participants = [];
 
-		// return response()->json([
-		// 	'success' => true,
-		// 	'data' => $res
-		// ]); 
+			if ($question->isAspect()) {
 
+				$question->shortName = $question->info('name');
+
+				foreach ($choices as $choice) {
+					if ($choice->isHighRisk()) {
+						$pp = Participant::allThatChose($choice, $year, $class, $room);
+
+						$question->countHighRisk += count($pp);
+
+						// Extract all participants that choses this choice as answer
+						
+						foreach ($pp as $p) {
+							$participants[] = $p;
+						}
+					} else if ($choice->isVeryHighRisk()) {
+						$pp = Participant::allThatChose($choice, $year, $class, $room);
+
+						$question->countVeryHighRisk += count($pp);
+
+						// Extract all participants that choses this choice as answer
+						
+						foreach ($pp as $p) {
+							$participants[] = $p;
+						}
+					}
+				}
+
+				$question->participants = $participants;
+
+				$results[] = $question;
+			}
+		}
+
+		if (count($results) > 0) {
+			return response()->json([
+				'success' => true,
+				'data' => $results
+			]);
+		} else {
+			return response()->json([
+				'success' => false,
+				'message' => 'ไม่พบข้อมูลรายงาน'
+			]);
+		}
+	}
+
+	private function normalResultByRoom($id, $class, $room, $year) {
 		$criteria = Criterion::where('questionaireID', $id)->get();
 
 		$sumnum = 0;
@@ -178,7 +190,16 @@ class ReportController extends Controller {
 		]);
 	}
 
-	public function resultByClass($id, $class) {
+	public function resultByClass($id, $class, $year) {
+		if ($id == env('APP_RISK_ID')) {
+			// Passing ull on room parameter will pull a class
+			return $this->riskResult($id, $class, null, $year);
+		} else {
+			return $this->normalResultByClass($id, $class, $year);
+		}
+	}
+
+	private function normalResultByClass($id, $class, $year) {
 		$criteria = Criterion::where('questionaireID', $id)->get();
 
 		$sumnum = 0;
@@ -249,7 +270,7 @@ class ReportController extends Controller {
 
 					$p->talent = $mappedAnswers['talent'];
 					$p->disabilities = $mappedAnswers['disabilities'];
-					$p->risks = $mappedAnswers['risks'];
+					$p->risks = $mappedAnswers['aspects'];
 					$participants[] = $p;
 				}
 
@@ -290,7 +311,16 @@ class ReportController extends Controller {
 		
 	}
 
-	public function resultBySchool($id) {
+	public function resultBySchool($id, $year) {
+		if ($id == env('APP_RISK_ID')) {
+			// Passing class & room as null will results in entire school results
+			return $this->riskResult($id, null, null, $year);
+		} else {
+			return $this->normalResultBySchool($id, $year);
+		}
+	}
+
+	private function normalResultBySchool($id, $year) {
 		$criteria = Criterion::where('questionaireID', $id)->get();
 
 		$sumnum = 0;

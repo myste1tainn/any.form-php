@@ -96,11 +96,15 @@
 		}
 	})
 
-	.controller('QuestionaireListController', function($scope, $questionaire, ngDialog){
+	.controller('QuestionaireListController', function($scope, $questionaire, ngDialog, RISK_ID){
 		$scope.questionaires = [];
 		$questionaire.all(function(questionaires){
 			$scope.questionaires = questionaires;
 		})
+
+		this.isNotRisk = function(form) {
+			return form.id != RISK_ID;
+		}
 	})
 
 	.directive('questionaireCreate', function($stateParams, ngDialog, $questionaire){
@@ -361,8 +365,8 @@
 		}
 	})
 
-	.controller('QuestionaireDoController', function($scope, $stateParams, $questionaire, ngDialog) {
-		var id = $stateParams.questionaireID
+	.controller('QuestionaireDoController', function($scope, $stateParams, $questionaire, ngDialog, RISK_ID) {
+		var id = $stateParams.formID
 
 		$scope.questionaire = {};
 		$questionaire.load(id, function(questionaire){
