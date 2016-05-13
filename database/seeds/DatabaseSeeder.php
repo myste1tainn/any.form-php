@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder {
         try {
             // $this->call('FormSeeder');
             // $this->call('ParticipantSeeder');
-            // $this->call('ResultSeeder');
-            $this->call('RiskSeeder');
+            $this->call('ResultSeeder');
+            // $this->call('RiskSeeder');
         } catch (Exception $e) {
             $this->command->info($e);
         }

@@ -71,22 +71,17 @@
 			controller: 'ReportNavigationController',
 			controllerAs: 'nav',
 			templateUrl: 'template/report/main',
-			deepStateRedirect: { 
-				default: { 
-					state: 'report.overview',
-					params: { type: 'person', form: null, formID: null },
-				},
-			},
 		})
 		.state('report.overview', {
-			url: '/type/:type',
+			url: '/type/:type/form/:formID',
+			params: { form: null, formID: null },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
-					controllerAs: 'reportTab'
+					controllerAs: 'report'
 				}
 			}
 		})

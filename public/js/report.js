@@ -93,9 +93,20 @@
 		this.type 	= $state.params.type || 'person';
 		this.form 	= $state.params.form || null;
 		this.rooms 	= [];
-		this.classes 	= [];
+		this.classes = [];
 		this.room 	= null;
 		this.class 	= null;
+
+		this.classChange = function() {
+			if (this.report) {
+				this.report.getData();
+			}
+		}
+		this.roomChange = function() {
+			if (this.report) {
+				this.report.getData();
+			}
+		}
 
 		/** Constructor
 		 * Initial state controlling
@@ -117,6 +128,9 @@
 
 		$questionaire.all(function(forms) {
 			self.forms = forms;
+			if (forms.length > 0) {
+				self.form = forms[0];
+			}
 			createDisplayedResult();
 
 			if (_currentID) {
@@ -138,67 +152,60 @@
 					}	
 				}
 			}
+			changeStateBlock();
 		})
 
-		/**
-		 * State channging and controlling
-		 */
-		this.selectType = function(type) {
-			this.type = type;
+		var changeStateBlock = function() {
+			var stateName = 'report.overview';
+			if (self.form) stateName = (self.form.id != RISK_ID) ? 'report.overview' : 'report.risk';
 
-			var changeStateBlock = function() {
-				var stateName = 'report.risk';
-				if (self.form) stateName = (self.form.id == RISK_ID) ? 'report.risk' : 'report.overview';
+			var form = self.form || null;
+			var formID = (form == null) ? null : form.id;
 
-				var form = self.form || null;
-				var formID = (form == null) ? null : form.id;
+			$state.go(stateName, { type: self.type, form: form, formID: formID });
+		}
 
-				$state.go(stateName, { type: type, form: form, formID: formID });
-			}
+		var loadClasses = function() {
+			$class.all(function(res) {
+				for (var i = res.classes.length - 1; i >= 0; i--) {
+					var c = res.classes[i];
+					self.classes.push({text:c.class, value:c.class});
+				};
 
+				for (var i = res.rooms.length - 1; i >= 0; i--) {
+					var r = res.rooms[i];
+					self.rooms.push({text:r.room, value:r.room});
+				};
 
+				// Default select the first row found
+				self.class = self.classes[0];
+				self.room = self.rooms[0];
+
+				changeStateBlock();
+			})
+		}
+
+		var loadClassesIfNeeded = function() {
 			// If this is of type room or class, loads all possible rooms & classes.
-			if (this.type == 'room' ||
-			    this.type == 'class') {
+			if (self.type == 'room' ||
+			    self.type == 'class') {
 
-				if (this.classes.length > 0) {
+				if (self.classes.length > 0) {
 					changeStateBlock();
 				} else {
-					$class.all(function(res) {
-						for (var i = res.classes.length - 1; i >= 0; i--) {
-							var c = res.classes[i];
-							self.classes.push({text:c.class, value:c.class});
-						};
-
-						for (var i = res.rooms.length - 1; i >= 0; i--) {
-							var r = res.rooms[i];
-							self.rooms.push({text:r.room, value:r.room});
-						};
-
-						// Default select the first row found
-						self.class = self.classes[0];
-						self.room = self.rooms[0];
-
-						changeStateBlock();
-					})
+					loadClasses();
 				}
 			} else {
 				changeStateBlock();
 			}
 		}
 
-		var changeURL = function() {
-			if (self.activeForm) {
-				$state.go('report.overview', { 
-					type: self.activeType, 
-					form: self.activeForm, 
-					formId: self.activeForm.id 
-				}).then(function() {
-					self.report.currentTabController.getData();
-				})
-			} else {
-				$state.go('report.overview', { type: self.activeType });
-			}
+		/**
+		 * State channging and controlling
+		 */
+		this.selectType = function(type) {
+			this.type = type;
+			loadClassesIfNeeded();
 		}
 
 		/**
@@ -225,6 +232,8 @@
 			this.form = form;
 			this.selectType(this.type);
 		}
+
+		loadClassesIfNeeded();
 	})
 
 	.controller('ReportTabController', function($scope, $report, $state) {
@@ -233,7 +242,14 @@
 		$scope.type 			= $state.params.type;
 		$scope.form 			= $state.params.form;
 
+		if ($scope.$parent.nav) {
+			$scope.$parent.nav.report = this;
+			$scope.class = $scope.$parent.nav.class;
+			$scope.room = $scope.$parent.nav.room;
+		}
+
 		$scope.getData = function() {
+
 			if ($scope.form !== undefined) {
 				var fn = $report.functionForType($scope.type);
 				var payload = {};
@@ -242,11 +258,23 @@
 					payload.id = $scope.form.id;
 				} else if ($scope.type == 'room') {
 					payload.id = $scope.form.id;
-					payload.class = $scope.class.value;
-					payload.room = $scope.room.value;
+
+					if ($scope.class && $scope.room) {
+						payload.class = $scope.class.value;
+						payload.room = $scope.room.value;
+					} else {
+						return;
+					}
+
 				} else if ($scope.type == 'class') {
 					payload.id = $scope.form.id;
-					payload.class = $scope.class.value;
+
+					if ($scope.class) {
+						payload.class = $scope.class.value;
+					} else {
+						return;
+					}
+
 				} else if ($scope.type == 'school') {
 					payload.id = $scope.form.id;
 				}
@@ -271,11 +299,7 @@
 			if ($scope.form) $scope.getData();
 		}
 
-		// For type: class & room, select option controlling
-		$scope.classChange = function() {
-			$scope.getData();
-		}
-		$scope.roomChange = function() {
+		this.getData = function() {
 			$scope.getData();
 		}
 	})
