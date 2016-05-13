@@ -21,17 +21,11 @@
 			url: '/home',
 			templateUrl: ''
 		})
-		.state('auth.login', {
+		.state('login', {
 			url: '/auth/login',
 			templateUrl: 'auth/login'
 		})
-		.state('auth.logout', {
-			url: '/auth/logout',
-			redirectTo: function(){
-				window.location.href = 'auth/logout'
-			}
-		})
-		.state('auth.register', {
+		.state('register', {
 			url: '/auth/register',
 			templateUrl: 'auth/register'
 		})
@@ -205,6 +199,10 @@
 				sys.error(res);
 			});
 		}
+	})
+
+	.controller('LoginController', function($scope) {
+		console.log($scope);
 	})
 
 })();
