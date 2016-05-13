@@ -137,6 +137,7 @@ class ReportController extends Controller {
 									 ->where('questionaire_results.value', '<=', $c->to)
 									 ->where('participants.class', $class)
 									 ->where('participants.room', $room)
+									 ->where('academicYear', $year)
 									 ->join(
 									 	'participants', 
 									 	'questionaire_results.participantID',
@@ -161,33 +162,33 @@ class ReportController extends Controller {
 			$sumnum += $c->number;
 		}
         
-        if ($sumnum < 1) {
+		if ($sumnum > 0) {
+			$avg = round($sumval / $sumnum, 2);
+
+			foreach ($criteria as $c) {
+				$c->percent = round($c->number / $sumnum * 100, 2);
+			}
+
+			$carr = $criteria->toArray();
+			usort($carr, function($a, $b){
+				return $a['percent'] < $b['percent'];
+			});
+
+			return response()->json([
+				'success' => true,
+				'data' => [[
+					'avgRisk' => Criterion::riskString($criteria, $avg),
+					'avgValue' => $avg,
+					'total' => $sumnum,
+					'criteria' => $carr
+				]]
+			]);
+		} else {
             return response()->json([
-                'success' => false,
-                'message' => 'ไม่พบข้อมูลรายงาน'
+                'success' => true,
+                'data' => [[]]
             ]);
         }
-        
-		$avg = round($sumval / $sumnum, 2);
-
-		foreach ($criteria as $c) {
-			$c->percent = round($c->number / $sumnum * 100, 2);
-		}
-
-		$carr = $criteria->toArray();
-		usort($carr, function($a, $b){
-			return $a['percent'] < $b['percent'];
-		});
-
-		return response()->json([
-			'success' => true,
-			'data' => [[
-				'avgRisk' => Criterion::riskString($criteria, $avg),
-				'avgValue' => $avg,
-				'total' => $sumnum,
-				'criteria' => $carr
-			]]
-		]);
 	}
 
 	public function resultByClass($id, $class, $year) {
@@ -209,6 +210,7 @@ class ReportController extends Controller {
 			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
 									 ->where('questionaire_results.value', '>=', $c->from)
 									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->where('questionaire_results.academicYear', $year)
 									 ->where('participants.class', $class)
 									 ->join(
 									 	'participants', 
@@ -232,16 +234,20 @@ class ReportController extends Controller {
 			$sumnum += $c->number;
 		}
 
-		$avg = round($sumval / $sumnum, 2);
+		$avg = 0;
+		$carr = [];
+		if ($sumnum > 0) {
+			$avg = round($sumval / $sumnum, 2);
 
-		foreach ($criteria as $c) {
-			$c->percent = round($c->number / $sumnum * 100, 2);
+			foreach ($criteria as $c) {
+				$c->percent = round($c->number / $sumnum * 100, 2);
+			}
+
+			$carr = $criteria->toArray();
+			usort($carr, function($a, $b){
+				return $a['percent'] < $b['percent'];
+			});
 		}
-
-		$carr = $criteria->toArray();
-		usort($carr, function($a, $b){
-			return $a['percent'] < $b['percent'];
-		});
 
 		return response()->json([
 			'success' => true,
@@ -287,18 +293,19 @@ class ReportController extends Controller {
 				'message' => 'ไม่พบข้อมูลรายงาน'
 			]);
 		} else {
-			$q = Questionaire::with('results.participant', 'criteria')
+			$q = Questionaire::with('criteria')
 							 ->where('id', $id)
 							 ->first();
 
 			if ($q) {
-				foreach ($q->results as $r) {
+				$results = $q->results()->with('participant')->where('academicYear', $year)->get();
+				foreach ($results as $r) {
 					$rs = Criterion::riskString($q->criteria, $r->value);
 					$r->risk =$rs;
 				}
 				return response()->json([
 					'success' => true,
-					'data' => $q->results
+					'data' => $results
 				]);
 			} else {
 				return response()->json([
@@ -330,6 +337,7 @@ class ReportController extends Controller {
 			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
 									 ->where('questionaire_results.value', '>=', $c->from)
 									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->where('academicYear', $year)
 									 ->join(
 									 	'participants', 
 									 	'questionaire_results.participantID',

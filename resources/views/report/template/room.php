@@ -1,21 +1,32 @@
 <room class="col-xs-12 std-pad">
-	<div class="col-xs-6"></div>
-	<div class="col-xs-1 text-right" style="margin-top: 6px">ชั้น</div>
-	<div class="col-xs-2" style="margin-bottom: 20px">
-		<select class="form-control"
-				ng-model="nav.class"
-				ng-change="nav.classChange()"
-				ng-options="class as class.value for class in nav.classes">
+	<div class="pull-right" style="margin-bottom: 20px">
+		<select class="form-control" 
+				ng-model="nav.year"
+				ng-change="nav.yearChange()"
+				ng-options="y as y.value for y in nav.years">
 		</select>
 	</div>
-	<div class="col-xs-1 text-right" style="margin-top: 6px">ห้อง</div>
-	<div class="col-xs-2" style="margin-bottom: 20px">
+	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ปีการศึกษา</div>
+
+
+	<div class="pull-right" style="margin-bottom: 20px">
 		<select class="form-control"
 				ng-model="nav.room"
 				ng-change="nav.roomChange()"
-				ng-options="r as r.value for r in nav.rooms">
+				ng-options="c as c.value for c in nav.rooms">
 		</select>
 	</div>
+	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ห้อง</div>
+
+
+	<div class="pull-right" style="margin-bottom: 20px">
+		<select class="form-control"
+				ng-model="nav.class"
+				ng-change="nav.classChange()"
+				ng-options="c as c.value for c in nav.classes">
+		</select>
+	</div>
+	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ชั้น</div>
 
 	<table class="form questions col-xs-12"
 		   st-table="displayedResults"

@@ -38,7 +38,8 @@ Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
 // Reports
 Route::get('/report', 'HomeController@index');
 Route::get('/report/type/{name}', 'HomeController@index');
-Route::get('/report/type/{name}/form/{id}', 'HomeController@index');
+Route::get('/report/type/{name}/form/{id}/year/{year}', 'HomeController@index');
+Route::get('/report/type/{name}/form/{id}/year/', 'HomeController@index');
 Route::get('/report/{name}/risk-screening', 'HomeController@index');
 Route::get('/report/{name}/risk-screening/{aspect}', 'HomeController@index');
 Route::get('/report/{name}/risk-screening/list/{year}', 'HomeController@index');

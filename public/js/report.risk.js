@@ -50,24 +50,12 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function($scope, $toolbar, $state){
+	.controller('ReportPersonRiskToolbarController', function($scope, $toolbar, $state, $time){
 		var self = this;
 		var currentYear = (new Date()).getFullYear() + 543;
-		this.year = $state.params.year || currentYear;
-		this.years = [];
-
-		var countBack = 10;
-		var startYear = currentYear - countBack;
-		var computedYear = 0;
-		for (var i = 0; i < countBack + 1; i++) {
-			computedYear = startYear + i;
-			yearObj = {value:computedYear};
-			this.years.push(yearObj);
-
-			if (computedYear == this.year) {
-				this.year = yearObj;
-			}
-		}
+		var pyear = $state.params.year || currentYear;
+		this.years = $time.years();
+		this.year = $time.yearObjectForYear(pyear);
 
 		this.classes = [
 			{value:1},

@@ -4,6 +4,31 @@
 		'room', 'class', 'school', 'report.risk'
 	])
 
+	.service('$time', function() {
+		var years = [];
+		var countBack = 10;
+		var currentYear = (new Date).getFullYear() + 543;
+		var startYear = currentYear - countBack;
+		var computedYear = 0;
+		for (var i = 0; i < countBack + 1; i++) {
+			computedYear = startYear + i;
+			yearObj = {value:computedYear};
+			years.push(yearObj);
+		}
+
+		this.years = function() {
+			return years;
+		}
+
+		this.yearObjectForYear = function(year) {
+			for (var i = years.length - 1; i >= 0; i--) {
+				if (years[i].value == year) {
+					return years[i];
+				}
+			}
+		}
+	})
+
 	.service('$report', function($http, sys){
 
 		this.functionForType = function(type) {
@@ -85,7 +110,7 @@
 		}
 	})
 
-	.controller('ReportNavigationController', function($scope, $questionaire, $report, $state, $class, RISK_ID)
+	.controller('ReportNavigationController', function($scope, $questionaire, $report, $state, $class, RISK_ID, $time)
 	{
 		var self = this;
 		var _currentID = $state.params.formID || null;
@@ -97,15 +122,32 @@
 		this.room 	= null;
 		this.class 	= null;
 
+		var currentYear = (new Date()).getFullYear() + 543;
+		var pyear = $state.params.year || currentYear;
+		this.years = $time.years();
+		this.year = $time.yearObjectForYear(pyear);
+
+
 		this.classChange = function() {
-			if (this.report) {
-				this.report.getData();
-			}
+			$state.go('^.overview', {
+				class: this.class.value,
+				room: this.room.value,
+				year: this.year.value,
+			})
 		}
 		this.roomChange = function() {
-			if (this.report) {
-				this.report.getData();
-			}
+			$state.go('^.overview', {
+				class: this.class.value,
+				room: this.room.value,
+				year: this.year.value,
+			})
+		}
+		this.yearChange = function() {
+			$state.go('^.overview', {
+				class: this.class.value,
+				room: this.room.value,
+				year: this.year.value,
+			})
 		}
 
 		/** Constructor
@@ -116,7 +158,7 @@
 
 		if ($state.current.name == 'report.overview' &&
 			$state.url === undefined) {
-			this.form = { id: components[count - 1] };
+			this.form = { id: components[count - 3] };
 		}
 
 		var createDisplayedResult = function() {
@@ -255,13 +297,13 @@
 				var payload = {};
 
 				if ($scope.type == 'person') {
-					payload.id = $scope.form.id;
+					payload.id = $scope.nav.form.id;
 				} else if ($scope.type == 'room') {
-					payload.id = $scope.form.id;
+					payload.id = $scope.nav.form.id;
 
 					if ($scope.class && $scope.room) {
-						payload.class = $scope.class.value;
-						payload.room = $scope.room.value;
+						payload.class = $scope.nav.class.value;
+						payload.room = $scope.nav.room.value;
 					} else {
 						return;
 					}
@@ -270,13 +312,19 @@
 					payload.id = $scope.form.id;
 
 					if ($scope.class) {
-						payload.class = $scope.class.value;
+						payload.class = $scope.nav.class.value;
 					} else {
 						return;
 					}
 
 				} else if ($scope.type == 'school') {
-					payload.id = $scope.form.id;
+					payload.id = $scope.nav.form.id;
+				}
+
+				payload.year = $scope.nav.year.value;
+
+				if (payload.id == "") {
+					return;
 				}
 
 				fn(payload, function(result){

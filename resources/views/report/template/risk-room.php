@@ -2,9 +2,9 @@
 
 	<div class="pull-right" style="margin-bottom: 20px">
 		<select class="form-control" 
-				ng-model="toolbar.year"
-				ng-change="toolbar.yearChange()"
-				ng-options="y as y.value for y in toolbar.years">
+				ng-model="nav.year"
+				ng-change="nav.yearChange()"
+				ng-options="y as y.value for y in nav.years">
 		</select>
 	</div>
 	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ปีการศึกษา</div>
@@ -12,9 +12,9 @@
 
 	<div class="pull-right" style="margin-bottom: 20px">
 		<select class="form-control"
-				ng-model="toolbar.room"
-				ng-change="toolbar.roomChange()"
-				ng-options="c as c.value for c in toolbar.rooms">
+				ng-model="nav.room"
+				ng-change="nav.roomChange()"
+				ng-options="c as c.value for c in nav.rooms">
 		</select>
 	</div>
 	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ห้อง</div>
@@ -22,9 +22,9 @@
 
 	<div class="pull-right" style="margin-bottom: 20px">
 		<select class="form-control"
-				ng-model="toolbar.class"
-				ng-change="toolbar.classChange()"
-				ng-options="c as c.value for c in toolbar.classes">
+				ng-model="nav.class"
+				ng-change="nav.classChange()"
+				ng-options="c as c.value for c in nav.classes">
 		</select>
 	</div>
 	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ชั้น</div>

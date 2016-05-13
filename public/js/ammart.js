@@ -19,7 +19,6 @@
 		$stateProvider
 		.state('home', {
 			url: '/home',
-			templateUrl: ''
 		})
 		.state('login', {
 			url: '/auth/login',
@@ -67,8 +66,8 @@
 			templateUrl: 'template/report/main',
 		})
 		.state('report.overview', {
-			url: '/type/:type/form/:formID',
-			params: { form: null, formID: null },
+			url: '/type/:type/form/:formID/year/:year',
+			params: { form: null, class: 1, room: 1 },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
