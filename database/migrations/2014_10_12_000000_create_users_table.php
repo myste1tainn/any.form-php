@@ -24,6 +24,13 @@ class CreateUsersTable extends Migration {
 			$table->timestamps();
 		});
 
+		Schema::create('sessions', function(Blueprint $table)
+		{
+			$table->string('id');
+			$table->string('payload');
+			$table->timestamp('last_activity');
+		});
+
 		User::create([
 			'name' => 'AM Teacher',
 			'username' => 'ammart',
@@ -40,6 +47,7 @@ class CreateUsersTable extends Migration {
 	public function down()
 	{
 		Schema::drop('users');
+		Schema::drop('sessions');
 	}
 
 }
