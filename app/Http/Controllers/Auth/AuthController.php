@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -37,7 +38,6 @@ class AuthController extends Controller {
 
 	public function postLogin(Request $request)
 	{
-		dd('overriden');
 		$this->validate($request, [
 			'username' => 'required|username', 'password' => 'required',
 		]);
