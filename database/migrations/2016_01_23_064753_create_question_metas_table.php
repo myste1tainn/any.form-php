@@ -17,7 +17,7 @@ class CreateQuestionMetasTable extends Migration {
 			$table->increments('id');
 			$table->string('header');
 			$table->integer('questionID')->unsigned();
-			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 			
 			$table->foreign('questionID')

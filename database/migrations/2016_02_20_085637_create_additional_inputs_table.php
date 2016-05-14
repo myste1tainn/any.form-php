@@ -18,7 +18,7 @@ class CreateAdditionalInputsTable extends Migration {
 			$table->string('placeholder', 128);
 			$table->string('type', 16);
 			$table->integer('choiceID')->unsigned();
-			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
 			$table->foreign('choiceID')->references('id')->on('choices');

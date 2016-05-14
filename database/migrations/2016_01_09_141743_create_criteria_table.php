@@ -19,7 +19,7 @@ class CreateCriteriaTable extends Migration {
 			$table->integer('from');
 			$table->integer('to');
 			$table->integer('questionaireID')->unsigned();
-			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
 			$table->foreign('questionaireID')

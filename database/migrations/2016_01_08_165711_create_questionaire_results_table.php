@@ -18,7 +18,7 @@ class CreateQuestionaireResultsTable extends Migration {
 			$table->integer('questionaireID')->unsigned();
 			$table->integer('participantID')->unsigned();
 			$table->integer('value');
-			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
 			$table->foreign('questionaireID')
