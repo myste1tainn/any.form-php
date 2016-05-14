@@ -91,6 +91,8 @@
 			}
 		})
 		.state('report.risk.overview', {
+			url: '/:year',
+			params: { form: null, class: 1, room: 1 },
 			views: {
 				'report.risk.overview': {
 					templateUrl: 'template/report-risk/overview',
@@ -220,10 +222,6 @@
 				sys.dialog.error(res);
 			});
 		}
-	})
-
-	.controller('LoginController', function($scope) {
-		console.log($scope);
 	})
 
 })();

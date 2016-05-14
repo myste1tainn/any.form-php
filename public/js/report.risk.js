@@ -50,45 +50,59 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function($scope, $toolbar, $state, $time){
+	.controller('ReportPersonRiskToolbarController', function($scope, $class, $toolbar, $state, $time){
 		var self = this;
 		var currentYear = (new Date()).getFullYear() + 543;
 		var pyear = $state.params.year || currentYear;
 		this.years = $time.years();
 		this.year = $time.yearObjectForYear(pyear);
 
-		this.classes = [
-			{value:1},
-			{value:2},
-			{value:3},
-			{value:4},
-			{value:5},
-			{value:6},
-		];
-		this.rooms = [
-			{value:1},
-			{value:2},
-			{value:3},
-			{value:4},
-			{value:5},
-			{value:6},
-		];
+		this.class = null;
+		this.classes = [];
+		this.room = null;
+		this.rooms = [];
+
+		var changeState = function() {
+			var params = {
+				class: self.class.value,
+				room: self.room.value,
+				year: self.year.value
+			};
+			$state.go('report.risk.overview', params);
+		}
 
 		this.classChange = function() {
-			$toolbar.valueChange({id:'class', value:this.class.value});
+			// $toolbar.valueChange({id:'class', value:this.class.value});
+			changeState();
 		}
 		this.roomChange = function() {
-			$toolbar.valueChange({id:'room', value:this.room.value});
+			// $toolbar.valueChange({id:'room', value:this.room.value});
+			changeState();
 		}
 		this.yearChange = function() {
-			$toolbar.valueChange({id:'year', value:this.year.value});
+			// $toolbar.valueChange({id:'year', value:this.year.value});
+			changeState();
 		}
 
-		if ($state.params.type == "school" ||
-			$state.params.type == "class" ||
-			$state.params.type == "room") {
-			$state.go('report.risk.overview');
-		}
+		$class.all(function(res) {
+			for (var i = res.classes.length - 1; i >= 0; i--) {
+				var c = res.classes[i];
+				self.classes.push({text:c.class, value:c.class});
+			};
+
+			for (var i = res.rooms.length - 1; i >= 0; i--) {
+				var r = res.rooms[i];
+				self.rooms.push({text:r.room, value:r.room});
+			};
+
+			// Default select the first row found
+			self.class = self.classes[0];
+			self.room = self.rooms[0];
+
+			if ($state.params.type != "person") {
+				changeState();
+			}
+		})
 
 		// Emit yearChange once if it is pre-determinded
 		// and emit only after all angular is loaded
@@ -294,30 +308,6 @@
 
 		this.aspects = [];
 
-		$toolbar.onValueChange(function(payload) {
-			if (payload.id == 'class') {
-				_class = payload.value;
-			} else if (payload.id == 'room') {
-				_room = payload.value;
-			} else if (payload.id == 'year') {
-				_year = payload.value;
-			}
-
-			// Reload data if both argument is ready for type room
-			if (_type == 'room') {
-				if (_class != null && _room != null && _year != null) {
-					_reloadData();
-				}
-			} else if (_type == 'class') {
-				if (_class != null && _year != null) {
-					_reloadData();
-				}
-			} else {
-				// Reload immediately
-				_reloadData();
-			}
-		});
-
 		var _payload = null;
 		var _reportLoader = null;
 		var _callback = function(report){
@@ -337,6 +327,20 @@
 			}
 
 			_reportLoader(_payload, _callback);
+		}
+
+		// Reload data if both argument is ready for type room
+		if (_type == 'room') {
+			if (_class != null && _room != null && _year != null) {
+				_reloadData();
+			}
+		} else if (_type == 'class') {
+			if (_class != null && _year != null) {
+				_reloadData();
+			}
+		} else {
+			// Reload immediately
+			_reloadData();
 		}
 	})
 
