@@ -50,6 +50,16 @@ class FormSeeder extends Seeder {
 
 }
 
+class MockSeeder extends Seeder {
+    public function run()
+    {
+        $this->command->info("Supplying forms data");
+        $this->command->info("Supplying mockups data");
+        $path = database_paht().'/seeds/structure-with-mock.sql';
+        $this->command->info("Done");
+    }
+}
+
 class ParticipantSeeder extends Seeder {
 
     public function run()
