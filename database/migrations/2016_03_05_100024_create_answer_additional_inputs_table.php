@@ -18,7 +18,7 @@ class CreateAnswerAdditionalInputsTable extends Migration {
 			$table->string('value', 1024);
 			$table->integer('inputID')->unsigned();
 			$table->integer('answerID')->unsigned();
-			$table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
 			$table->foreign('inputID')
