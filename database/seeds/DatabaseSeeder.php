@@ -55,7 +55,7 @@ class MockSeeder extends Seeder {
     {
         $this->command->info("Supplying forms data");
         $this->command->info("Supplying mockups data");
-        $path = database_paht().'/seeds/structure-with-mock.sql';
+        $path = database_path().'/seeds/structure-with-mock.sql';
         $this->command->info("Done");
     }
 }
