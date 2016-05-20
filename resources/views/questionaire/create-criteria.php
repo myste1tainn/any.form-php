@@ -5,8 +5,17 @@
 	<div class="std-pad col-xs-1">
 		<b>เกณฑ์</b>
 	</div>
+	<div class="col-xs-10 std-pad">
+		<button ng-repeat="criterion in questionaire.criteria"
+				ng-click="showCriterion($index)"
+				ng-class="{'danger' : ($index == currentCriterion) }">
+			[[$index + 1]]
+		</button>
+	</div>
 </tr>
-<div ng-repeat="criterion in questionaire.criteria" class="no-pad classified cri col-xs-12">
+<div class="no-pad classified cri col-xs-12"
+	 ng-repeat="criterion in questionaire.criteria"
+	 ng-if="currentCriterion == $index">
 	<div class="col col-xs-1 criterion"></div>
 	<div class="col col-xs-11" colspan="6" style="padding: 0px">
 		<table>

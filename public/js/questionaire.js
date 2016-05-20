@@ -112,13 +112,23 @@
 			restrict: 'E',
 			controllerAs: 'questionaireCreate',
 			controller: function($scope, $element, $attrs){
-				var id = $stateParams.questionaireID
+				var id = $stateParams.formID
+
+				$scope.currentPage = null;
+
+				$scope.showPage = function(number){
+					$scope.currentPage = number;
+				}
 
 				$questionaire.load(id, function(questionaire) {
 					$scope.questionaire = questionaire;
 
 					if ($scope.questionaire.header) {
 						$scope.toggleHasHeader(true, true);
+					}
+
+					if ($scope.questionaire.questions.length > 0) {
+						$scope.currentPage = 0;
 					}
 				})
 
@@ -179,6 +189,11 @@
 					var copy = angular.copy(previous);
 					copy.id = -1;
 					return copy;
+				}
+
+				$scope.currentCriterion = 0;
+				$scope.showCriterion = function(number){
+					$scope.currentCriterion = number;
 				}
 
 				$scope.addCriterion = function() {
@@ -243,6 +258,11 @@
 					var copy = angular.copy(previous);
 					copy.id = -1;
 					return copy;
+				}
+
+				$scope.currentPage = 0;
+				$scope.showPage = function(number){
+					$scope.currentPage = number;
 				}
 
 				$scope.addChoice = function(question) {

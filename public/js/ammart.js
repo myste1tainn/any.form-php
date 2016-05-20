@@ -53,6 +53,20 @@
 				}
 			}
 		})
+		.state('form-create', {
+			url: '/form/create',
+			params: { form: null, formID: null },
+			templateUrl: 'form/create'
+		})
+		.state('form-edit', {
+			url: '/form/edit/:formID',
+			params: { form: null, formID: null },
+			views: {
+				'': {
+					templateUrl: 'form/create',
+				}
+			}
+		})
 		.state('risk-screening', {
 			url: '/teacher/risk-screening',
 			templateUrl: 'template/risk/do',
