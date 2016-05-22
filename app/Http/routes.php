@@ -25,6 +25,8 @@ Route::get('/form/do/{id}', 'HomeController@index');
 Route::get('/questionaire/{id}', 'FormController@show');
 Route::get('/form/create', 'FormController@create');
 Route::get('/form/edit/{questionaireID}', 'FormController@edit');
+Route::get('/question/grouping', 'HomeController@index');
+Route::get('/question/grouping/{id}', 'HomeController@index');
 Route::get('/api/questionaire/{id}', 'FormController@load');
 Route::get('/api/questionaires', 'FormController@all');
 Route::get('/api/answers/{questionaireID}/{academicYear}/{participantID}', 'FormController@answers');
@@ -57,9 +59,19 @@ Route::get('/template/head', 'HomeController@head');
 Route::get('/template/report/{name}', 'ReportController@template');
 Route::get('/template/risk/do', 'RiskScreeningController@form');
 Route::get('/template/report-risk/{name}', 'ReportController@riskTemplate');
-
+Route::get('/template/question/{name}', 'QuestionController@template');
+Route::get('/template/shared/{name}', 'HomeController@template');
 Route::get('/class/all', 'ClassController@all');
 
 // APIs
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
 Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
+Route::get('api/v1/question-groups', 'QuestionController@allGroup');
+Route::post('api/v1/question-group', 'QuestionController@createGroup');
+Route::put('api/v1/question-group', 'QuestionController@updateGroup');
+Route::delete('api/v1/question-group/{id}', 'QuestionController@destroyGroup');
+Route::get('api/v1/form/{formID}/questions', 'QuestionController@all');
+Route::post('api/v1/form/{formID}/question', 'QuestionController@create');
+Route::put('api/v1/form/{formID}/question', 'QuestionController@update');
+Route::delete('api/v1/form/{formID}/question/{id}', 'QuestionController@destroy');
+
