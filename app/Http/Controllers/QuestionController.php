@@ -21,6 +21,39 @@ class QuestionController extends Controller {
 		}
 	}
 
+	public function update() {
+		$inputQuestion = Request::all();
+		$question = Question::find($inputQuestion['id']);
+
+		if ($question) {
+			if (array_key_exists('order', $inputQuestion)) {
+				$question->order = $inputQuestion['order'];
+			}
+			if (array_key_exists('label', $inputQuestion)) {
+				$question->label = $inputQuestion['label'];
+			}
+			if (array_key_exists('name', $inputQuestion)) {
+				$question->name = $inputQuestion['name'];
+			}
+			if (array_key_exists('description', $inputQuestion)) {
+				$question->description = $inputQuestion['description'];
+			}
+			if (array_key_exists('type', $inputQuestion)) {
+				$question->type = $inputQuestion['type'];
+			}
+			if (array_key_exists('questionaireID', $inputQuestion)) {
+				$question->questionaireID = $inputQuestion['questionaireID'];
+			}
+			if (array_key_exists('groupID', $inputQuestion)) {
+				$question->groupID = $inputQuestion['groupID'];
+			}
+
+			$question->save();
+		}
+
+		return response()->json([]);
+	}
+
 	public function allGroup() {
 		return response()->json(QuestionGroup::all());
 	}

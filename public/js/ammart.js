@@ -110,8 +110,8 @@
 			}
 		})
 		.state('question-grouping.show', {
-			url: '/:formID',
-			params: { form: null },
+			url: '/form/:formID/group/:groupID',
+			params: { form: null, group: null },
 			views: {
 				'group': {
 					templateUrl: 'template/question/grouping-body',

@@ -16,6 +16,7 @@ class CreateQuestionGroupsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
+			$table->integer('questionaireID')->unsigned();
 			$table->timestamps();
 		});
 

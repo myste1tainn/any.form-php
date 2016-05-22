@@ -1,5 +1,7 @@
 <div class="col-xs-12 no-pad">
-	<div class="col-xs-12 border-b std-pad" ng-repeat="group in groups">
+	<div class="col-xs-12 border-b std-pad" 
+		 ng-repeat="group in groups"
+		 ng-click="selectGroup(group)">
 		<div class="col-xs-10">
 			{{ group.name }}
 		</div>

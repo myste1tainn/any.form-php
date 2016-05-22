@@ -48,4 +48,9 @@ class HomeController extends Controller {
 		return view('app');
 	}
 
+	public function template($name)
+	{
+		return view($name);
+	}
+
 }
