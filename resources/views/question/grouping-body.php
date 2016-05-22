@@ -12,7 +12,7 @@
 </div>
 
 <!-- Questions -->
-<div class="col-xs-8 border-l">
+<div class="col-xs-4 border-l">
 	<div class="row report header" style="padding-bottom: 0px">
 		<div class="col-xs-12 text-center no-margin std-pad std-margin-bottom noselect">
 			<span>
@@ -21,4 +21,17 @@
 		</div>
 	</div>
 	<question-map-list></question-map-list>
+</div>
+
+<!-- Criteria -->
+<div class="col-xs-4 border-l">
+	<div class="row report header" style="padding-bottom: 0px">
+		<div class="col-xs-12 text-center no-margin std-pad std-margin-bottom noselect">
+			<span>
+				<span>เกณฑ์คะแนน</span>
+			</span>
+		</div>
+	</div>
+	<criteria-form></criteria-form>
+	<criteria-list></criteria-list>
 </div>

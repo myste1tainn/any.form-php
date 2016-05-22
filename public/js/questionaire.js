@@ -20,7 +20,7 @@
 		}
 	})
 
-	.service('$questionaire', function($http, $question, $criterion, ngDialog, req) {
+	.service('$questionaire', function($http, $question, $criterion, ngDialog, req, sys) {
 		this.newInstance = function() {
 			return {
 				id: -1,
@@ -51,7 +51,7 @@
 		}
 
 		this.load = function(id, callback) {
-			if (typeof id != 'undefined') {
+			if (typeof id != 'undefined' && id != null) {
 				$http.get('api/questionaire/'+id)
 				.success(function(res, status, headers, config){
 					if (typeof res == 'object') {
@@ -202,6 +202,7 @@
 					} else {
 						$scope.questionaire.criteria.push($criterion.newInstance());
 					}
+					$scope.currentCriterion = $scope.questionaire.criteria.length - 1;
 				}
 			}
 		}
@@ -235,6 +236,7 @@
 					} else {
 						$scope.questionaire.questions.push($question.newInstance());
 					}
+					$scope.currentPage = $scope.questionaire.questions.length-1;
 				}
 
 			}
@@ -271,6 +273,7 @@
 					} else {
 						question.choices.push($choice.newInstance());
 					}
+					$scope.currentPage = question.choices.length-1;
 				}
 
 			}

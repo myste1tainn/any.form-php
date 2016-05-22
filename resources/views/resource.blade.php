@@ -47,6 +47,7 @@
 <link href="{{ url('css/app.css') }}" rel="stylesheet">
 <link href="{{ url('css/ammart.css') }}" rel="stylesheet">
 <link href="{{ url('css/color.css') }}" rel="stylesheet">
+<link href="{{ url('css/layout-deprecated.css') }}" rel="stylesheet">
 <link href="{{ url('css/layout.css') }}" rel="stylesheet">
 <link href="{{ url('css/bootstrap.override.css') }}" rel="stylesheet">
 <link href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" />

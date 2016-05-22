@@ -62,6 +62,7 @@ Route::get('/template/report/{name}', 'ReportController@template');
 Route::get('/template/risk/do', 'RiskScreeningController@form');
 Route::get('/template/report-risk/{name}', 'ReportController@riskTemplate');
 Route::get('/template/question/{name}', 'QuestionController@template');
+Route::get('/template/criteria/{name}', 'CriterionController@template');
 Route::get('/template/shared/{name}', 'HomeController@template');
 Route::get('/class/all', 'ClassController@all');
 
@@ -80,4 +81,10 @@ Route::get('api/v1/form/{formID}/questions', 'QuestionController@all');
 Route::post('api/v1/question', 'QuestionController@create');
 Route::put('api/v1/question', 'QuestionController@update');
 Route::delete('api/v1/question/{id}', 'QuestionController@destroy');
+
+// API: Criteria
+Route::get('api/v1/form/{formID}/group/{groupID}/criteria', 'CriterionController@all');
+Route::post('api/v1/criterion', 'CriterionController@create');
+Route::put('api/v1/criterion', 'CriterionController@update');
+Route::delete('api/v1/criterion/{id}', 'CriterionController@destroy');
 
