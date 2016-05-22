@@ -68,10 +68,14 @@ Route::get('/class/all', 'ClassController@all');
 // APIs
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
 Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
-Route::get('api/v1/question-groups', 'QuestionController@allGroup');
+
+// API: Question Groups
+Route::get('api/v1/form/{formID}/question-groups', 'QuestionController@allGroup');
 Route::post('api/v1/question-group', 'QuestionController@createGroup');
 Route::put('api/v1/question-group', 'QuestionController@updateGroup');
 Route::delete('api/v1/question-group/{id}', 'QuestionController@destroyGroup');
+
+// API: Questions
 Route::get('api/v1/form/{formID}/questions', 'QuestionController@all');
 Route::post('api/v1/question', 'QuestionController@create');
 Route::put('api/v1/question', 'QuestionController@update');

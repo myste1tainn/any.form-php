@@ -33,6 +33,10 @@
 <script src="{{ asset('/js/choice.js') }}"></script>
 <script src="{{ asset('/js/risk-screening.js') }}"></script>
 
+<!-- Application Collections -->
+<script src="{{ asset('/js/collections/questions.js') }}"></script>
+<script src="{{ asset('/js/collections/groups.js') }}"></script>
+
 <!-- Report Module -->
 <script src="{{ asset('/js/report.js') }}"></script>
 <script src="{{ asset('/js/report.risk.js') }}"></script>

@@ -2,129 +2,6 @@
 	
 	var module = angular.module('question', [])
 
-	.service('Questions', function($http, ArrayHelper){
-		var _collections = [];
-		var _subscribers = [];
-
-		var _getCollections = function(id) {
-			var _success = function(res, status, headers, config){
-				_collections.splice(0, _collections.length);
-				if (typeof res == 'object' || typeof res == 'array') {
-					for (var i = res.length - 1; i >= 0; i--) {
-						_collections.push(res[i]);
-					}
-				}
-			};
-			var _error = function(res, status, headers, config){
-				console.log(res);
-				_collections = [];
-			}
-			
-			if (id === undefined) {
-				$http.get('api/v1/questions')
-				.success(_success)
-				.error(_error);
-			} else {
-				$http.get('api/v1/form/'+id+'/questions')
-				.success(_success)
-				.error(_error);
-			}
-		}
-
-		this.constructor = function() {
-			_getCollections();
-		}
-		this.all = function(formID) {
-			if (formID !== undefined) {
-				_getCollections(formID);
-			}
-			return _collections;
-		}
-		this.insert = function(form, question) {
-			$http.post('api/v1/question', question)
-			.success(function(res, status, headers, config){
-				_collections.push(res);
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
-		}
-		this.update = function(question) {
-			$http.put('api/v1/question', question)
-			.success(function(res, status, headers, config){
-				console.log(res);
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
-		}
-		this.remove = function(question) {
-			$http.delete('api/v1/question/'+question.id)
-			.success(function(res, status, headers, config){
-				_collections = ArrayHelper.remove(question, _collections);
-			})
-			.error(function(res, status, headers, config){
-				//Code
-			});
-		}
-
-
-		this.constructor();
-	})
-
-	.service('Groups', function($http, ArrayHelper){
-		var _collections = [];
-		var _subscribers = [];
-
-		this.constructor = function() {
-			$http.get('api/v1/question-groups')
-			.success(function(res, status, headers, config){
-				if (typeof res == 'object' || typeof res == 'array') {
-					for (var i = res.length - 1; i >= 0; i--) {
-						_collections.push(res[i]);
-					}
-				}
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-				_collections = [];
-			});
-		}
-		this.all = function(group) {
-			return _collections;
-		}
-		this.insert = function(group) {
-			$http.post('api/v1/question-group', group)
-			.success(function(res, status, headers, config){
-				_collections.push(res);
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
-		}
-		this.update = function(group) {
-			$http.put('api/v1/question-group', group)
-			.success(function(res, status, headers, config){
-				console.log(res);
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
-		}
-		this.remove = function(payload) {
-			$http.delete('api/v1/question-group/'+payload.id)
-			.success(function(res, status, headers, config){
-				_collections = ArrayHelper.remove(payload, _collections);
-			})
-			.error(function(res, status, headers, config){
-				//Code
-			});
-		}
-
-
-		this.constructor();
-	})
-
 	.service('$question', function($choice){
 		this.newInstance = function() {
 			return {
@@ -172,7 +49,7 @@
 			restrict: 'E',
 			templateUrl: 'template/shared/form-select',
 			controllerAs: 'nav',
-			controller: function($scope, $element, $attrs){
+			controller: function($scope, $element){
 				var _this = this;
 
 				var _changeState = function() {
@@ -221,25 +98,25 @@
 		this.formID = $state.params.formID;
 	})
 
-	.controller('GroupFormController', function($scope, $element, $attrs, Groups){
+	.controller('GroupFormController', function($scope, $state, Groups){
+		var _formID = $state.params.formID || null;
 		$scope.group = null;
-		$scope.groups = Groups.all();
-
 		$scope.addGroup = function(group) {
 			Groups.insert({
-				name: group.name
+				name: group.name,
+				questionaireID: _formID
 			});
 			$scope.group.name = '';
 		}
 	})
 
-	.controller('GroupListController', function($scope, $attrs, $state, Groups){
+	.controller('GroupListController', function($scope, $state, Groups){
 		var _form = $state.params.form || null;
 		var _group = $state.params.group || null;
 		var _formID = $state.params.formID || null;
 		var _groupID = $state.params.groupID || null;
 		$scope.currentGroup = null;
-		$scope.groups = Groups.all();
+		$scope.groups = Groups.all(_formID);
 
 		$scope.selectGroup = function(group){
 			$scope.currentGroup = group;

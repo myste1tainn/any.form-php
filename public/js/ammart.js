@@ -1,8 +1,14 @@
 (function(){
 	
 	var module = angular.module('ammart', [
+		// Core
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router', 'ngAnimate',
-		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr'
+		
+		// Components
+		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
+
+		// Collections
+		'Questions', 'Groups'
 	])
 
 	.service('ArrayHelper', function(){

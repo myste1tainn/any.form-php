@@ -54,14 +54,15 @@ class QuestionController extends Controller {
 		return response()->json([]);
 	}
 
-	public function allGroup() {
-		return response()->json(QuestionGroup::all());
+	public function allGroup($formID) {
+		return response()->json(QuestionGroup::where('questionaireID', $formID)->get());
 	}
 
 	public function createGroup() {
 		$inputGroup = Request::all();
 		$group = new QuestionGroup();
 		$group->name = $inputGroup['name'];
+		$group->questionaireID = $inputGroup['questionaireID'];
 		$group->save();
 		return response()->json($group);
 	}
