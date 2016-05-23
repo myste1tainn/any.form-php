@@ -53,12 +53,31 @@
 					[[ c.label ]]
 				</th>
 			</tr>
-			<tr>
+			<tr ng-if="q.type == 0">
 				<td class="text-right">[[ q.label ]]</td>
 				<td class="text-left">[[ q.name ]]</td>
 				<td ng-repeat="c in q.choices" 
 					ng-class="{'selected' : isChoosen(q, c)}"
 					ng-click="toggleChoose(q, c)">
+				</td>
+			</tr>
+			<tr ng-if="q.type == 1" class="no-border std-pad">
+				<td colspan="[[questionaire.header.rows[0].cols.length || 5]]" 
+					class="std-pad"
+					ng-repeat="c in q.choices">
+					
+					<div>
+						<span class="col-xs-12">[[ q.name ]]</span>
+						<textarea placeholder="[[c.inputs[0].placeholder]]"
+								  class="col-xs-12 border"></textarea>
+					</div>
+
+
+				</td>
+			</tr>
+			<tr ng-if="q.type != 1 && q.type != 0">
+				<td colspan="5">
+					[[q.name]]
 				</td>
 			</tr>
 		</tbody>

@@ -7,7 +7,7 @@
 	</div>
 	<div class="col-xs-10 std-pad">
 		<button ng-repeat="question in questionaire.questions"
-				ng-click="showQuestion($index)"
+				ng-click="showPage($index)"
 				ng-class="{'danger' : ($index == currentPage) }">
 			[[$index + 1]]
 		</button>

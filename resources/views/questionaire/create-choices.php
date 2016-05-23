@@ -2,6 +2,7 @@
 	<tr>
 		<td colspan="1" style="width:10%">
 			<button ng-click="addChoice(question)">+</button>
+			<button ng-click="removeCurrentChoice(question)">-</button>
 			<button ng-click="toggleFold(question)">==</button>
 		</td>
 		<td colspan="6" style="width:90%">
@@ -39,7 +40,7 @@
 	<tr>
 		<td colspan="2">
 			<button ng-repeat="choice in question.choices"
-					ng-click="showChoice($index)"
+					ng-click="showPage($index)"
 					ng-class="{'danger' : ($index == currentPage) }">
 				[[$index + 1]]
 			</button>

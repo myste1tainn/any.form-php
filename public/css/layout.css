@@ -120,6 +120,9 @@ strong {
 .border-right		{border-right: 1px solid #e5e5e5;}
 .border-top			{border-top: 1px solid #e5e5e5;}
 .border-bottom		{border-bottom: 1px solid #e5e5e5;}
+.no-border,
+.no-border td		
+{border: none !important;}
 
 
 /**

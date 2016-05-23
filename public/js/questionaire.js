@@ -264,6 +264,7 @@
 
 				$scope.currentPage = 0;
 				$scope.showPage = function(number){
+					
 					$scope.currentPage = number;
 				}
 
@@ -274,6 +275,14 @@
 						question.choices.push($choice.newInstance());
 					}
 					$scope.currentPage = question.choices.length-1;
+				}
+
+				$scope.removeCurrentChoice = function(question) {
+					question.choices.splice($scope.currentPage, 1);
+
+					if ($scope.currentPage >= question.choices.length) {
+						$scope.currentPage = question.choices.length - 1;
+					}
 				}
 
 			}
@@ -343,6 +352,12 @@
 						choice.inputs.push(copyOfPreviousInput(choice));
 					} else {
 						choice.inputs.push($input.newInstance());
+					}
+				}
+
+				$scope.removeAdditionalInputs = function(choice) {
+					if (choice.inputs.length > 0) {
+						choice.inputs.pop();
 					}
 				}
 

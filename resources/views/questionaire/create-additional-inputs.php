@@ -2,6 +2,7 @@
 	<tr>
 		<td colspan="1" style="width:10%">
 			<button ng-click="addAdditionalInputs(choice)">+</button>
+			<button ng-click="removeAdditionalInputs(choice)">-</button>
 			<button ng-click="toggleFold(choice)">==</button>
 		</td>
 		<td colspan="6" style="width:90%">
