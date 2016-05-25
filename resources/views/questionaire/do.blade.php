@@ -23,15 +23,20 @@
 					<input ng-model="participant.lastname"
 						   placeholder="สกุล" />
 				</td>
-				<td class="" style="width:7%">
+				<td class="" style="width:6%">
 					<input class="text-center" 
 						   ng-model="participant.class"
 						   placeholder="ชั้นปี" />
 				</td>
-				<td class="" style="width:7%">
+				<td class="" style="width:6%">
 					<input class="text-center" 
 						   ng-model="participant.room"
 						   placeholder="ห้อง" />
+				</td>
+				<td class="" style="width:10%">
+					<input class="text-center" 
+						   ng-model="participant.academicYear"
+						   placeholder="ปีการศึกษา" />
 				</td>
 			</tr>
 		</table>

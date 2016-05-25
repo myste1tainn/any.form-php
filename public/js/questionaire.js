@@ -56,8 +56,11 @@
 				.success(function(res, status, headers, config){
 					if (typeof res == 'object') {
 						if (res.header != null) {
-							var h = res.header;
-							res.header = JSON.parse(h);
+							res.header = JSON.parse(res.header);
+
+							if (typeof res.header == 'string') {
+								res.header = JSON.parse(res.header);
+							}
 						}
 
 						for (var i = res.questions.length - 1; i >= 0; i--) {
@@ -399,6 +402,8 @@
 					$scope.participant.room = 4;
 					$scope.participant.number = 26;
 				}
+
+				$scope.mockupInput();
 			}
 		}
 	})
@@ -408,17 +413,40 @@
 
 		$scope.questionaire = {};
 		$questionaire.load(id, function(questionaire){
+			for (var i = questionaire.questions.length - 1; i >= 0; i--) {
+				var q = questionaire.questions[i];
+				q.choosenChoices = [];
+
+				if (q.type == 4) {
+					for (var j = q.choices.length - 1; j >= 0; j--) {
+						var c = q.choices[j];
+						c.choosenChoices = [];
+					}
+				}
+			}
+
 			$scope.questionaire = questionaire;
 		})
 
 		$scope.toggleChoose = function(question, choice) {
 			if (choice.enabled) {
-				question.choice = choice;
+				var index = question.choosenChoices.indexOf(choice);
+				if (index > -1) {
+					question.choosenChoices.splice(index, 1);
+				} else {
+					// The less than zero are question that allows multiple selection
+					// and not type 4
+					if (question.type > -1) {
+						// This is choose-one question reset choices before push anew
+						question.choosenChoices = [];
+					}
+					question.choosenChoices.push(choice);
+				}
 			}
 		}
 
 		$scope.isChoosen = function(question, choice) {
-			return question.choice == choice;
+			return question.choosenChoices.indexOf(choice) > -1;
 		}
 
 		var choosenChoices = function() {
@@ -426,15 +454,52 @@
 			for (var i = 0; i < $scope.questionaire.questions.length; i++) {
 				var q = $scope.questionaire.questions[i];
 				
-				if (q.choice) {
-					choices.push(q.choice);
+				if (q.type == 4) {
+					for (var j = q.choices.length - 1; j >= 0; j--) {
+						var c = q.choices[j];
+						for (var k = c.choosenChoices.length - 1; k >= 0; k--) {
+							var sc = c.choosenChoices[k];
+							choices.push(sc);
+						}
+					}
+				} else {
+					for (var j = q.choosenChoices.length - 1; j >= 0; j--) {
+						var c = q.choosenChoices[j];
+						choices.push(c);
+					}
 				}
 			};
 			return choices;
 		}
 
+		var totalLength = function(){
+			var baseLength = $scope.questionaire.questions.length;
+
+			for (var i = $scope.questionaire.questions.length - 1; i >= 0; i--) {
+				var q = $scope.questionaire.questions[i];
+
+				if (q.type == 1 || // Question of custom inputs is not count
+					q.type == 2 // Not really a question, just a description text
+					) {
+					baseLength--;
+				}
+
+				// It is a question of choice with subchoices while the choice it self does not count
+				// Count the subchoices as need-to-be-answered question
+				if (q.type == 4) {
+					baseLength--; // Doesn't count the question itself
+
+					// Count it choices instead
+					baseLength += q.choices.length;
+				}
+			}
+
+			return baseLength;
+		}
+
 		var validateChoosenChoices = function(choices) {
-			var valid = choices.length == $scope.questionaire.questions.length;
+			console.log(choices.length);
+			var valid = choices.length == totalLength();
 
 			if (!valid) {
 				ngDialog.open({
@@ -495,7 +560,7 @@
 				}
 
 				$scope.addHeaderRow = function() {
-					var row = $questionaire.newHeaderRow()
+					var row = $questionaire.newHeaderRow();
 					$scope.questionaire.header.rows.push(row);
 				}
 

@@ -33,6 +33,11 @@ class ParticipantAnswer extends Model {
 			$pa->questionID = $ichoice['questionID'];
 			$pa->choiceID = $ichoice['id'];
 			$pa->academicYear = Cache::get('settings.current_academic_year');
+
+			if (!$pa->academicYear) {
+				$pa->academicYear = $participant->academicYear;
+			}
+
 			$pa->save();
 
 			if (array_key_exists('inputs', $ichoice)) {

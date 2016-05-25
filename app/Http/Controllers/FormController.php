@@ -200,6 +200,11 @@ class FormController extends Controller {
 		$qr->questionaireID = $questionaire->id;
 		$qr->value			= $summation;
 		$qr->academicYear 	= Cache::get('settings.current_academic_year');
+
+		if (!$qr->academicYear) {
+			$qr->academicYear = $participant->academicYear;
+		}
+
 		$qr->save(); 
 
 		return response()->json([
@@ -226,6 +231,10 @@ class FormController extends Controller {
 		$participant->class = $class;
 		$participant->room = $room;
 		$participant->save();
+
+		if (Request::has('academicYear')) {
+			$participant->academicYear = Request::input('academicYear');
+		}
 
 		return $participant;
 	}
