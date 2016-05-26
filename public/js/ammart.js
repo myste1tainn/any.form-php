@@ -47,7 +47,8 @@
 
 	.config(function(
 		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
-		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider
+		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider,
+		RISK_ID, SDQ_ID, EQ_ID
 	){
 
 		$interpolateProvider.startSymbol('[[').endSymbol(']]');
@@ -144,6 +145,10 @@
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
+						var id = $stateParams.formID;
+						switch(id) {
+							case RISK
+						}
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
@@ -196,6 +201,49 @@
 					},
 					controller: 'ReportRiskPersonDetailController',
 					controllerAs: 'tab'
+				}
+			}
+		})
+		.state('report.sdq', {
+			url: '/:type/sdq',
+			views: {
+				'sdq': {
+					templateUrl: function($state){
+						var type = $state.params.type;
+						return 'template/report-sdq/'+type;
+					},
+					controller: 'SDQReportController',
+					controlelrAs: 'report'
+				}
+			}
+		})
+		.state('report.sdq.list', {
+			url: '/list/:year',
+			views: {
+				'sdq': {
+					templateUrl: 'template/report-sdq/list',
+					controller: 'SDQReportListController',
+					controlelrAs: 'report'
+				}
+			}
+		})
+		.state('report.sdq.detail', {
+			url: '/participant/:participantID/year/:year',
+			views: {
+				'sdq': {
+					templateUrl: 'template/report-sdq/detail',
+					controller: 'SDQReportDetailController',
+					controlelrAs: 'detail'
+				}
+			}
+		})
+		.state('report.sdq.overview', {
+			url: '/participant/:participantID/year/:year',
+			views: {
+				'sdq': {
+					templateUrl: 'template/report-sdq/overview',
+					controller: 'SDQReportOverviewController',
+					controlelrAs: 'overview'
 				}
 			}
 		})

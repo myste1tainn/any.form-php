@@ -22,6 +22,8 @@
 
 		// ID of the risk screening questionaire
 		angular.module('ammart').constant('RISK_ID', {{ env('APP_RISK_ID') }});
+		angular.module('ammart').constant('SDQ_ID', {{ env('APP_SDQ_ID') }});
+		angular.module('ammart').constant('EQ_ID', {{ env('APP_EQ_ID') }});
 
 		// Default number that indicate "Use the current academic year"
 		angular.module('ammart').constant('ACADEMIC_YEAR', {{ env('APP_ACADEMIC_DEFAULT') }});
