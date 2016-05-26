@@ -5,9 +5,17 @@
 	<div class="col-xs-1 std-pad">
 		<b>คำถาม</b>
 	</div>
+	<div class="col-xs-10 std-pad">
+		<button ng-repeat="question in questionaire.questions"
+				ng-click="showPage($index)"
+				ng-class="{'danger' : ($index == currentPage) }">
+			[[$index + 1]]
+		</button>
+	</div>
 </div>
-
-<div ng-repeat="question in questionaire.questions" class="classified que col-xs-12 no-pad">
+<div class="classified que col-xs-12 no-pad"
+	 ng-repeat="question in questionaire.questions"
+	 ng-if="$index == currentPage">
 	<div class="col col-xs-1 question"></div>
 	<div class="col col-xs-11" style="padding: 0px">
 		<table>

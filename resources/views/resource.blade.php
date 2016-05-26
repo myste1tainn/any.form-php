@@ -33,6 +33,10 @@
 <script src="{{ asset('/js/choice.js') }}"></script>
 <script src="{{ asset('/js/risk-screening.js') }}"></script>
 
+<!-- Application Collections -->
+<script src="{{ asset('/js/collections/questions.js') }}"></script>
+<script src="{{ asset('/js/collections/groups.js') }}"></script>
+
 <!-- Report Module -->
 <script src="{{ asset('/js/report.js') }}"></script>
 <script src="{{ asset('/js/report.risk.js') }}"></script>
@@ -43,6 +47,7 @@
 <link href="{{ url('css/app.css') }}" rel="stylesheet">
 <link href="{{ url('css/ammart.css') }}" rel="stylesheet">
 <link href="{{ url('css/color.css') }}" rel="stylesheet">
+<link href="{{ url('css/layout-deprecated.css') }}" rel="stylesheet">
 <link href="{{ url('css/layout.css') }}" rel="stylesheet">
 <link href="{{ url('css/bootstrap.override.css') }}" rel="stylesheet">
 <link href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" />

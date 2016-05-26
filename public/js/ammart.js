@@ -1,9 +1,49 @@
 (function(){
 	
 	var module = angular.module('ammart', [
+		// Core
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router', 'ngAnimate',
-		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr'
+		
+		// Components
+		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
+
+		// Collections
+		'Questions', 'Groups'
 	])
+
+	.service('ArrayHelper', function(){
+
+		var _removeBySplice = function(target, items){
+			var index = items.indexOf(target);
+			if (index > -1) {
+				items.splice(index, 1);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		var _searchByID = function(target, items){
+			for (var i = items.length - 1; i >= 0; i--) {
+				var item = items[i];
+				if (item.id == target.id) {
+					return item;
+				}
+			}
+			return null;
+		}
+
+		this.remove = function(target, items) {
+			if (!_removeBySplice(target, items)) {
+				var item = _searchByID(target, items)
+				if (item) {
+					console.log(item, 'removed');
+					items = _removeBySplice(item, items);
+				}
+			}
+			return items;
+		}
+	})
 
 	.config(function(
 		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
@@ -50,6 +90,39 @@
 					templateUrl: 'template/form/do',
 					controller: 'QuestionaireDoController',
 					controllerAs: 'form'
+				}
+			}
+		})
+		.state('form-create', {
+			url: '/form/create',
+			params: { form: null, formID: null },
+			templateUrl: 'form/create'
+		})
+		.state('form-edit', {
+			url: '/form/edit/:formID',
+			params: { form: null, formID: null },
+			views: {
+				'': {
+					templateUrl: 'form/create',
+				}
+			}
+		})
+		.state('question-grouping', {
+			url: '/question/grouping',
+			views: {
+				'': {
+					templateUrl: 'template/question/grouping'
+				}
+			}
+		})
+		.state('question-grouping.show', {
+			url: '/form/:formID/group/:groupID',
+			params: { form: null, group: null },
+			views: {
+				'group': {
+					templateUrl: 'template/question/grouping-body',
+					controller: 'QuestionGroupController',
+					controllerAs: 'grouper'
 				}
 			}
 		})
