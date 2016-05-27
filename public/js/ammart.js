@@ -145,10 +145,6 @@
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
-						var id = $stateParams.formID;
-						switch(id) {
-							case RISK
-						}
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
@@ -207,21 +203,20 @@
 		.state('report.sdq', {
 			url: '/:type/sdq',
 			views: {
-				'sdq': {
-					templateUrl: function($state){
-						var type = $state.params.type;
-						return 'template/report-sdq/'+type;
+				'report': {
+					templateUrl: function($stateParams) {
+						return 'template/report/sdq/'+$stateParams.type;
 					},
 					controller: 'SDQReportController',
-					controlelrAs: 'report'
-				}
+					controllerAs: 'toolbar'
+				},
 			}
 		})
 		.state('report.sdq.list', {
 			url: '/list/:year',
 			views: {
 				'sdq': {
-					templateUrl: 'template/report-sdq/list',
+					templateUrl: 'template/report/sdq/list',
 					controller: 'SDQReportListController',
 					controlelrAs: 'report'
 				}
@@ -231,7 +226,7 @@
 			url: '/participant/:participantID/year/:year',
 			views: {
 				'sdq': {
-					templateUrl: 'template/report-sdq/detail',
+					templateUrl: 'template/report/sdq/detail',
 					controller: 'SDQReportDetailController',
 					controlelrAs: 'detail'
 				}
@@ -241,7 +236,7 @@
 			url: '/participant/:participantID/year/:year',
 			views: {
 				'sdq': {
-					templateUrl: 'template/report-sdq/overview',
+					templateUrl: 'template/report/sdq/overview',
 					controller: 'SDQReportOverviewController',
 					controlelrAs: 'overview'
 				}

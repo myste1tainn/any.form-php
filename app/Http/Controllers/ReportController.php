@@ -40,6 +40,14 @@ class ReportController extends Controller {
 		return view('report/template/risk-'.$name);
 	}
 
+	public function sdqTemplate($name) {
+		return view('report/sdq/'.$name);
+	}
+
+	public function eqTemplate($name) {
+		return view('report/eq/'.$name);
+	}
+
 	public function result()
 	{
 		$questionaires = Questionaire::with('results.participant', 'criteria')

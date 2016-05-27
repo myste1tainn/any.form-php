@@ -1,7 +1,8 @@
 (function(){
 	
 	var module = angular.module('report', [
-		'room', 'class', 'school', 'report.risk'
+		'room', 'class', 'school', 
+		'report.risk', 'report.sdq',
 	])
 
 	.service('$time', function() {
@@ -110,7 +111,16 @@
 		}
 	})
 
-	.controller('ReportNavigationController', function($scope, $questionaire, $report, $state, $class, RISK_ID, $time)
+	.controller('ReportNavigationController', function(
+		$scope, 
+		$questionaire, 
+		$report,
+		$state,
+		$class, 
+		RISK_ID, 
+		SDQ_ID, 
+		EQ_ID, 
+		$time)
 	{
 		var self = this;
 		var _currentID = $state.params.formID || null;
@@ -199,7 +209,17 @@
 
 		var changeStateBlock = function() {
 			var stateName = 'report.overview';
-			if (self.form) stateName = (self.form.id != RISK_ID) ? 'report.overview' : 'report.risk';
+			if (self.form) {
+				if (self.form.id == RISK_ID) {
+					stateName = 'report.risk';
+				} else if (self.form.id == SDQ_ID) {
+					stateName = 'report.sdq';
+				} else if (self.form.id == EQ_ID) {
+					stateName = 'report.eq';
+				} else {
+					stateName = 'report.overview';
+				}
+			}
 
 			var form = self.form || null;
 			var formID = (form == null) ? null : form.id;
