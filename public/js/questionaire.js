@@ -463,9 +463,15 @@
 						}
 					}
 				} else {
-					for (var j = q.choosenChoices.length - 1; j >= 0; j--) {
-						var c = q.choosenChoices[j];
-						choices.push(c);
+					if (q.type == 1) {
+
+						choices.push(q.choices[0]);
+
+					} else {
+						for (var j = q.choosenChoices.length - 1; j >= 0; j--) {
+							var c = q.choosenChoices[j];
+							choices.push(c);
+						}
 					}
 				}
 			};
@@ -498,8 +504,7 @@
 		}
 
 		var validateChoosenChoices = function(choices) {
-			console.log(choices.length);
-			var valid = choices.length == totalLength();
+			var valid = choices.length >= totalLength();
 
 			if (!valid) {
 				ngDialog.open({

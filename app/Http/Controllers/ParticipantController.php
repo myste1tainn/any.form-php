@@ -49,6 +49,7 @@ class ParticipantController extends Controller {
 			$participant->lifeProblems();
 			$participant->chronic();
 			$participant->notease();
+			$participant->comments();
 
 			foreach ($participant->groups as $g) {
 				$g->result = Criterion::riskStringWithModifiers(

@@ -19,13 +19,15 @@
 			</div>
 
 			<div class="col-xs-6">
-				<button class="pull-right"
-						ui-sref="report.sdq.detail({participantID: toolbar.searchID, year:toolbar.year.value})">
-					ค้นหา
-				</button>
-				<input class="col-xs-4 pull-right text-center" type="text" 
-					   placeholder="เลขประจำตัวนักเรียน" 
-					   ng-model="toolbar.searchID">
+				<form>
+					<button class="pull-right"
+							ui-sref="report.sdq.detail({participantID: toolbar.searchID, year:toolbar.year.value})">
+						ค้นหา
+					</button>
+					<input class="col-xs-4 pull-right text-center" type="text" 
+						   placeholder="เลขประจำตัวนักเรียน" 
+						   ng-model="toolbar.searchID">
+				</form>
 			</div>
 		</div>
 	</div>

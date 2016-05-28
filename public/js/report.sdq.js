@@ -167,6 +167,7 @@
 							$scope.participant.groups = res.data.groups;
 							$scope.participant.chronic = res.data.chronic;
 							$scope.participant.notease = res.data.notease;
+							$scope.participant.comments = res.data.comments;
 							$scope.participant.lifeProblems = res.data.lifeProblems;
 						} else {
 							$scope.errorMessage = res.message;

@@ -180,6 +180,7 @@ class FormController extends Controller {
 	public function submit()
 	{
 		$choices 		= Request::input('choices');
+
 		$questionaire	= $this->prepareQuestionaire();
 		$participant 	= $this->prepareParticipant();		
 

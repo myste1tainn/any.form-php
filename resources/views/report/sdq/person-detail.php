@@ -4,25 +4,36 @@
 	<div class="row border-tb border-lightgray">
 		<!-- <h4>ข้อมูลนักเรียน</h4> -->
 		<div class="row small-pad">
-			<div class="col-xs-6">
+			<div class="col-xs-4">
 				<div class="row indent-left-2">
-					<p class="text-left color-highlight"
+					<p class="text-left one-line color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
 						[[participant.identifier]] 
 					</p>
-					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
+					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
 						[[participant.firstname]] [[participant.lastname]]
+					</p>
+				</div>
+			</div>
+			<div class="col-xs-2">
+				<div class="row text-center">
+					<p class="text-left one-line color-highlight"
+					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
+						ห้อง [[participant.class]]/[[participant.room]] 
+					</p>
+					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
+						เลขที่ [[participant.number]]
 					</p>
 				</div>
 			</div>
 			<div class="col-xs-6">
 				<div class="row text-center">
-					<p class="text-left color-highlight"
+					<p class="text-left color-highlight one-line"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						ห้อง [[participant.class]]/[[participant.room]] 
+						เพิ่มเติม
 					</p>
-					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						เลขที่ [[participant.number]]
+					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
+						[[ participant.comments ]]
 					</p>
 				</div>
 			</div>

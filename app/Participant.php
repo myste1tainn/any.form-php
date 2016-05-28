@@ -94,4 +94,16 @@ class Participant extends Model {
 		return $chronic;
 	}
 
+	public function comments() {
+		$comments = new \stdClass();
+		$id = env('APP_QUESTION_SDQ_COMMENTS');
+		$q = Question::find($id);
+		$answer = $q->answer($this)->first();
+
+		$comments = $answer->inputs()->first()->value;
+
+		$this->comments = $comments;
+		return $comments;
+	}
+
 }
