@@ -41,8 +41,8 @@
 			.error(errorHandler);
 		}
 
-		this.result = function(id, year, callback){
-			$http.get('api/v1/participant/'+id+'/form/'+RISK_ID+'/year/'+year)
+		this.result = function(id, formID, year, callback){
+			$http.get('api/v1/participant/'+id+'/form/'+formID+'/year/'+year)
 			.success(function(res, status, headers, config){
 				callback(res);
 			})
@@ -244,7 +244,7 @@
 
 
 
-	.controller('ReportRiskPersonDetailController', function($scope, $state, $participant){
+	.controller('ReportRiskPersonDetailController', function($scope, $state, RISK_ID, $participant){
 		var self = this;
 
 		this.selectedAspect = $state.params.aspect || null;
@@ -266,7 +266,7 @@
 					$scope.participant.number 		= participant.number;
 
 					// Get the result of the participant
-					$participant.result(participant.id, self.year, function(res){
+					$participant.result(participant.id, RISK_ID, self.year, function(res){
 						if (res.success) {
 							$scope.participant.risks = res.data.aspects;
 							$scope.participant.talent = res.data.talent;

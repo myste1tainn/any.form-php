@@ -349,9 +349,116 @@ table.risk-body tr:hover td {
 	color: #29d;
 }
 
+
+
 .modal-over-current-context {
 	position: absolute; 
 	width: 100%; 
 	top: 0; left: 0;
 	background: white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* SDQ Report */
+table.sdq td {
+	/*border: 1px solid #eee;*/
+	width: 20%;
+	color: black;
+	padding: 0px;
+	border: 1px solid #eee;
+	cursor: pointer;
+}
+table.sdq tr td:first-child {
+	border-left: none;
+}
+table.sdq tr td:last-child {
+	border-right: none;
+}
+table.sdq td h1 {
+	transition: 0.2s linear all;
+	color: white;
+	background: #fbfbfb;
+	/*background: #555;*/
+	width: 100%;
+	height: 175px;
+	line-height: 100px;
+	margin: auto;
+}
+table.sdq td h1:hover,
+table.sdq td h1.selected {
+	background: white;
+}
+table.sdq td h1::before {
+	border-bottom: 1px solid #eee;
+	color: #555;
+	/*background: #fdfdfd;*/
+	content: attr(data-type);
+	display: block;
+	float: left;
+	font-size: 0.70em;
+	width: 100%;
+	height: 40px;
+	line-height: 36px;
+	padding: 0px;
+	margin: 0px;
+}
+
+table.sdq td h1.rneutral 	{ color: #555; }
+table.sdq td h1.rnormal 	{ color: green; }
+table.sdq td h1.rhigh 		{ color: #fdd200; }
+table.sdq td h1.rveryhigh 	{ color: #ec0f0f; }
+/*table.sdq td h1.normal::before 	{ background: green; }
+table.sdq td h1.high::before { background: #fdd200; }
+table.sdq td h1.rveryhigh::before 	{ background: #ec0f0f; }*/
+
+select {
+	font-family: 'Helvetica', 'Verdana' !important;
+	font-size: 0.6em !important;
+	min-width: 80px;
+}
+
+.vertical-align {
+	height: 100%; height: 70vh;
+	display: flex;
+	align-items: center;
+}
+
+table.sdq-body * {
+	font-size: 1em;
+}
+table.sdq-body th {
+	background: #fbfbfb;
+	border-bottom: 1px solid #eee;
+}
+
+th.sdq-count {
+	border-left: 1px solid #eee;
+	border-right: 1px solid #eee;
+}
+table.sdq-body tr.odd {
+	background: #fdfdfd;
+	border-top: 1px solid #fbfbfb;
+	border-bottom: 1px solid #fbfbfb;
+}
+table.sdq-body td {
+	cursor: pointer;
+	border: 1px solid #fbfbfb;
+}
+table.sdq-body tr:hover td {
+	color: #29d;
 }

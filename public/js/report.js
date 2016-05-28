@@ -220,7 +220,6 @@
 					}	
 				}
 			}
-			changeStateBlock();
 		})
 
 		var changeStateBlock = function() {

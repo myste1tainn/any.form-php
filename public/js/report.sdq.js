@@ -159,20 +159,12 @@
 			$participant.get($state.params.participantID, function(res){
 				if (res.success) {
 					var participant = res.data;
-					$scope.participant.id 			= participant.id;
-					$scope.participant.identifier 	= participant.identifier;
-					$scope.participant.firstname 	= participant.firstname;
-					$scope.participant.lastname 	= participant.lastname;
-					$scope.participant.class 		= participant.class;
-					$scope.participant.room 		= participant.room;
-					$scope.participant.number 		= participant.number;
+					$scope.participant = participant
 
 					// Get the result of the participant
-					$participant.result(participant.id, self.year, function(res){
+					$participant.result(participant.id, SDQ_ID, self.year, function(res){
 						if (res.success) {
-							$scope.participant.risks = res.data.aspects;
-							$scope.participant.talent = res.data.talent;
-							$scope.participant.disabilities = res.data.disabilities;
+							$scope.participant.groups = res.data.groups;
 						} else {
 							$scope.errorMessage = res.message;
 							$scope.participant = null;		
