@@ -34,18 +34,25 @@ class QuestionGroup extends Model {
 				}
 			}
 
-			if (!$g->questions) {
-				$g->questions();
-			}
-
-			foreach($g->questions as $q) {
-				$ans = $q->answer($p->id)->first()->choice()->first();
-				if ($ans) {
-					$sumval += $ans->value;
-				}
-			}					
+			$sumval += $g->totalValueWithParticipant($p);
 		}
 
+		return $sumval;
+	}
+
+	public function totalValueWithParticipant($p) {
+		if (!$this->questions) {
+			$this->questions();
+		}
+
+		$sumval = 0;
+		foreach($this->questions as $q) {
+			$ans = $q->answer($p->id)->first()->choice()->first();
+			if ($ans) {
+				$sumval += $ans->value;
+			}
+		}
+		$this->value = $sumval;
 		return $sumval;
 	}
 

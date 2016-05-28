@@ -55,4 +55,30 @@ class Criterion extends Model {
 
 		return "ไม่เข้าเกณฑ์ใดๆ";
 	}
+
+	public static function riskStringWithModifiers($criteria, $value) {
+		$obj = new \stdClass();
+		foreach ($criteria as $c) {
+			if ($c->inValue($value)) {
+				// TODO: Change this, this is temporary fix
+				$obj->string = $c->label;
+
+				if ($obj->string == 'ปกติ') {
+					$obj->modifier = 'rnormal';
+				} else if ($obj->string == 'เสี่ยง') {
+					$obj->modifier = 'rhigh';
+				} else if ($obj->string == 'มีปัญหา') {
+					$obj->modifier = 'rveryhigh';
+				} else {
+					$obj->modifier = 'rneutral';
+				}
+
+				return $obj;
+			}
+		}
+
+		$obj->string = "ไม่เข้าเกณฑ์ใดๆ";
+		$obj->modifier = "unknown";
+		return $obj;
+	}
 }

@@ -286,24 +286,21 @@ class ReportController extends Controller {
 		// Risk screening reports shows with different info
 		Questionaire::$PAGED_FROM = $from;
 		Questionaire::$PAGED_NUM = $num;
-		$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent', 'criteria', 'questionGroups.questions')
+		$questionaire = Questionaire::with(
+			'pagedResults.participant.answers.choice.parent', 'criteria', 'questionGroups.questions')
 									->find($id);
 
+		
 
 		if ($questionaire) {
 			$participants = [];
 			foreach ($questionaire->pagedResults as $res) {
 				$p = $res->participant;
-
+				$p->groups = $p->group;
 				$sumval = QuestionGroup::sumValue(
 					$questionaire->questionGroups, $p, [env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
 				);
 
-				$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
-
-				$p->talent = $mappedAnswers['talent'];
-				$p->disabilities = $mappedAnswers['disabilities'];
-				$p->risks = $mappedAnswers['aspects'];
 				$participants[] = $p;
 
 				$rs = Criterion::riskString($questionaire->criteria, $sumval);
