@@ -55,6 +55,10 @@ class Choice extends Model {
 		return $relation;
 	}
 
+	public function answer($participantID) {
+		return $this->hasOne('App\ParticipantAnswer', 'choiceID')->where('participantID', $participantID);
+	}
+
 	public static function createWith($question, $iChoices, $parent = null) {
 		$choices = [];
 		foreach ($iChoices as $iChoice) {

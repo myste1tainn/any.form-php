@@ -49,4 +49,61 @@ class Participant extends Model {
 		return $query->get();
 	}
 
+	public function lifeProblems() {
+		$lifeProblems = [];
+		$id = env('APP_QUESTION_SDQ_LIFE');
+		$q = Question::find($id);
+		$answers = $q->answers($this->id)->get();
+
+		foreach ($answers as $ans) {
+			$prob = new \stdClass();
+			$choice = $ans->choice()->first();
+			$parent = $choice->parent()->first();
+			$prob->name = $parent->name;
+			$prob->label = $choice->name;
+
+			$lifeProblems[] = $prob;
+		}
+
+		$this->lifeProblems = $lifeProblems;
+
+		return $lifeProblems;
+	}
+
+	public function notease() {
+		$notease = new \stdClass();
+		$id = env('APP_QUESTION_SDQ_NOTEASE');
+		$q = Question::find($id);
+		$answer = $q->answer($this)->first();
+
+		$notease = $answer->choice()->first()->name;
+
+		$this->notease = $notease;
+		return $notease;
+	}
+
+	public function chronic() {
+		$chronic = new \stdClass();
+		$id = env('APP_QUESTION_SDQ_CHRONIC');
+		$q = Question::find($id);
+		$answer = $q->answer($this)->first();
+
+		$chronic = $answer->choice()->first()->name;
+
+		$this->chronic = $chronic;
+		return $chronic;
+	}
+
+	public function comments() {
+		$comments = new \stdClass();
+		$id = env('APP_QUESTION_SDQ_COMMENTS');
+		$q = Question::find($id);
+		$answer = $q->answer($this)->first();
+
+		$comments = $answer->inputs()->first()->value;
+
+		$this->comments = $comments;
+		return $comments;
+	}
+
 }

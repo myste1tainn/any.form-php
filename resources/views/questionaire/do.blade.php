@@ -74,6 +74,7 @@
 					<div>
 						<span class="col-xs-12">[[ q.name ]]</span>
 						<textarea placeholder="[[c.inputs[0].placeholder]]"
+								  ng-model="c.inputs[0].value"
 								  class="col-xs-12 border"></textarea>
 					</div>
 

@@ -1,7 +1,8 @@
 (function(){
 	
 	var module = angular.module('report', [
-		'room', 'class', 'school', 'report.risk'
+		'room', 'class', 'school', 
+		'report.risk', 'report.sdq',
 	])
 
 	.service('$time', function() {
@@ -110,7 +111,16 @@
 		}
 	})
 
-	.controller('ReportNavigationController', function($scope, $questionaire, $report, $state, $class, RISK_ID, $time)
+	.controller('ReportNavigationController', function(
+		$scope, 
+		$questionaire, 
+		$report,
+		$state,
+		$class, 
+		RISK_ID, 
+		SDQ_ID, 
+		EQ_ID, 
+		$time)
 	{
 		var self = this;
 		var _currentID = $state.params.formID || null;
@@ -192,19 +202,44 @@
 							break;
 						}
 					}	
+				} else if ($state.current.name.indexOf('sdq') > 1) {
+					for (var i = self.forms.length - 1; i >= 0; i--) {
+						var f = self.forms[i]
+						if (f.id == SDQ_ID) {
+							self.form = f;
+							break;
+						}
+					}	
+				} else if ($state.current.name.indexOf('eq') > 1) {
+					for (var i = self.forms.length - 1; i >= 0; i--) {
+						var f = self.forms[i]
+						if (f.id == EQ_ID) {
+							self.form = f;
+							break;
+						}
+					}	
 				}
 			}
-			changeStateBlock();
 		})
 
 		var changeStateBlock = function() {
 			var stateName = 'report.overview';
-			if (self.form) stateName = (self.form.id != RISK_ID) ? 'report.overview' : 'report.risk';
+			if (self.form) {
+				if (self.form.id == RISK_ID) {
+					stateName = 'report.risk';
+				} else if (self.form.id == SDQ_ID) {
+					stateName = 'report.sdq';
+				} else if (self.form.id == EQ_ID) {
+					stateName = 'report.eq';
+				} else {
+					stateName = 'report.overview';
+				}
 
-			var form = self.form || null;
-			var formID = (form == null) ? null : form.id;
+				var form = self.form || null;
+				var formID = (form == null) ? null : form.id;
 
-			$state.go(stateName, { type: self.type, form: form, formID: formID });
+				$state.go(stateName, { type: self.type, form: form, formID: formID });
+			}
 		}
 
 		var loadClasses = function() {

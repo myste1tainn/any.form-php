@@ -130,6 +130,15 @@
 		$scope.removeGroup = function(group){
 			Groups.remove(group);
 		}
+
+		$scope.beginEditGroup = function(group){
+			group.editLabel = true;
+		}
+
+		$scope.updateGroup = function(group){
+			Groups.update(group);
+			group.editLabel = false;
+		}
 	})
 
 	.controller('QuestionListController', function($scope, $state, Questions){

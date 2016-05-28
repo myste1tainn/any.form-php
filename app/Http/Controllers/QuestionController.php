@@ -73,6 +73,7 @@ class QuestionController extends Controller {
 
 		if ($group) {
 			$group->name = $inputGroup['name'];
+			$group->label = $inputGroup['label'];
 			$group->save();
 		} else {
 			return $this->createGroup();

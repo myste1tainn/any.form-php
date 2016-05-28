@@ -47,7 +47,8 @@
 
 	.config(function(
 		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
-		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider
+		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider,
+		RISK_ID, SDQ_ID, EQ_ID, CURRENT_YEAR
 	){
 
 		$interpolateProvider.startSymbol('[[').endSymbol(']]');
@@ -140,7 +141,7 @@
 		})
 		.state('report.overview', {
 			url: '/type/:type/form/:formID/year/:year',
-			params: { form: null, class: 1, room: 1 },
+			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
@@ -152,7 +153,8 @@
 			}
 		})
 		.state('report.risk', {
-			url: '/:type/risk-screening',
+			url: '/:type/risk-screening/:formID',
+			params: { form: null, class: 1, room: 1 },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
@@ -164,8 +166,7 @@
 			}
 		})
 		.state('report.risk.overview', {
-			url: '/:year',
-			params: { form: null, class: 1, room: 1 },
+			url: '/year/:year',
 			views: {
 				'report.risk.overview': {
 					templateUrl: 'template/report-risk/overview',
@@ -196,6 +197,50 @@
 					},
 					controller: 'ReportRiskPersonDetailController',
 					controllerAs: 'tab'
+				}
+			}
+		})
+		.state('report.sdq', {
+			url: '/:type/sdq',
+			views: {
+				'report': {
+					templateUrl: function($stateParams) {
+						return 'template/report/sdq/'+$stateParams.type;
+					},
+					controller: 'SDQReportController',
+					controllerAs: 'toolbar'
+				},
+			}
+		})
+		.state('report.sdq.list', {
+			url: '/list/:year',
+			views: {
+				'report.sdq.body': {
+					templateUrl: function($stateParams){
+						return 'template/report/sdq/'+$stateParams.type+'-body';
+					},
+					controller: 'SDQReportListController',
+					controllerAs: 'list'
+				}
+			}
+		})
+		.state('report.sdq.detail', {
+			url: '/participant/:participantID/year/:year',
+			views: {
+				'report.sdq': {
+					templateUrl: 'template/report/sdq/person-detail',
+					controller: 'SDQReportDetailController',
+					controllerAs: 'detail'
+				}
+			}
+		})
+		.state('report.sdq.overview', {
+			url: '/overview/:year',
+			views: {
+				'report.sdq.body': {
+					templateUrl: 'template/report/sdq/overview',
+					controller: 'SDQReportOverviewController',
+					controllerAs: 'overview'
 				}
 			}
 		})
