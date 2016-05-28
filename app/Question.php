@@ -113,6 +113,10 @@ class Question extends Model {
 		return $questions;
 	}
 
+	public function answer($participantID) {
+		return $this->hasOne('App\ParticipantAnswer', 'questionID')->where('participantID', $participantID);
+	}
+
 	private static function _create($questionaire, $iQuestion) {
 		$question = new Question();
 		$question->order = $iQuestion['order'];

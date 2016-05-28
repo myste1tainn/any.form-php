@@ -15,6 +15,10 @@ class Questionaire extends Model {
 		return $this->hasMany('App\Question', 'questionaireID');
 	}
 
+	public function questionGroups() {
+		return $this->hasMany('App\QuestionGroup', 'questionaireID');
+	}
+
 	public function results() {
 		return $this->hasMany('App\QuestionaireResult', 'questionaireID');
 	}

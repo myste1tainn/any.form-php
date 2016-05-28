@@ -2,6 +2,7 @@
 
 use App\Questionaire;
 use App\QuestionaireResult;
+use App\QuestionGroup;
 use App\Criterion;
 use App\Participant;
 
@@ -271,59 +272,111 @@ class ReportController extends Controller {
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 
 		if ($id == env('APP_RISK_ID')) {
-			// Risk screening reports shows with different info
-			Questionaire::$PAGED_FROM = $from;
-			Questionaire::$PAGED_NUM = $num;
-			$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent')->find($id);
-			
-			if ($questionaire) {
-				$participants = [];
-				foreach ($questionaire->pagedResults as $res) {
-					$p = $res->participant;
-					$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+			return $this->resultByPersonRisk($id, $year, $from, $num);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return $this->resultByPersonSDQ($id, $year, $from, $num);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->resultByPersonEQ($id, $year, $from, $num);
+		} else  {
+			return $this->resultByPersonNormal($id, $year, $from, $num);
+		}
+	}
 
-					$p->talent = $mappedAnswers['talent'];
-					$p->disabilities = $mappedAnswers['disabilities'];
-					$p->risks = $mappedAnswers['aspects'];
-					$participants[] = $p;
-				}
+	private function resultByPersonSDQ($id, $year, $from = 0, $num = 10) {
+		// Risk screening reports shows with different info
+		Questionaire::$PAGED_FROM = $from;
+		Questionaire::$PAGED_NUM = $num;
+		$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent', 'criteria', 'questionGroups.questions')
+									->find($id);
 
-				if ($participants) {
-					return response()->json([
-						'success' => true,
-						'data' => $participants
-					]);
-				}
+
+		if ($questionaire) {
+			$participants = [];
+			foreach ($questionaire->pagedResults as $res) {
+				$p = $res->participant;
+
+				$sumval = QuestionGroup::sumValue(
+					$questionaire->questionGroups, $p, [env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
+				);
+
+				$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+
+				$p->talent = $mappedAnswers['talent'];
+				$p->disabilities = $mappedAnswers['disabilities'];
+				$p->risks = $mappedAnswers['aspects'];
+				$participants[] = $p;
+
+				$rs = Criterion::riskString($questionaire->criteria, $sumval);
+				$p->risk =$rs." ($sumval)";
 			}
 
-			return response()->json([
-				'success' => false,
-				'message' => 'ไม่พบข้อมูลรายงาน'
-			]);
-		} else {
-			$q = Questionaire::with('criteria')
-							 ->where('id', $id)
-							 ->first();
-
-			if ($q) {
-				$results = $q->results()->with('participant')->where('academicYear', $year)->get();
-				foreach ($results as $r) {
-					$rs = Criterion::riskString($q->criteria, $r->value);
-					$r->risk =$rs;
-				}
+			if ($participants) {
 				return response()->json([
 					'success' => true,
-					'data' => $results
-				]);
-			} else {
-				return response()->json([
-					'success' => false,
-					'message' => 'result is empty'
+					'data' => $participants
 				]);
 			}
 		}
 
+		return response()->json([
+			'success' => false,
+			'message' => 'ไม่พบข้อมูลรายงาน'
+		]);
+	}
+
+	private function resultByPersonNormal($id, $year, $from = 0, $num = 10) {
+		$q = Questionaire::with('criteria')
+						 ->where('id', $id)
+						 ->first();
+
+		if ($q) {
+			$results = $q->results()->with('participant')->where('academicYear', $year)->get();
+			foreach ($results as $r) {
+				$rs = Criterion::riskString($q->criteria, $r->value);
+				$r->risk =$rs;
+			}
+			return response()->json([
+				'success' => true,
+				'data' => $results
+			]);
+		} else {
+			return response()->json([
+				'success' => false,
+				'message' => 'result is empty'
+			]);
+		}
+	}
+
+	private function resultByPersonRisk($id, $year, $from = 0, $num = 10) {
+		// Risk screening reports shows with different info
+		Questionaire::$PAGED_FROM = $from;
+		Questionaire::$PAGED_NUM = $num;
+		$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent')->find($id);
 		
+		if ($questionaire) {
+			$participants = [];
+			foreach ($questionaire->pagedResults as $res) {
+				$p = $res->participant;
+				$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+
+				$p->talent = $mappedAnswers['talent'];
+				$p->disabilities = $mappedAnswers['disabilities'];
+				$p->risks = $mappedAnswers['aspects'];
+				$participants[] = $p;
+			}
+
+			if ($participants) {
+				return response()->json([
+					'success' => true,
+					'data' => $participants
+				]);
+			}
+		}
+
+		return response()->json([
+			'success' => false,
+			'message' => 'ไม่พบข้อมูลรายงาน'
+		]);
 	}
 
 	public function resultBySchool($id, $year) {
