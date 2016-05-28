@@ -514,6 +514,8 @@
 		$scope.submit = function() {
 			var choices = choosenChoices();
 
+
+			console.log(choices);
 			if ($scope.validateFormInput()) {
 				if (validateChoosenChoices(choices)) {
 					$scope.participant.choices = choices;

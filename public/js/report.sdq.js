@@ -165,6 +165,9 @@
 					$participant.result(participant.id, SDQ_ID, self.year, function(res){
 						if (res.success) {
 							$scope.participant.groups = res.data.groups;
+							$scope.participant.chronic = res.data.chronic;
+							$scope.participant.notease = res.data.notease;
+							$scope.participant.lifeProblems = res.data.lifeProblems;
 						} else {
 							$scope.errorMessage = res.message;
 							$scope.participant = null;		
@@ -175,24 +178,6 @@
 					$scope.participant = null;
 				}
 			})
-		}
-
-		this.selectAspect = function(aspect) {
-			this.selectedAspect = aspect;
-
-			var params = { aspectName: null, aspect: aspect };
-			switch (aspect) {
-				case $scope.participant.risks.study: params.aspectName = 'study'; break;
-				case $scope.participant.risks.health: params.aspectName = 'health'; break;
-				case $scope.participant.risks.aggressiveness: params.aspectName = 'aggressiveness'; break;
-				case $scope.participant.risks.economy: params.aspectName = 'economy'; break;
-				case $scope.participant.risks.security: params.aspectName = 'security'; break;
-				case $scope.participant.risks.drugs: params.aspectName = 'drugs'; break;
-				case $scope.participant.risks.sexuality: params.aspectName = 'sexuality'; break;
-				case $scope.participant.risks.games: params.aspectName = 'games'; break;
-				case $scope.participant.risks.electronics: params.aspectName = 'electronics'; break;
-				default: break;
-			}
 		}
 
 		this.isSelected = function(aspect) {

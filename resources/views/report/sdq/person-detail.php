@@ -34,53 +34,6 @@
 	<div class="col-xs-12 col-md-8 no-pad std-pad-left" 
 		 style="border-right: 1px solid lightgray;">
 		<h4 class="text-center std-pad no-margin">ข้อมูลความเสี่ยง</h4>
-		<!-- <table class="risk">
-			<tr>
-				<td class="text-center rveryhigh" 
-					colspan="2"
-					ng-click="tab.selectAspect(participant.risks.aggressiveness)">
-					
-					<h1 style="font-size:4em" 
-						data-type="สังคม">
-					</h1>
-					
-				</td>
-				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.health)">
-					
-					<h1 style="font-size:4em" 
-						data-type="เพื่อน">
-					</h1>
-					
-				</td>
-			</tr>
-			<tr>
-				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(participant.risks.study)">
-					
-					<h1 style="font-size:4em" 
-						data-type="อารมณ์">
-					</h1>
-					
-				</td>
-				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.health)">
-					
-					<h1 style="font-size:4em" 
-						data-type="เกเร">
-					</h1>
-					
-				</td>
-				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.aggressiveness)">
-					
-					<h1 style="font-size:4em" 
-						data-type="สมาธิสั้น">
-					</h1>
-					
-				</td>
-			</tr>
-		</table> -->
 
 		<table class="sdq">
 			<tr>
@@ -95,10 +48,10 @@
 		</table>
 
 		<h4 class="col-xs-12 text-center">ความเรื้อรังของปัญหา</h4>
-		<div class="col-xs-12 text-center text-xxxl border-tb">6-12 เดือน</div>
+		<div class="col-xs-12 text-center text-xxxl border-tb">[[ participant.chronic ]]</div>
 
 		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหาทำให้ไม่สบายใจ</h4>
-		<div class="col-xs-12 text-center text-xxxl ">ใช่</div>
+		<div class="col-xs-12 text-center text-xxxl ">[[ participant.notease ]]</div>
 
 	</div>
 
@@ -107,10 +60,10 @@
 
 		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหารบกวนชีวิตประจำวัน</h4>
 		<div class="col-xs-12">
-			<p class="text-l">ความเป็นอยูที่บ้าน</p>
-			<p class="text-l">การคบเพื่อน</p>
-			<p class="text-l">การเรียนในห้องเรียน</p>
-			<p class="text-l">กิจกรรมยามว่าง</p>
+			<div ng-repeat="problem in participant.lifeProblems">
+				<span class="text-normal col-xs-6 std-pad text-left">[[problem.name]]</span>
+				<span class="text-normal col-xs-6 std-pad text-right">[[problem.label]]</span>
+			</div>
 		</div>
 		
 	</div>

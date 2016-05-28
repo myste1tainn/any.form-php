@@ -114,7 +114,17 @@ class Question extends Model {
 	}
 
 	public function answer($participantID) {
+		if (is_object($participantID)) {
+			$participantID = $participantID->id;
+		}
 		return $this->hasOne('App\ParticipantAnswer', 'questionID')->where('participantID', $participantID);
+	}
+
+	public function answers($participantID) {
+		if (is_object($participantID)) {
+			$participantID = $participantID->id;
+		}
+		return $this->hasMany('App\ParticipantAnswer', 'questionID')->where('participantID', $participantID);
 	}
 
 	private static function _create($questionaire, $iQuestion) {
