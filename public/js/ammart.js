@@ -215,30 +215,32 @@
 		.state('report.sdq.list', {
 			url: '/list/:year',
 			views: {
-				'sdq': {
-					templateUrl: 'template/report/sdq/list',
+				'report.sdq.body': {
+					templateUrl: function($stateParams){
+						return 'template/report/sdq/'+$stateParams.type+'-body';
+					},
 					controller: 'SDQReportListController',
-					controlelrAs: 'report'
+					controllerAs: 'list'
 				}
 			}
 		})
 		.state('report.sdq.detail', {
 			url: '/participant/:participantID/year/:year',
 			views: {
-				'sdq': {
-					templateUrl: 'template/report/sdq/detail',
+				'report.sdq': {
+					templateUrl: 'template/report/sdq/person-detail',
 					controller: 'SDQReportDetailController',
-					controlelrAs: 'detail'
+					controllerAs: 'detail'
 				}
 			}
 		})
 		.state('report.sdq.overview', {
 			url: '/participant/:participantID/year/:year',
 			views: {
-				'sdq': {
+				'report.sdq.body': {
 					templateUrl: 'template/report/sdq/overview',
 					controller: 'SDQReportOverviewController',
-					controlelrAs: 'overview'
+					controllerAs: 'overview'
 				}
 			}
 		})

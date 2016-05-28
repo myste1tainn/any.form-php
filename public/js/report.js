@@ -202,6 +202,22 @@
 							break;
 						}
 					}	
+				} else if ($state.current.name.indexOf('sdq') > 1) {
+					for (var i = self.forms.length - 1; i >= 0; i--) {
+						var f = self.forms[i]
+						if (f.id == SDQ_ID) {
+							self.form = f;
+							break;
+						}
+					}	
+				} else if ($state.current.name.indexOf('eq') > 1) {
+					for (var i = self.forms.length - 1; i >= 0; i--) {
+						var f = self.forms[i]
+						if (f.id == EQ_ID) {
+							self.form = f;
+							break;
+						}
+					}	
 				}
 			}
 			changeStateBlock();
@@ -219,12 +235,12 @@
 				} else {
 					stateName = 'report.overview';
 				}
+
+				var form = self.form || null;
+				var formID = (form == null) ? null : form.id;
+
+				$state.go(stateName, { type: self.type, form: form, formID: formID });
 			}
-
-			var form = self.form || null;
-			var formID = (form == null) ? null : form.id;
-
-			$state.go(stateName, { type: self.type, form: form, formID: formID });
 		}
 
 		var loadClasses = function() {

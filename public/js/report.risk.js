@@ -113,6 +113,48 @@
 		}
 	})
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
 	.controller('ReportPersonRiskListController', function($scope, $state, $report, RISK_ID){
 		var self = this;
 
