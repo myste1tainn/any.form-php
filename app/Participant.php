@@ -100,7 +100,13 @@ class Participant extends Model {
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 
-		$comments = $answer->inputs()->first()->value;
+		if ($answer) {
+			$input = $answer->inputs()->first();
+			if ($input) $comments = $input->value;
+			else $omments = 'N/A';
+		} else {
+			$comments = 'N/A';
+		}
 
 		$this->comments = $comments;
 		return $comments;
