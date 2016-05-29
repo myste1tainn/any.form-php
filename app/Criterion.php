@@ -56,6 +56,15 @@ class Criterion extends Model {
 		return "ไม่เข้าเกณฑ์ใดๆ";
 	}
 
+	public static function criterionThatFallsIntoValue($criteria, $value) {
+		foreach ($criteria as $c) {
+			if ($c->inValue($value)) {
+				return $c;
+			}
+		}
+		return null;
+	}
+
 	public static function riskStringWithModifiers($criteria, $value) {
 		$obj = new \stdClass();
 		foreach ($criteria as $c) {

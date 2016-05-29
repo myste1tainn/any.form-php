@@ -27,6 +27,23 @@
 .friendly			{ color: #44aa44; }
 .destructive		{ color: #aa4444; }
 .alarming			{ color: #ddcc00; }
+.friendly-light		{ color: #bbffbb; }
+.destructive-light	{ color: #ffbbbb; }
+.alarming-light		{ color: #eeffaa; }
+
+.friendly.child *			{ color: #44aa44; }
+.destructive.child *		{ color: #aa4444; }
+.alarming.child *			{ color: #ddcc00; }
+.friendly-light.child *		{ color: #bbffbb; }
+.destructive-light.child *	{ color: #ffbbbb; }
+.alarming-light.child *		{ color: #eeffaa; }
+
+.bg-friendly			{ background-color: #44aa44; }
+.bg-destructive			{ background-color: #aa4444; }
+.bg-alarming			{ background-color: #ddcc00; }
+.bg-friendly-light		{ background-color: #bbffbb; }
+.bg-destructive-light	{ background-color: #ffbbbb; }
+.bg-alarming-light		{ background-color: #eeffaa; }
 
 .bg-friendly		{ background-color: #44aa44; }
 .bg-destructive		{ background-color: #ff4444; }
