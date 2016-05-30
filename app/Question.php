@@ -113,18 +113,26 @@ class Question extends Model {
 		return $questions;
 	}
 
-	public function answer($participantID) {
+	public function answer($participantID, $year = null) {
+		$query = $this->hasOne('App\ParticipantAnswer', 'questionID');
 		if (is_object($participantID)) {
 			$participantID = $participantID->id;
 		}
-		return $this->hasOne('App\ParticipantAnswer', 'questionID')->where('participantID', $participantID);
+		if ($year) {
+			$query->where('academicYear', $year);
+		}
+		return $query->where('participantID', $participantID);
 	}
 
-	public function answers($participantID) {
+	public function answers($participantID, $year = null) {
+		$query = $this->hasMany('App\ParticipantAnswer', 'questionID');
 		if (is_object($participantID)) {
 			$participantID = $participantID->id;
 		}
-		return $this->hasMany('App\ParticipantAnswer', 'questionID')->where('participantID', $participantID);
+		if ($year) {
+			$query->where('academicYear', $year);
+		}
+		return $query->where('participantID', $participantID);
 	}
 
 	private static function _create($questionaire, $iQuestion) {

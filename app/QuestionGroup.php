@@ -16,7 +16,7 @@ class QuestionGroup extends Model {
 		return $this->hasMany('App\Criterion', 'groupID');
 	}
 
-	public static function sumValue($groups, $p, $excludeIDs = null) {
+	public static function sumOf($groups, $p, $excludeIDs = null) {
 
 		if ($excludeIDs) {
 			if (!is_array($excludeIDs)) {
@@ -34,13 +34,13 @@ class QuestionGroup extends Model {
 				}
 			}
 
-			$sumval += $g->totalValueWithParticipant($p);
+			$sumval += $g->sumAnswersValueOfParticiant($p);
 		}
 
 		return $sumval;
 	}
 
-	public function totalValueWithParticipant($p) {
+	public function sumAnswersValueOfParticiant($p) {
 		if (!$this->questions) {
 			$this->questions();
 		}
@@ -54,6 +54,11 @@ class QuestionGroup extends Model {
 		}
 		$this->value = $sumval;
 		return $sumval;
+	}
+
+	public function valueFallsInCriterion($sumval)	 {
+		if (!$this->criteria) $this->criteria = $this->criteria()->get();
+		return Criterion::criterionThatFallsIntoValue($this->criteria, $sumval);
 	}
 
 }

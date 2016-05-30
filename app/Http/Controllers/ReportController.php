@@ -70,6 +70,10 @@ class ReportController extends Controller {
 	public function resultByRoom($id, $class, $room, $year) {
 		if ($id == env('APP_RISK_ID')) {
 			return $this->riskResult($id, $class, $room, $year);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return (new SDQReportController())->resultByRoom($id, $class, $room, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->eqResult($id, $class, $room, $year);
 		} else {
 			return $this->normalResultByRoom($id, $class, $room, $year);
 		}
@@ -204,6 +208,10 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing ull on room parameter will pull a class
 			return $this->riskResult($id, $class, null, $year);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return (new SDQReportController())->resultByClass($id, $class, null, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->riskResult($id, $class, null, $year);
 		} else {
 			return $this->normalResultByClass($id, $class, $year);
 		}
@@ -274,51 +282,13 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
 		} else if ($id == env('APP_SDQ_ID')) {
-			return $this->resultByPersonSDQ($id, $year, $from, $num);
+			dd($id);
+			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->resultByPersonEQ($id, $year, $from, $num);
 		} else  {
 			return $this->resultByPersonNormal($id, $year, $from, $num);
 		}
-	}
-
-	private function resultByPersonSDQ($id, $year, $from = 0, $num = 10) {
-		// Risk screening reports shows with different info
-		Questionaire::$PAGED_FROM = $from;
-		Questionaire::$PAGED_NUM = $num;
-		$questionaire = Questionaire::with(
-			'pagedResults.participant.answers.choice.parent', 'criteria', 'questionGroups.questions')
-									->find($id);
-
-		
-
-		if ($questionaire) {
-			$participants = [];
-			foreach ($questionaire->pagedResults as $res) {
-				$p = $res->participant;
-				$p->groups = $p->group;
-				$sumval = QuestionGroup::sumValue(
-					$questionaire->questionGroups, $p, [env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
-				);
-
-				$participants[] = $p;
-
-				$rs = Criterion::riskString($questionaire->criteria, $sumval);
-				$p->risk =$rs." ($sumval)";
-			}
-
-			if ($participants) {
-				return response()->json([
-					'success' => true,
-					'data' => $participants
-				]);
-			}
-		}
-
-		return response()->json([
-			'success' => false,
-			'message' => 'ไม่พบข้อมูลรายงาน'
-		]);
 	}
 
 	private function resultByPersonNormal($id, $year, $from = 0, $num = 10) {
@@ -380,6 +350,10 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return (new SDQReportController())->resultBySchool($id, null, null, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->resultBySchool($id, null, null, $year);
 		} else {
 			return $this->normalResultBySchool($id, $year);
 		}

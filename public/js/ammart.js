@@ -153,7 +153,7 @@
 			}
 		})
 		.state('report.risk', {
-			url: '/:type/risk-screening/:formID',
+			url: '/:type/risk-screening',
 			params: { form: null, class: 1, room: 1 },
 			views: {
 				'report': {
@@ -207,7 +207,7 @@
 					templateUrl: function($stateParams) {
 						return 'template/report/sdq/'+$stateParams.type;
 					},
-					controller: 'SDQReportController',
+					controller: 'SDQReportToolbarController',
 					controllerAs: 'toolbar'
 				},
 			}
@@ -235,9 +235,10 @@
 			}
 		})
 		.state('report.sdq.overview', {
-			url: '/overview/:year',
+			url: '/year/:year',
+			params: { class: null, room: null, year: CURRENT_YEAR },
 			views: {
-				'report.sdq.body': {
+				'report.sdq.overview': {
 					templateUrl: 'template/report/sdq/overview',
 					controller: 'SDQReportOverviewController',
 					controllerAs: 'overview'

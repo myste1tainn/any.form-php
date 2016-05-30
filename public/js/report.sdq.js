@@ -2,12 +2,14 @@
 	
 	var module = angular.module('report.sdq', [])
 
-	.controller('SDQReportController', function(
+	.controller('SDQReportToolbarController', function(
 		$scope, $state, $time, $class, SDQ_ID){
+
 
 		var self = this;
 		var currentYear = (new Date()).getFullYear() + 543;
 		var pyear = $state.params.year || currentYear;
+		var ptype = $state.params.type || null;
 		this.years = $time.years();
 		this.year = $time.yearObjectForYear(pyear);
 
@@ -21,8 +23,21 @@
 				class: self.class.value,
 				room: self.room.value,
 				year: self.year.value
-			};
-			$state.go('report.sdq.list', params);
+			}
+
+			if (ptype) {
+				if (ptype == 'school') {
+					$state.go('report.sdq.overview', params);
+				} else if (ptype == 'room') {
+					$state.go('report.sdq.overview', params);
+				} else if (ptype == 'class') {
+					$state.go('report.sdq.overview', params);
+				} else {
+					$state.go('report.sdq.list', params);
+				}
+			} else {
+				$state.go('report.sdq.list', params);
+			}
 		}
 
 		this.classChange = function() {
@@ -54,7 +69,7 @@
 			self.room = self.rooms[0];
 
 			if ($state.params.type != "person") {
-				changeState();
+				// changeState();
 			}
 		})
 
@@ -204,16 +219,51 @@
 
 
 
+	.controller('SDQReportOverviewController', function($scope, $report, $state, SDQ_ID){
+		var self = this;
+		var _class = $state.params.class || null;
+		var _room = $state.params.room || null;
+		var _year = $state.params.year || null;
+		var _type = $state.params.type || null;
 
+		console.log($state.params);
 
+		this.results = [];
 
+		var _payload = null;
+		var _reportLoader = null;
+		var _callback = function(report){
+			self.results = report;
+		};
 
+		var _reloadData = function() {
+			if (_type == 'room') {
+				_payload = { id: SDQ_ID, class: _class, room: _room, year: _year };
+				_reportLoader = $report.room;
+			} else if (_type == 'class') {
+				_payload = { id: SDQ_ID, class: _class, year: _year };
+				_reportLoader = $report.class;
+			} else if (_type == 'school') {
+				_payload = { id: SDQ_ID, year: _year };
+				_reportLoader = $report.school;
+			}
 
+			_reportLoader(_payload, _callback);
+		}
 
-
-
-	.controller('SDQReportOverviewController', function($scope, SDQ_ID){
-		//Code
+		// Reload data if both argument is ready for type room
+		if (_type == 'room') {
+			if (_class != null && _room != null && _year != null) {
+				_reloadData();
+			}
+		} else if (_type == 'class') {
+			if (_class != null && _year != null) {
+				_reloadData();
+			}
+		} else {
+			// Reload immediately
+			_reloadData();
+		}
 	})
 
 
