@@ -73,7 +73,7 @@
 				if (res.success) {
 					callback(res.data);
 				} else {
-					sys.dialog.error(res)
+					sys.dialog.error(res);
 				}
 			})
 			.error(function(res, status, headers, config){
