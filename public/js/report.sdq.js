@@ -226,8 +226,6 @@
 		var _year = $state.params.year || null;
 		var _type = $state.params.type || null;
 
-		console.log($state.params);
-
 		this.results = [];
 
 		var _payload = null;
