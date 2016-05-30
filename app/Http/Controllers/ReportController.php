@@ -208,6 +208,10 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing ull on room parameter will pull a class
 			return $this->riskResult($id, $class, null, $year);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return (new SDQReportController())->resultByClass($id, $class, null, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->riskResult($id, $class, null, $year);
 		} else {
 			return $this->normalResultByClass($id, $class, $year);
 		}
@@ -346,6 +350,10 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
+		} else if ($id == env('APP_SDQ_ID')) {
+			return (new SDQReportController())->resultBySchool($id, null, null, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->resultBySchool($id, null, null, $year);
 		} else {
 			return $this->normalResultBySchool($id, $year);
 		}
