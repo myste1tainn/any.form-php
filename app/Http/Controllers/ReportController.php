@@ -282,7 +282,6 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
 		} else if ($id == env('APP_SDQ_ID')) {
-			dd($id);
 			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->resultByPersonEQ($id, $year, $from, $num);

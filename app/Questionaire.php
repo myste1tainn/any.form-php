@@ -56,7 +56,7 @@ class Questionaire extends Model {
 	}
 
 	// Get all participants who did this form 
-	public static function participantsForQuestionaire($id, $year, $from, $num, $class, $room) {
+	public static function participantsForQuestionaire($id, $year, $from, $num, $class = null, $room = null) {
 		$questionaire = Questionaire::find($id);
 		return $questionaire->participants($year, $from, $num, $class, $room);
 	}

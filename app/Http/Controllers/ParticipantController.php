@@ -53,7 +53,7 @@ class ParticipantController extends Controller {
 
 			foreach ($participant->groups as $g) {
 				$g->result = Criterion::riskStringWithModifiers(
-					$g->criteria, $g->totalValueWithParticipant($participant)
+					$g->criteria, $g->valueFallsInCriterion($participant)
 				);
 			}
 
