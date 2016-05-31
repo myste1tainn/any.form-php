@@ -76,6 +76,7 @@ Route::get('/class/all', 'ClassController@all');
 // APIs
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
 Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
+Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', 'ReportController@numberOfPages');
 
 // API: Question Groups
 Route::get('api/v1/form/{formID}/question-groups', 'QuestionController@allGroup');

@@ -32,6 +32,16 @@
 
 	.service('$report', function($http, sys){
 
+		this.numberOfPages = function(id, year, numRows, callback){
+			$http.get(`api/v1/report/${id}/year/${year}/number-of-rows/${numRows}/number-of-pages`)
+			.success(function(res, status, headers, config){
+				callback(res);
+			})
+			.error(function(res, status, headers, config){
+				sys.dialog.error('Cannot get number of pages of report '+id);
+			});
+		}
+
 		this.functionForType = function(type) {
 			if (type === 'person') { return this.person; }
 			else if (type === 'room') { return this.room; }
@@ -54,7 +64,7 @@
 		}
 
 		this.person = function(payload, callback) {
-			$http.get('report/by-person/'+payload.id+'/year/'+payload.year)
+			$http.get(`report/by-person/${payload.id}/year/${payload.year}/from/${payload.from}/num/${payload.num}`)
 			.success(function(res, status, headers, config){
 				if (res.success) {
 					callback(res.data);

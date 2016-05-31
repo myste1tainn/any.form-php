@@ -415,4 +415,11 @@ class ReportController extends Controller {
             ]);
         }
 	}
+
+	public function numberOfPages($id, $year, $numRows = 10)
+	{
+		$count = Questionaire::participantsCountForQuestionaire($id, $year);
+		$numberOfPages = floor($count / $numRows);
+		return $numberOfPages;
+	}
 }

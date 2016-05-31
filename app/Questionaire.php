@@ -34,9 +34,12 @@ class Questionaire extends Model {
 	}
 
 	// Get all results that is related to this questionaire
-	public function results($year = null, $from = 0, $num = 10, $class = null, $room = null, $eager = true) {
+	public function results($year = null, $from = null, $num = nul, $class = null, $room = null, $eager = true) {
 		$query = $this->hasMany('App\QuestionaireResult', 'questionaireID')->join('participants', 'questionaire_results.participantID', '=', 'participants.id');
-		$query->skip($from)->take($num);
+
+		if ($from) 	{$query->skip($from);}
+		if ($num) 	{$query->take($num);}
+
 		if ($year) {
 			$query->where('academicYear', $year);
 		}
@@ -53,6 +56,11 @@ class Questionaire extends Model {
 		} else {
 			return $query;
 		}
+	}
+
+	public static function participantsCountForQuestionaire($id, $year = null, $class = null, $room = null) {
+		$questionaire = Questionaire::find($id);
+		return $questionaire->participantsCount($year, $class, $room);
 	}
 
 	// Get all participants who did this form 
@@ -83,6 +91,10 @@ class Questionaire extends Model {
 		}
 
 		return $participants;
+	}
+
+	public function participantsCount($year, $class, $room) {
+		return $this->results($year, null, null, $class, $room, false)->count();
 	}
 
 }

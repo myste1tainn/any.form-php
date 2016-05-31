@@ -2,7 +2,7 @@
 
 	<div class="row std-pad-lr std-pad-bottom border-b border-lightgray" ui-view="report.sdq">
 		<div class="l-pad-top std-pad-bottom std-pad-lr">
-			<div class="col-xs-6">
+			<div class="col-xs-4">
 				<div class="pull-left">
 					ปีการศึกษา
 				</div>
@@ -18,7 +18,7 @@
 				</button>
 			</div>
 
-			<div class="col-xs-6">
+			<div class="col-xs-4">
 				<form>
 					<button class="pull-right"
 							ui-sref="report.sdq.detail({participantID: toolbar.searchID, year:toolbar.year.value})">
