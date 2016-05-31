@@ -18,13 +18,15 @@ class AnswerAdditionalInput extends Model {
 	{
 		$ansInputs = [];
 		foreach ($iAnsInputs as $iAnsInput) {
-			$ansInput = new AnswerAdditionalInput();
-			$ansInput->value = $iAnsInput['value'];
-			$ansInput->inputID = $iAnsInput['id'];
-			$ansInput->answerID = $answer->id;
-			$ansInput->save();
+			if (array_key_exists('value', $iAnsInput)) {
+				$ansInput = new AnswerAdditionalInput();
+				$ansInput->value = $iAnsInput['value'];
+				$ansInput->inputID = $iAnsInput['id'];
+				$ansInput->answerID = $answer->id;
+				$ansInput->save();
 
-			$ansInputs[] = $ansInput;
+				$ansInputs[] = $ansInput;
+			}
 		}
 
 		return $ansInputs;
