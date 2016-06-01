@@ -50,7 +50,9 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function($scope, $class, $toolbar, $state, $time){
+	.controller('ReportPersonRiskToolbarController', function(
+		$scope, $class, $toolbar, $state, $time, $report, RISK_ID){
+
 		var self = this;
 		var currentYear = (new Date()).getFullYear() + 543;
 		var pyear = $state.params.year || currentYear;
@@ -62,13 +64,53 @@
 		this.room = null;
 		this.rooms = [];
 
+		this.numRows = 10;
+		this.numPage = 0;
+		this.pages = [];
+		this.currentPage = 0;
+
+		$report.numberOfPages(RISK_ID, this.year.value, this.numRows, function(numPage){
+			self.pages = [];
+			self.numPage = numPage || 0;
+
+			for (var i = 0; i <= 7; i++) {
+				self.pages.push(i);
+			}
+		})
+
 		var changeState = function() {
 			var params = {
 				class: self.class.value,
 				room: self.room.value,
-				year: self.year.value
+				year: self.year.value,
+				from: this.currentPage * this.numRows,
+				num : this.numRows
 			};
 			$state.go('report.risk.overview', params);
+		}
+
+		this.changePage = function(page) {
+			this.currentPage = page;
+			var params = {
+				class: self.class.value,
+				room: self.room.value,
+				year: self.year.value,
+				from: this.currentPage * this.numRows,
+				num : this.numRows
+			};
+
+			var last = this.pages.length - 1;
+			if (this.currentPage == this.pages[last]) {
+				this.pages.shift();
+				this.pages.push(this.pages[last - 1] + 1);
+			}
+			if (this.currentPage == this.pages[0] && this.pages[0] != 0) {
+				for (var i = this.pages.length - 1; i >= 0; i--) {
+					this.pages[i]--;
+				}
+			}
+
+			$state.go('report.risk.list', params);
 		}
 
 		this.classChange = function() {
@@ -98,17 +140,13 @@
 			// Default select the first row found
 			self.class = self.classes[0];
 			self.room = self.rooms[0];
-
-			if ($state.params.type != "person") {
-				changeState();
-			}
 		})
 
 		// Emit yearChange once if it is pre-determinded
 		// and emit only after all angular is loaded
 		if (typeof this.year == 'object') {
 			setTimeout(function() {
-				self.yearChange();
+				// self.yearChange();
 			}, 500);
 		}
 	})
@@ -158,6 +196,8 @@
 	.controller('ReportPersonRiskListController', function($scope, $state, $report, RISK_ID){
 		var self = this;
 
+		this.from = $state.params.from || 0;
+		this.num = $state.params.num || 10;
 		this.year = $state.params.year;
 		this.results = [];
 		this.displays = [];
@@ -174,6 +214,10 @@
 			}
 		}
 
+		this.changePage = function(pageNum){
+			this.currentPage = pageNum;
+		}
+
 		this.select = function(participant) {
 			$state.go('^.detail', {
 				participantID: participant.identifier,
@@ -182,7 +226,7 @@
 			})
 		}
 
-		var payload = { id: RISK_ID, year: this.year };
+		var payload = { id: RISK_ID, year: this.year, from: this.from, num: this.num };
 		$report.person(payload, function(participants){
 			self.results = self.displays = participants;
 			prepareDisplaysData();
