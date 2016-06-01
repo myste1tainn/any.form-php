@@ -154,7 +154,6 @@
 		})
 		.state('report.risk', {
 			url: '/:type/risk-screening',
-			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
@@ -167,6 +166,7 @@
 		})
 		.state('report.risk.overview', {
 			url: '/year/:year',
+			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
 			views: {
 				'report.risk.overview': {
 					templateUrl: 'template/report-risk/overview',

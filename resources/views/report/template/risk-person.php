@@ -21,8 +21,9 @@
 			<div class="col-xs-4">
 				<button ng-repeat="page in toolbar.pages track by $index"
 						ng-click="toolbar.changePage(page)"
-						class="clickable">
-					[[page+1]] 
+						class="clickable"
+						style="width: 40px">
+					[[page+1]]
 				</button>
 			</div>
 

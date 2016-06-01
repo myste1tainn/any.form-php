@@ -73,7 +73,7 @@
 			self.pages = [];
 			self.numPage = numPage || 0;
 
-			for (var i = 0; i <= self.numPage; i++) {
+			for (var i = 0; i <= 7; i++) {
 				self.pages.push(i);
 			}
 		})
@@ -98,6 +98,18 @@
 				from: this.currentPage * this.numRows,
 				num : this.numRows
 			};
+
+			var last = this.pages.length - 1;
+			if (this.currentPage == this.pages[last]) {
+				this.pages.shift();
+				this.pages.push(this.pages[last - 1] + 1);
+			}
+			if (this.currentPage == this.pages[0] && this.pages[0] != 0) {
+				for (var i = this.pages.length - 1; i >= 0; i--) {
+					this.pages[i]--;
+				}
+			}
+
 			$state.go('report.risk.list', params);
 		}
 
@@ -189,8 +201,6 @@
 		this.year = $state.params.year;
 		this.results = [];
 		this.displays = [];
-
-		console.log(this.from, this.num);
 
 		var prepareDisplaysData = function() {
 			for (var i = self.displays.length - 1; i >= 0; i--) {
