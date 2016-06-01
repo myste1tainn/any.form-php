@@ -3,7 +3,7 @@
 	var module = angular.module('report.sdq', [])
 
 	.controller('SDQReportToolbarController', function(
-		$scope, $state, $time, $class, SDQ_ID){
+		$scope, $state, $time, $class, $report, SDQ_ID){
 
 
 		var self = this;
@@ -18,11 +18,27 @@
 		this.room = null;
 		this.rooms = [];
 
+		this.numRows = 10;
+		this.numPage = 0;
+		this.pages = [];
+		this.currentPage = 0;
+
+		$report.numberOfPages(SDQ_ID, this.year.value, this.numRows, function(numPage){
+			self.pages = [];
+			self.numPage = numPage || 0;
+
+			for (var i = 0; i <= 7; i++) {
+				self.pages.push(i);
+			}
+		})
+
 		var changeState = function() {
 			var params = {
 				class: self.class.value,
 				room: self.room.value,
-				year: self.year.value
+				year: self.year.value,
+				from: this.currentPage * this.numRows,
+				num : this.numRows
 			}
 
 			if (ptype) {
@@ -38,6 +54,30 @@
 			} else {
 				$state.go('report.sdq.list', params);
 			}
+		}
+
+		this.changePage = function(page) {
+			this.currentPage = page;
+			var params = {
+				class: self.class.value,
+				room: self.room.value,
+				year: self.year.value,
+				from: this.currentPage * this.numRows,
+				num : this.numRows
+			};
+
+			var last = this.pages.length - 1;
+			if (this.currentPage == this.pages[last]) {
+				this.pages.shift();
+				this.pages.push(this.pages[last - 1] + 1);
+			}
+			if (this.currentPage == this.pages[0] && this.pages[0] != 0) {
+				for (var i = this.pages.length - 1; i >= 0; i--) {
+					this.pages[i]--;
+				}
+			}
+
+			$state.go('report.sdq.list', params);
 		}
 
 		this.classChange = function() {
@@ -108,6 +148,8 @@
 	.controller('SDQReportListController', function($scope, $state, $report, SDQ_ID){
 		var self = this;
 
+		this.from = $state.params.from || 0;
+		this.num = $state.params.num || 10;
 		this.year = $state.params.year;
 		this.results = [];
 		this.displays = [];
@@ -132,7 +174,7 @@
 			})
 		}
 
-		var payload = { id: SDQ_ID, year: this.year };
+		var payload = { id: SDQ_ID, year: this.year, from: this.from, num: this.num };
 		$report.person(payload, function(participants){
 			self.results = self.displays = participants;
 			prepareDisplaysData();
