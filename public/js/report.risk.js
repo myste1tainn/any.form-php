@@ -50,79 +50,73 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function(
-		$scope, $class, $toolbar, $state, $time, $report, RISK_ID){
+	
 
-		var self = this;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	.controller('ReportPersonRiskToolbarController', function(
+		$scope, $class, $toolbar, $state, $time, $report, RISK_ID, $controller){
+
+		var self = $scope;
 		var currentYear = (new Date()).getFullYear() + 543;
 		var pyear = $state.params.year || currentYear;
-		this.years = $time.years();
-		this.year = $time.yearObjectForYear(pyear);
 
-		this.class = null;
-		this.classes = [];
-		this.room = null;
-		this.rooms = [];
+		$scope.reportID = RISK_ID;
+		$scope.stateName = 'report.risk.list';
 
-		this.numRows = 10;
-		this.numPage = 0;
-		this.pages = [];
-		this.currentPage = 0;
+		$scope.years = $time.years();
+		$scope.year = $time.yearObjectForYear(pyear);
 
-		$report.numberOfPages(RISK_ID, this.year.value, this.numRows, function(numPage){
-			self.pages = [];
-			self.numPage = numPage || 0;
-
-			for (var i = 0; i <= 7; i++) {
-				self.pages.push(i);
-			}
-		})
+		$scope.class = null;
+		$scope.classes = [];
+		$scope.room = null;
+		$scope.rooms = [];
 
 		var changeState = function() {
 			var params = {
 				class: self.class.value,
 				room: self.room.value,
 				year: self.year.value,
-				from: this.currentPage * this.numRows,
-				num : this.numRows
+				from: $scope.currentPage * $scope.numRows,
+				num : $scope.numRows
 			};
 			$state.go('report.risk.overview', params);
 		}
 
-		this.changePage = function(page) {
-			this.currentPage = page;
-			var params = {
-				class: self.class.value,
-				room: self.room.value,
-				year: self.year.value,
-				from: this.currentPage * this.numRows,
-				num : this.numRows
-			};
-
-			var last = this.pages.length - 1;
-			if (this.currentPage == this.pages[last]) {
-				this.pages.shift();
-				this.pages.push(this.pages[last - 1] + 1);
-			}
-			if (this.currentPage == this.pages[0] && this.pages[0] != 0) {
-				for (var i = this.pages.length - 1; i >= 0; i--) {
-					this.pages[i]--;
-				}
-			}
-
-			$state.go('report.risk.list', params);
-		}
-
-		this.classChange = function() {
-			// $toolbar.valueChange({id:'class', value:this.class.value});
+		$scope.classChange = function() {
+			// $toolbar.valueChange({id:'class', value:$scope.class.value});
 			changeState();
 		}
-		this.roomChange = function() {
-			// $toolbar.valueChange({id:'room', value:this.room.value});
+		$scope.roomChange = function() {
+			// $toolbar.valueChange({id:'room', value:$scope.room.value});
 			changeState();
 		}
-		this.yearChange = function() {
-			// $toolbar.valueChange({id:'year', value:this.year.value});
+		$scope.yearChange = function() {
+			// $toolbar.valueChange({id:'year', value:$scope.year.value});
 			changeState();
 		}
 
@@ -144,11 +138,13 @@
 
 		// Emit yearChange once if it is pre-determinded
 		// and emit only after all angular is loaded
-		if (typeof this.year == 'object') {
+		if (typeof $scope.year == 'object') {
 			setTimeout(function() {
 				// self.yearChange();
 			}, 500);
 		}
+
+		$controller('PaginationController', { $scope: $scope });
 	})
 
 
