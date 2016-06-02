@@ -397,4 +397,47 @@
 		}
 	})
 
+	.controller('PaginationController', function($scope, $report, $state){
+		$scope.numRows = 10;
+		$scope.numPage = 0;
+		$scope.pages = [];
+		$scope.currentPage = 0;
+
+		$scope.year = { value: 2559 };
+
+		$report.numberOfPages($scope.reportID, $scope.year.value, $scope.numRows, function(numPage){
+			$scope.pages = [];
+			$scope.numPage = numPage || 0;
+
+			var limit = ($scope.numPage > 7) ? 7 : $scope.numPage;
+			for (var i = 0; i <= limit; i++) {
+				$scope.pages.push(i);
+			}
+		})
+
+		$scope.changePage = function(page) {
+			$scope.currentPage = page;
+			var params = {
+				class: $scope.class.value,
+				room: $scope.room.value,
+				year: $scope.year.value,
+				from: $scope.currentPage * $scope.numRows,
+				num : $scope.numRows
+			};
+
+			var last = $scope.pages.length - 1;
+			if ($scope.currentPage == $scope.pages[last] && last > 0) {
+				$scope.pages.shift();
+				$scope.pages.push($scope.pages[last - 1] + 1);
+			}
+			if ($scope.currentPage == $scope.pages[0] && $scope.pages[0] != 0) {
+				for (var i = $scope.pages.length - 1; i >= 0; i--) {
+					$scope.pages[i]--;
+				}
+			}
+
+			$state.go($scope.stateName, params);
+		}
+	})
+
 })();
