@@ -8,22 +8,19 @@
 	display: block;
 	margin: auto;
 	margin-top: 20px;
-	background: url('logo-ammart.jpg');
+	background: url('logo-ammart.png');
 	background-size: cover;
 }
 
 .navbar {
 	transition: all 0.3s ease;
-	background: white;
-	/*background-color: #16006c;*/
-	/*background-color: #0B2171;*/
 	border: none;
 	border-radius: 0px;
 	float: left;
 	height: 100%;
 	padding: 0px !important;
 	margin-bottom: 0px;
-	border-right: 1px solid #eee;
+	border-right: 1px solid #1235AC;
 }
 
 .navbar * {
@@ -51,11 +48,12 @@
 }
 
 .navbar-nav li.section {
-	background: #fff;
-	color: #555 !important;
 	padding: 8px;
-	border-top: 1px solid #eee;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #1235AC;
+}
+
+.navbar-nav li:hover:not(.section) {
+	background-color: #3455CC;
 }
 
 .navbar-nav li a {
