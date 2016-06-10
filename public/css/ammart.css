@@ -146,19 +146,21 @@ button:hover,
 button.selected {
 	color: #4bf;
 }
-button:hover {
+button:hover:not(.submit) {
 	color: #4bf;
 	text-decoration: underline;
 }
 
 button.submit:hover,
 button.submit.selected {
-	background: #16006C;
+	background: #2546BD;
+	color: white;
 }
 
 button.submit {
-	background: #0B2171;
-	color: white;
+	border: 2px solid #2546BD;
+	color: #2546BD;
+	border-radius: 2px;
 }
 
 .container.report.do {
@@ -461,4 +463,23 @@ table.sdq-body td {
 }
 table.sdq-body tr:hover td {
 	color: #29d;
+}
+
+table.do td.choice::after {
+	content: '\00a0';
+	position: relative;
+	display: block;
+	text-align: center;
+	width: 20px; height: 20px;
+	background: #DEAD26;
+	margin: auto;
+	border-radius: 50%;
+	transform: scale(0);
+	opacity: 0;
+	transition: all 0.4s ease;
+}
+
+table.do td.choice.selected::after {
+	transform: scale(1);
+	opacity: 1;
 }

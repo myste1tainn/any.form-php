@@ -1,11 +1,12 @@
 @extends((Request::ajax()) ? 'nilview' : 'app')
 @section('content')
-<div class="container do">
+<div class="container">
 
-	<h3>[[ questionaire.name ]]</h3>
-	<hr />
+	<div class="col-xs-12 std-pad border-bottom">
+		<h3 class="text-center no-margin">[[ questionaire.name ]]</h3>
+	</div>
 
-	<div class="col-xs-12" style="padding: 0" participant-info>
+	<div class="col-xs-12 large-margin-top large-margin-bottom" style="padding: 0" participant-info>
 		<!-- <table class="name col-xs-4 pull-right"> -->
 		<table class="name col-xs-12">
 			<tr>
@@ -42,11 +43,12 @@
 		</table>
 	</div>
 
-	<table class="form questions">
+	<table class="do">
 		<tr ng-repeat="r in questionaire.header.rows">
 			<th ng-repeat="c in r.cols"
 				rowspan="[[ c.rowspan ]]" 
-				colspan="[[ c.colspan ]]">
+				colspan="[[ c.colspan ]]"
+				class="bgcolor-secondary theme-border">
 				[[ c.label ]]
 			</th>
 		</tr>
@@ -54,16 +56,18 @@
 			<tr ng-repeat="r in q.meta.header.rows">
 				<th ng-repeat="c in r.cols"
 					rowspan="[[ c.rowspan ]]" 
-					colspan="[[ c.colspan ]]">
+					colspan="[[ c.colspan ]]"
+					class="bgcolor-secondary theme-border">
 					[[ c.label ]]
 				</th>
 			</tr>
 			<tr ng-if="q.type == 0">
-				<td class="text-right">[[ q.label ]]</td>
-				<td class="text-left">[[ q.name ]]</td>
+				<td class="border text-right">[[ q.label ]]</td>
+				<td class="border text-left">[[ q.name ]]</td>
 				<td ng-repeat="c in q.choices" 
 					ng-class="{'selected' : isChoosen(q, c)}"
-					ng-click="toggleChoose(q, c)">
+					ng-click="toggleChoose(q, c)"
+					class="bgcolor-secondary theme-border choice">
 				</td>
 			</tr>
 			<tr ng-if="q.type == 1" class="no-border std-pad">
@@ -123,7 +127,7 @@
 	<button type="submit"
 			ng-click="submit()"
 			style="margin-bottom: 100px"
-			class="pull-right std-pad std-margin min-w-100 submit">
+			class="pull-right std-margin min-w-100 submit">
 		ส่ง
 	</button>
 </div>
