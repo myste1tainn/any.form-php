@@ -296,14 +296,14 @@ class ReportController extends Controller {
 						 ->first();
 
 		if ($q) {
-			$results = $q->results()->with('participant')->where('academicYear', $year)->get();
-			foreach ($results as $r) {
+			$q->results($year);
+			foreach ($q->results as $r) {
 				$rs = Criterion::riskString($q->criteria, $r->value);
 				$r->risk =$rs;
 			}
 			return response()->json([
 				'success' => true,
-				'data' => $results
+				'data' => $q->results
 			]);
 		} else {
 			return response()->json([
