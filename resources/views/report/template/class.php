@@ -46,12 +46,12 @@
 				<td class="text-center col-xs-1">
 					[[ criterion.percent ]]
 				</td>
-				<td class="text-center col-xs-1"
+				<td class="text-center theme-border col-xs-1 bgcolor-secondary color-accent1"
 					style="font-size: 2em; font-weight: 900; color: #1237BD"
 					rowspan="[[ class.criteria.length ]]"
 					ng-if="$index == 0">
 					[[ class.avgRisk ]] ([[ class.avgValue ]])
-					<p style="font-size: 0.7">จากนักเรียนจำนวน [[ class.total ]] คน</p>
+					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน [[ class.total ]] คน</p>
 				</td>
 			</tr>
 		</tbody>

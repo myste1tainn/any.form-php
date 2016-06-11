@@ -54,13 +54,16 @@ table.form th {
 	font-size: 1.1em;
 	padding: 15px;
 	color: white;
-	background: #0B2171;
-	border: 1px solid #ddd;
+	background: #2546BD;
+	border: 1px solid #1235AC;
 }
 table th {
 	text-align: center;
 	font-size: 1.1em;
 	padding: 15px;
+}
+table.form td.bgcolor-secondary {
+	border: 1px solid #1235AC;	
 }
 table.item td:first-child {
 	width: 10%;

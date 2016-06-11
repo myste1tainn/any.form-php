@@ -28,10 +28,10 @@
 		</thead>
 		<tr ng-repeat="r in displayedResults">
 			<td class="text-left">
-				[[ r.participant.firstname ]] [[ r.participant.lastname ]]
+				[[ r.firstname ]] [[ r.lastname ]]
 			</td>
-			<td class="text-center">[[ r.participant.class ]]</td>
-			<td class="text-center">[[ r.participant.room ]]</td>
+			<td class="text-center">[[ r.class ]]</td>
+			<td class="text-center">[[ r.room ]]</td>
 			<td>[[ r.risk ]] ([[ r.value ]])</td>
 		</tr>
 	</table>
