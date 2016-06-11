@@ -49,7 +49,11 @@ strong {
 *		Padding
 *
 */
-.no-pad				{padding: 0px;}
+.no-pad				{padding: 0px !important;}
+.no-pad-left		{padding-left: 0px !important;}
+.no-pad-right		{padding-right: 0px !important;}
+.no-pad-top			{padding-top: 0px !important;}
+.no-pad-bottom		{padding-bottom: 0px !important;}
 .small-pad 			{padding: 8px;}
 .small-pad-left 	{padding-left: 8px;}
 .small-pad-right 	{padding-right: 8px;}
@@ -120,6 +124,11 @@ strong {
 .border-right		{border-right: 1px solid #e5e5e5;}
 .border-top			{border-top: 1px solid #e5e5e5;}
 .border-bottom		{border-bottom: 1px solid #e5e5e5;}
+.theme-border		{border: 1px solid #1235AC;}
+.theme-border-left	{border-left: 1px solid #1235AC;}
+.theme-border-right	{border-right: 1px solid #1235AC;}
+.theme-border-top	{border-top: 1px solid #1235AC;}
+.theme-border-bottom{border-bottom: 1px solid #1235AC;}
 .no-border,
 .no-border td		
 {border: none !important;}
