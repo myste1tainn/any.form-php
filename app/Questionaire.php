@@ -34,7 +34,7 @@ class Questionaire extends Model {
 	}
 
 	// Get all results that is related to this questionaire
-	public function results($year = null, $from = null, $num = nul, $class = null, $room = null, $eager = true) {
+	public function results($year = null, $from = null, $num = null, $class = null, $room = null, $eager = true) {
 		$query = $this->hasMany('App\QuestionaireResult', 'questionaireID')->join('participants', 'questionaire_results.participantID', '=', 'participants.id');
 
 		if ($from) 	{$query->skip($from);}
@@ -50,6 +50,7 @@ class Questionaire extends Model {
 		if ($room) {
 			$query->where('room', $room);
 		}
+
 
 		if ($eager) {
 			$this->results = $query->get();
