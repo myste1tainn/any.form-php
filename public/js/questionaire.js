@@ -20,7 +20,11 @@
 		}
 	})
 
-	.service('$questionaire', function($http, $question, $criterion, ngDialog, req, sys) {
+	.service('$questionaire', function(
+		$http, $question, $criterion, ngDialog, req, sys,
+		SDQ_ID, SDQT_ID, SDQP_ID, EQ_ID, RISK_ID) {
+		var _this = this;
+
 		this.newInstance = function() {
 			return {
 				id: -1,
@@ -80,8 +84,31 @@
 			}
 		}
 
+		this.injectFunctions = function(form){
+			form.isSDQForm = function(){ 
+				return this.id == SDQ_ID || this.id == SDQP_ID || this.id == SDQT_ID;
+			}
+			form.isEQForm = function(){ 
+				return this.id == EQ_ID;
+			}
+			form.isRiskScreeningForm = function(){ 
+				return this.id == RISK_ID;
+			}
+			form.isGeneralForm = function(){ 
+				return !(this.isSDQForm() || this.isRiskScreeningForm())
+			}
+			form.injectedFunctions = true;
+		}
+
 		this.all = function(callback) {
-			req.getData('api/questionaires', callback)
+			req.getData('api/questionaires', function(forms){
+				
+				for (var i = forms.length - 1; i >= 0; i--) {
+					_this.injectFunctions(forms[i]);
+				}
+
+				callback(forms);
+			})
 		}
 
 		this.save = function(questionaire, callback) {
@@ -403,7 +430,7 @@
 					$scope.participant.number = 26;
 				}
 
-				$scope.mockupInput();
+				// $scope.mockupInput();
 			}
 		}
 	})
