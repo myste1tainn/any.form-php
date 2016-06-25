@@ -16,10 +16,7 @@ class FormSeeder extends Seeder {
     {
         $this->command->info("สร้างแบบฟอร์ม");
 
-        $path = database_path().'/seeds/forms.sql';
-        DB::unprepared(file_get_contents($path));
-
-        $path = database_path().'/seeds/questions_meta.sql';
+        $path = database_path().'/seeds/db-structure.sql';
         DB::unprepared(file_get_contents($path));
 
         $this->command->info("สร้างแบบฟอร์มเสร็จสิ้น");
