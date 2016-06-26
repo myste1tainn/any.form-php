@@ -147,6 +147,10 @@
 		this.years = $time.years();
 		this.year = $time.yearObjectForYear(pyear);
 
+		if (!this.form) {
+			this.form = { id: localStorage.getItem('formID') }
+			$questionaire.injectFunctions(this.form);
+		}
 
 		this.classChange = function() {
 			$state.go('^.overview', {
@@ -250,8 +254,10 @@
 					stateName = 'report.overview';
 				}
 
-				var form = self.form || null;
-				var formID = (form == null) ? null : form.id;
+				var form = self.form;
+				var formID = form.id;
+
+				localStorage.setItem('formID', form.id);
 
 				$state.go(stateName, { type: self.type, form: form, formID: formID });
 			}

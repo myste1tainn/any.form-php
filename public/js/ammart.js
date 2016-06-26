@@ -203,6 +203,7 @@
 		})
 		.state('report.sdq', {
 			url: '/:type/sdq',
+			params: { formID: null, form: null },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {

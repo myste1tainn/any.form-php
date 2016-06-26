@@ -3,15 +3,14 @@
 	var module = angular.module('report.sdq', [])
 
 	.controller('SDQReportToolbarController', function(
-		$scope, $state, $time, $class, $report, SDQ_ID, $controller){
-
+		$scope, $state, $time, $class, $report, $controller){
 
 		var self = $scope;
 		var currentYear = (new Date()).getFullYear() + 543;
 		var pyear = $state.params.year || currentYear;
 		var ptype = $state.params.type || null;
 
-		$scope.reportID = SDQ_ID;
+		$scope.reportID = $state.params.formID || localStorage.getItem('formID');
 		$scope.stateName = 'report.sdq.list';
 
 		$scope.years = $time.years();
@@ -113,9 +112,10 @@
 
 
 
-	.controller('SDQReportListController', function($scope, $state, $report, SDQ_ID){
+	.controller('SDQReportListController', function($scope, $state, $report){
 		var self = this;
 
+		this.form = { id: $state.params.formID || localStorage.getItem('formID') };
 		this.from = $state.params.from || 0;
 		this.num = $state.params.num || 10;
 		this.year = $state.params.year;
@@ -142,7 +142,7 @@
 			})
 		}
 
-		var payload = { id: SDQ_ID, year: this.year, from: this.from, num: this.num };
+		var payload = { id: this.form.id, year: this.year, from: this.from, num: this.num };
 		$report.person(payload, function(participants){
 			self.results = self.displays = participants;
 			prepareDisplaysData();
@@ -171,8 +171,10 @@
 
 
 
-	.controller('SDQReportDetailController', function($scope, $state, $participant, SDQ_ID){
+	.controller('SDQReportDetailController', function($scope, $state, $participant){
 		var self = this;
+
+		var _id = $state.params.formID || localStorage.getItem('formID');
 
 		this.selectedAspect = $state.params.aspect || null;
 		this.year = $state.params.year || null;
@@ -187,7 +189,7 @@
 					$scope.participant = participant
 
 					// Get the result of the participant
-					$participant.result(participant.id, SDQ_ID, self.year, function(res){
+					$participant.result(participant.id, _id, self.year, function(res){
 						if (res.success) {
 							$scope.participant.groups = res.data.groups;
 							$scope.participant.chronic = res.data.chronic;
@@ -229,8 +231,9 @@
 
 
 
-	.controller('SDQReportOverviewController', function($scope, $report, $state, SDQ_ID){
+	.controller('SDQReportOverviewController', function($scope, $report, $state){
 		var self = this;
+		var _id = $state.params.formID || null;
 		var _class = $state.params.class || null;
 		var _room = $state.params.room || null;
 		var _year = $state.params.year || null;
@@ -246,17 +249,19 @@
 
 		var _reloadData = function() {
 			if (_type == 'room') {
-				_payload = { id: SDQ_ID, class: _class, room: _room, year: _year };
+				_payload = { id: _id, class: _class, room: _room, year: _year };
 				_reportLoader = $report.room;
 			} else if (_type == 'class') {
-				_payload = { id: SDQ_ID, class: _class, year: _year };
+				_payload = { id: _id, class: _class, year: _year };
 				_reportLoader = $report.class;
 			} else if (_type == 'school') {
-				_payload = { id: SDQ_ID, year: _year };
+				_payload = { id: _id, year: _year };
 				_reportLoader = $report.school;
 			}
 
-			_reportLoader(_payload, _callback);
+			if (_id) {
+				_reportLoader(_payload, _callback);
+			}
 		}
 
 		// Reload data if both argument is ready for type room
