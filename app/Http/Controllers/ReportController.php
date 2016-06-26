@@ -70,7 +70,7 @@ class ReportController extends Controller {
 	public function resultByRoom($id, $class, $room, $year) {
 		if ($id == env('APP_RISK_ID')) {
 			return $this->riskResult($id, $class, $room, $year);
-		} else if ($id == env('APP_SDQ_ID')) {
+		} else if (Questionaire::isSDQReport($id)) {
 			return (new SDQReportController())->resultByRoom($id, $class, $room, $year);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->eqResult($id, $class, $room, $year);
@@ -208,7 +208,7 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing ull on room parameter will pull a class
 			return $this->riskResult($id, $class, null, $year);
-		} else if ($id == env('APP_SDQ_ID')) {
+		} else if (Questionaire::isSDQReport($id)) {
 			return (new SDQReportController())->resultByClass($id, $class, $year);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->riskResult($id, $class, null, $year);
@@ -281,7 +281,7 @@ class ReportController extends Controller {
 
 		if ($id == env('APP_RISK_ID')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
-		} else if ($id == env('APP_SDQ_ID')) {
+		} else if (Questionaire::isSDQReport($id)) {
 			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->resultByPersonEQ($id, $year, $from, $num);
@@ -349,7 +349,7 @@ class ReportController extends Controller {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
-		} else if ($id == env('APP_SDQ_ID')) {
+		} else if (Questionaire::isSDQReport($id)) {
 			return (new SDQReportController())->resultBySchool($id, $year);
 		} else if ($id == env('APP_EQ_ID')) {
 			return $this->resultBySchool($id, null, null, $year);

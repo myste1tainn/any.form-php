@@ -31,7 +31,7 @@ class ParticipantController extends Controller {
 	public function result($participantID, $formID, $year) {
 		if ($formID == env('APP_RISK_ID')) {
 			return $this->riskResult($participantID, $formID, $year);
-		} else if ($formID == env('APP_SDQ_ID')) {
+		} else if (Questionaire::isSDQReport($formID)) {
 			return $this->sdqResult($participantID, $formID, $year);
 		} else if ($formID == env('APP_EQ_ID')) {
 			return $this->eqResult($participantID, $formID, $year);
@@ -46,10 +46,10 @@ class ParticipantController extends Controller {
 
 		if ($form) {
 			$participant->groups = $form->questionGroups;
-			$participant->lifeProblems();
-			$participant->chronic();
-			$participant->notease();
-			$participant->comments();
+			$participant->lifeProblems($formID);
+			$participant->chronic($formID);
+			$participant->notease($formID);
+			$participant->comments($formID);
 
 			foreach ($participant->groups as $g) {
 				$g->result = Criterion::riskStringWithModifiers(

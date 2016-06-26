@@ -49,9 +49,17 @@ class Participant extends Model {
 		return $query->get();
 	}
 
-	public function lifeProblems() {
+	public function lifeProblems($id = null) {
 		$lifeProblems = [];
-		$id = env('APP_QUESTION_SDQ_LIFE');
+
+		if ($id == env('APP_SDQ_ID') || $id == null) {
+			$id = env('APP_QUESTION_SDQ_LIFE');
+		} else if ($id == env('APP_SDQT_ID')) {
+			$id = env('APP_QUESTION_SDQT_LIFE');
+		} else if ($id == env('APP_SDQP_ID')) {
+			$id = env('APP_QUESTION_SDQP_LIFE');
+		}
+
 		$q = Question::find($id);
 		$answers = $q->answers($this->id)->get();
 
@@ -70,9 +78,17 @@ class Participant extends Model {
 		return $lifeProblems;
 	}
 
-	public function notease() {
+	public function notease($id = null) {
 		$notease = new \stdClass();
-		$id = env('APP_QUESTION_SDQ_NOTEASE');
+		
+		if ($id == env('APP_SDQ_ID') || $id == null) {
+			$id = env('APP_QUESTION_SDQ_NOTEASE');
+		} else if ($id == env('APP_SDQT_ID')) {
+			$id = env('APP_QUESTION_SDQT_NOTEASE');
+		} else if ($id == env('APP_SDQP_ID')) {
+			$id = env('APP_QUESTION_SDQP_NOTEASE');
+		}
+
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 
@@ -82,9 +98,17 @@ class Participant extends Model {
 		return $notease;
 	}
 
-	public function chronic() {
+	public function chronic($id = null) {
 		$chronic = new \stdClass();
-		$id = env('APP_QUESTION_SDQ_CHRONIC');
+
+		if ($id == env('APP_SDQ_ID') || $id == null) {
+			$id = env('APP_QUESTION_SDQ_CHRONIC');
+		} else if ($id == env('APP_SDQT_ID')) {
+			$id = env('APP_QUESTION_SDQT_CHRONIC');
+		} else if ($id == env('APP_SDQP_ID')) {
+			$id = env('APP_QUESTION_SDQP_CHRONIC');
+		}
+
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 
@@ -94,9 +118,17 @@ class Participant extends Model {
 		return $chronic;
 	}
 
-	public function comments() {
+	public function comments($id = null) {
 		$comments = new \stdClass();
-		$id = env('APP_QUESTION_SDQ_COMMENTS');
+		
+		if ($id == env('APP_SDQ_ID') || $id == null) {
+			$id = env('APP_QUESTION_SDQ_COMMENTS');
+		} else if ($id == env('APP_SDQT_ID')) {
+			$id = env('APP_QUESTION_SDQT_COMMENTS');
+		} else if ($id == env('APP_SDQP_ID')) {
+			$id = env('APP_QUESTION_SDQP_COMMENTS');
+		}
+
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 

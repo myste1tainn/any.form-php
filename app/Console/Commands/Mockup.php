@@ -89,8 +89,9 @@ class Mockup extends Command {
             $participant->room = $roomrand;
             $participant->save();
 
-            $this->info("Participant ".($i+1)."/1000 created");
+            echo "Participant ".($i+1)."/1000 created\r";
         }
+        echo "";
 	}
 
     private function pad($padToDigit, $num) {
@@ -132,9 +133,10 @@ class Mockup extends Command {
 	        	$r->value = $randval;
 	        	$r->save();
 
-	        	$this->info($f->name." results ".($i+1)."/".$c." created");
+	        	echo $f->name." results ".($i+1)."/".$c." created\r";
 	        	$i++;
         	}
+            echo "";
         }
 	}
 
@@ -149,11 +151,11 @@ class Mockup extends Command {
         $c = count($participants);
         foreach ($participants as $p) {
             $this->createAnswers($f, $p);
-            $this->info("risk answers ".($i+1)."/".$c." created");
+
             // Points doesn't really matter alot in risk form
             $this->createResults($f, $p, 999); 
 
-            $this->info("risk results ".($i+1)."/".$c." created");
+            echo "risk results & answers ".($i+1)."/".$c." created\r";
 
             $i++;
         }
