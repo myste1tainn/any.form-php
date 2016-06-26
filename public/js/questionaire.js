@@ -1,6 +1,6 @@
 (function(){
 	
-	var module = angular.module('questionaire', ['risk-screening'])
+ 	var module = angular.module('questionaire', ['risk-screening'])
 
 	.service('$input', function() {
 		this.newInstance = function() {
@@ -126,8 +126,9 @@
 		}
 	})
 
-	.controller('QuestionaireListController', function($scope, $questionaire, ngDialog, RISK_ID){
+	.controller('QuestionaireListController', function($scope, $questionaire, ngDialog, RISK_ID, User){
 		$scope.questionaires = [];
+		$scope.user = User;
 		$questionaire.all(function(questionaires){
 			$scope.questionaires = questionaires;
 		})
