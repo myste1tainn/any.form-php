@@ -98,4 +98,8 @@ class Questionaire extends Model {
 		return $this->results($year, null, null, $class, $room, false)->count();
 	}
 
+	public static function isSDQReport($id) {
+		return $id == env('APP_SDQ_ID') || $id == env('APP_SDQP_ID') || $id == env('APP_SDQT_ID');
+	}
+
 }

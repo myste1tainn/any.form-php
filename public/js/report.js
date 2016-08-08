@@ -2,7 +2,7 @@
 	
 	var module = angular.module('report', [
 		'room', 'class', 'school', 
-		'report.risk', 'report.sdq',
+		'report.risk', 'report.sdq'
 	])
 
 	.service('$time', function() {
@@ -147,6 +147,10 @@
 		this.years = $time.years();
 		this.year = $time.yearObjectForYear(pyear);
 
+		if (!this.form) {
+			this.form = { id: localStorage.getItem('formID') }
+			$questionaire.injectFunctions(this.form);
+		}
 
 		this.classChange = function() {
 			$state.go('^.overview', {
@@ -207,7 +211,7 @@
 				if ($state.current.name.indexOf('risk') > 1) {
 					for (var i = self.forms.length - 1; i >= 0; i--) {
 						var f = self.forms[i]
-						if (f.id == RISK_ID) {
+						if (f.isRiskScreeningForm()) {
 							self.form = f;
 							break;
 						}
@@ -215,7 +219,7 @@
 				} else if ($state.current.name.indexOf('sdq') > 1) {
 					for (var i = self.forms.length - 1; i >= 0; i--) {
 						var f = self.forms[i]
-						if (f.id == SDQ_ID) {
+						if (f.isSDQForm()) {
 							self.form = f;
 							break;
 						}
@@ -223,7 +227,7 @@
 				} else if ($state.current.name.indexOf('eq') > 1) {
 					for (var i = self.forms.length - 1; i >= 0; i--) {
 						var f = self.forms[i]
-						if (f.id == EQ_ID) {
+						if (f.isEQForm()) {
 							self.form = f;
 							break;
 						}
@@ -234,19 +238,26 @@
 
 		var changeStateBlock = function() {
 			var stateName = 'report.overview';
+			
+			if (self.form && !self.form.injectedFunctions) {
+				$questionaire.injectFunctions(self.form);
+			}
+
 			if (self.form) {
-				if (self.form.id == RISK_ID) {
+				if (self.form.isRiskScreeningForm()) {
 					stateName = 'report.risk';
-				} else if (self.form.id == SDQ_ID) {
+				} else if (self.form.isSDQForm()) {
 					stateName = 'report.sdq';
-				} else if (self.form.id == EQ_ID) {
+				} else if (self.form.isEQForm()) {
 					stateName = 'report.eq';
 				} else {
 					stateName = 'report.overview';
 				}
 
-				var form = self.form || null;
-				var formID = (form == null) ? null : form.id;
+				var form = self.form;
+				var formID = form.id;
+
+				localStorage.setItem('formID', form.id);
 
 				$state.go(stateName, { type: self.type, form: form, formID: formID });
 			}

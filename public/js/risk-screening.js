@@ -10,7 +10,7 @@
 			link: function($scope) {
 				// Wait for the participantInfo directive to run fist
 				// so that we can call mockupInput()
-				$scope.mockupInput();
+				// $scope.mockupInput();
 			},
 			controller: function($scope, $element, $attrs){
 				$scope.screening = null;

@@ -203,6 +203,7 @@
 		})
 		.state('report.sdq', {
 			url: '/:type/sdq',
+			params: { formID: null, form: null },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
@@ -342,6 +343,26 @@
 				sys.dialog.error(res);
 			});
 		}
+	})
+
+	.service('User', function($http){
+		var _this = this;
+
+		this.name = null;
+		this.level = null;
+
+		$http.get('user')
+		.success(function(res, status, headers, config){
+			_this.name = res.name;
+			_this.level = res.level;	
+
+			if (_this.level === undefined) {
+				_this.level = 0;
+			}
+		})
+		.error(function(res, status, headers, config){
+			
+		});
 	})
 
 })();
