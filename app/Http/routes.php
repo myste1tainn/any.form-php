@@ -20,6 +20,7 @@ Route::controllers([
 Route::get('/', 'HomeController@index');
 Route::get('/user', 'HomeController@user');
 Route::get('/home', 'HomeController@index');
+Route::get('/template/shared/home', 'HomeController@home');
 Route::get('/form', 'HomeController@index');
 Route::get('/form/list', 'HomeController@index');
 Route::get('/form/do/{id}', 'HomeController@index');
@@ -39,6 +40,7 @@ Route::get('teacher/risk-screening', 'HomeController@index');
 Route::get('teacher/risk-screening/year/{year}/participant/{studentID}', 'HomeController@index');
 Route::get('teacher/risk-screening/year/{year}', 'HomeController@index');
 Route::get('template/questionaire/{type}/{subType}', 'FormController@template');
+Route::get('template/questionaire/{type}', 'FormController@template');
 
 // Reports
 Route::get('/report', 'HomeController@index');
