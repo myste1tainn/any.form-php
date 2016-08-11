@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/router', './navbar.component', './login/login.component', './form/list.component', './form/do.component'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/router', './navbar.component', './login/login.component'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/router', './navbar.component', './lo
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, router_1, navbar_component_1, login_component_1, list_component_1, do_component_1;
+    var core_1, router_1, navbar_component_1, login_component_1;
     var AppComponent;
     return {
         setters:[
@@ -25,12 +25,6 @@ System.register(['angular2/core', 'angular2/router', './navbar.component', './lo
             },
             function (login_component_1_1) {
                 login_component_1 = login_component_1_1;
-            },
-            function (list_component_1_1) {
-                list_component_1 = list_component_1_1;
-            },
-            function (do_component_1_1) {
-                do_component_1 = do_component_1_1;
             }],
         execute: function() {
             AppComponent = (function () {
@@ -44,10 +38,8 @@ System.register(['angular2/core', 'angular2/router', './navbar.component', './lo
                         providers: [router_1.ROUTER_PROVIDERS, router_1.ROUTER_DIRECTIVES]
                     }),
                     router_1.RouteConfig([
-                        { path: 'home', name: 'Home', component: login_component_1.LoginComponent },
-                        { path: 'forms', name: 'Forms', component: list_component_1.FormListComponent },
-                        { path: 'form/:id', name: 'Form', component: do_component_1.FormDoComponent },
-                        { path: 'auth/login', component: login_component_1.LoginComponent }
+                        { path: '/home', component: login_component_1.LoginComponent },
+                        { path: '/auth/login', component: login_component_1.LoginComponent }
                     ]), 
                     __metadata('design:paramtypes', [])
                 ], AppComponent);

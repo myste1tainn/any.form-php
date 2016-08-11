@@ -17,22 +17,12 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
-Route::get('template/auth/{name}', function($name){
-	return view('auth/'.$name);
-});
-
 Route::get('/', 'HomeController@index');
 Route::get('/user', 'HomeController@user');
 Route::get('/home', 'HomeController@index');
 Route::get('/template/shared/home', 'HomeController@home');
-Route::get('/forms', 'HomeController@index');
-Route::get('/form/{id}', 'HomeController@index');
-Route::get('/template/form/{name}', 'FormController@template');
-Route::get('/api/v1/form/{id}', 'FormController@load');
-Route::get('/api/v1/forms', 'FormController@load');
-Route::post('/api/v1/forms', 'FormController@store');
-Route::delete('/api/v1/forms', 'FormController@delete');
-
+Route::get('/form', 'HomeController@index');
+Route::get('/form/list', 'HomeController@index');
 Route::get('/form/do/{id}', 'HomeController@index');
 Route::get('/questionaire/{id}', 'FormController@show');
 Route::get('/form/create', 'FormController@create');

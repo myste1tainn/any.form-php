@@ -23,7 +23,7 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 }
                 LoginComponent = __decorate([
                     core_1.Component({
-                        templateUrl: 'template/auth/login'
+                        templateUrl: 'template/questionaire/main'
                     }), 
                     __metadata('design:paramtypes', [])
                 ], LoginComponent);

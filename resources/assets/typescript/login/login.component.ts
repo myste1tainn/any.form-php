@@ -1,7 +1,7 @@
 import {Component} 				from 'angular2/core';
 
 @Component({
-	templateUrl: 'template/auth/login'
+	templateUrl: 'template/questionaire/main'
 })
 
 export class LoginComponent {}

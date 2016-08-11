@@ -26,10 +26,6 @@ class FormController extends Controller {
 		return view('questionaire/main');
 	}
 
-	public function get($id = null) {
-
-	}
-
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -44,37 +40,31 @@ class FormController extends Controller {
 		return view('questionaire/create');
 	}
 
-	public function load($id = null) {
-		$query = Questionaire::with('criteria', 'questions.meta');
-		if ($id) {
-			$query->where('id', $id);
-		}
-		$questionaires =  $query->get();
+	public function load($id) {
+		$questionaire = Questionaire::with('criteria', 'questions.meta')
+									->where('id', $id)	
+									->first();
 
-		foreach ($questionaires as $form) {
-			foreach ($form->questions as $q) {
-				$q->choices = Choice::with('subchoices', 'inputs')
-									->where('questionID', $q->id)
-									->whereNull('parentID')
-									->get();
-			}
+		foreach ($questionaire->questions as $q) {
+			$q->choices = Choice::with('subchoices', 'inputs')
+								->where('questionID', $q->id)
+								->whereNull('parentID')
+								->get();
 		}
 
-		return response()->json($questionaires);
+		return response()->json($questionaire);
 	}
 
 	public function show($id = null) {
-		if ($id) {
-			// There's an id, show individual form
-			return view('questionaire/do');
-		} else {
-			// There's not show form list
-			return view('questionaire/list');
-		}
+		return view('questionaire/do');
 	}
 
-	public function template($name) {
-		return view('questionaire/'.$name);
+	public function template($type, $subType = null) {
+		if ($subType) {
+			return view('questionaire/'.$type.'-'.$subType);
+		} else {
+			return view('questionaire/'.$type);
+		}
 	}
 
 	/**

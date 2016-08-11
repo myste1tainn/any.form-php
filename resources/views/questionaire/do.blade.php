@@ -1,3 +1,5 @@
+@extends((Request::ajax()) ? 'nilview' : 'app')
+@section('content')
 <div class="container">
 
 	<div class="col-xs-12 std-pad border-bottom">
@@ -134,3 +136,4 @@
 		ส่ง
 	</button>
 </div>
+@endsection
