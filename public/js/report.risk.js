@@ -41,8 +41,8 @@
 			.error(errorHandler);
 		}
 
-		this.result = function(id, year, callback){
-			$http.get('api/v1/participant/'+id+'/form/'+RISK_ID+'/year/'+year)
+		this.result = function(id, formID, year, callback){
+			$http.get('api/v1/participant/'+id+'/form/'+formID+'/year/'+year)
 			.success(function(res, status, headers, config){
 				callback(res);
 			})
@@ -50,70 +50,150 @@
 		}
 	})
 
-	.controller('ReportPersonRiskToolbarController', function($scope, $toolbar, $state){
-		var self = this;
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	.controller('ReportPersonRiskToolbarController', function(
+		$scope, $class, $toolbar, $state, $time, $report, RISK_ID, $controller){
+
+		var self = $scope;
 		var currentYear = (new Date()).getFullYear() + 543;
-		this.year = $state.params.year || currentYear;
-		this.years = [];
+		var pyear = $state.params.year || currentYear;
 
-		var countBack = 10;
-		var startYear = currentYear - countBack;
-		var computedYear = 0;
-		for (var i = 0; i < countBack + 1; i++) {
-			computedYear = startYear + i;
-			yearObj = {value:computedYear};
-			this.years.push(yearObj);
+		$scope.reportID = RISK_ID;
+		$scope.stateName = 'report.risk.list';
 
-			if (computedYear == this.year) {
-				this.year = yearObj;
-			}
+		$scope.years = $time.years();
+		$scope.year = $time.yearObjectForYear(pyear);
+
+		$scope.class = null;
+		$scope.classes = [];
+		$scope.room = null;
+		$scope.rooms = [];
+
+		var changeState = function() {
+			var params = {
+				class: self.class.value,
+				room: self.room.value,
+				year: self.year.value,
+				from: $scope.currentPage * $scope.numRows,
+				num : $scope.numRows
+			};
+			$state.go('report.risk.overview', params);
 		}
 
-		this.classes = [
-			{value:1},
-			{value:2},
-			{value:3},
-			{value:4},
-			{value:5},
-			{value:6},
-		];
-		this.rooms = [
-			{value:1},
-			{value:2},
-			{value:3},
-			{value:4},
-			{value:5},
-			{value:6},
-		];
-
-		this.classChange = function() {
-			$toolbar.valueChange({id:'class', value:this.class.value});
+		$scope.classChange = function() {
+			// $toolbar.valueChange({id:'class', value:$scope.class.value});
+			changeState();
 		}
-		this.roomChange = function() {
-			$toolbar.valueChange({id:'room', value:this.room.value});
+		$scope.roomChange = function() {
+			// $toolbar.valueChange({id:'room', value:$scope.room.value});
+			changeState();
 		}
-		this.yearChange = function() {
-			$toolbar.valueChange({id:'year', value:this.year.value});
+		$scope.yearChange = function() {
+			// $toolbar.valueChange({id:'year', value:$scope.year.value});
+			changeState();
 		}
 
-		if ($state.params.type == "school" ||
-			$state.params.type == "class" ||
-			$state.params.type == "room") {
-			$state.go('report.risk.overview');
-		}
+		$class.all(function(res) {
+			for (var i = res.classes.length - 1; i >= 0; i--) {
+				var c = res.classes[i];
+				self.classes.push({text:c.class, value:c.class});
+			};
+
+			for (var i = res.rooms.length - 1; i >= 0; i--) {
+				var r = res.rooms[i];
+				self.rooms.push({text:r.room, value:r.room});
+			};
+
+			// Default select the first row found
+			self.class = self.classes[0];
+			self.room = self.rooms[0];
+		})
 
 		// Emit yearChange once if it is pre-determinded
 		// and emit only after all angular is loaded
-		if (typeof this.year == 'object') {
+		if (typeof $scope.year == 'object') {
 			setTimeout(function() {
-				self.yearChange();
+				// self.yearChange();
 			}, 500);
 		}
+
+		$controller('PaginationController', { $scope: $scope });
 	})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 
 	.controller('ReportPersonRiskListController', function($scope, $state, $report, RISK_ID){
 		var self = this;
 
+		this.from = $state.params.from || 0;
+		this.num = $state.params.num || 10;
 		this.year = $state.params.year;
 		this.results = [];
 		this.displays = [];
@@ -130,6 +210,10 @@
 			}
 		}
 
+		this.changePage = function(pageNum){
+			this.currentPage = pageNum;
+		}
+
 		this.select = function(participant) {
 			$state.go('^.detail', {
 				participantID: participant.identifier,
@@ -138,7 +222,7 @@
 			})
 		}
 
-		var payload = { id: RISK_ID, year: this.year };
+		var payload = { id: RISK_ID, year: this.year, from: this.from, num: this.num };
 		$report.person(payload, function(participants){
 			self.results = self.displays = participants;
 			prepareDisplaysData();
@@ -200,7 +284,7 @@
 
 
 
-	.controller('ReportRiskPersonDetailController', function($scope, $state, $participant){
+	.controller('ReportRiskPersonDetailController', function($scope, $state, RISK_ID, $participant){
 		var self = this;
 
 		this.selectedAspect = $state.params.aspect || null;
@@ -222,7 +306,7 @@
 					$scope.participant.number 		= participant.number;
 
 					// Get the result of the participant
-					$participant.result(participant.id, self.year, function(res){
+					$participant.result(participant.id, RISK_ID, self.year, function(res){
 						if (res.success) {
 							$scope.participant.risks = res.data.aspects;
 							$scope.participant.talent = res.data.talent;
@@ -306,30 +390,6 @@
 
 		this.aspects = [];
 
-		$toolbar.onValueChange(function(payload) {
-			if (payload.id == 'class') {
-				_class = payload.value;
-			} else if (payload.id == 'room') {
-				_room = payload.value;
-			} else if (payload.id == 'year') {
-				_year = payload.value;
-			}
-
-			// Reload data if both argument is ready for type room
-			if (_type == 'room') {
-				if (_class != null && _room != null && _year != null) {
-					_reloadData();
-				}
-			} else if (_type == 'class') {
-				if (_class != null && _year != null) {
-					_reloadData();
-				}
-			} else {
-				// Reload immediately
-				_reloadData();
-			}
-		});
-
 		var _payload = null;
 		var _reportLoader = null;
 		var _callback = function(report){
@@ -349,6 +409,20 @@
 			}
 
 			_reportLoader(_payload, _callback);
+		}
+
+		// Reload data if both argument is ready for type room
+		if (_type == 'room') {
+			if (_class != null && _room != null && _year != null) {
+				_reloadData();
+			}
+		} else if (_type == 'class') {
+			if (_class != null && _year != null) {
+				_reloadData();
+			}
+		} else {
+			// Reload immediately
+			_reloadData();
 		}
 	})
 

@@ -2,6 +2,7 @@
 
 use App\Questionaire;
 use App\QuestionaireResult;
+use App\QuestionGroup;
 use App\Criterion;
 use App\Participant;
 
@@ -40,6 +41,14 @@ class ReportController extends Controller {
 		return view('report/template/risk-'.$name);
 	}
 
+	public function sdqTemplate($name) {
+		return view('report/sdq/'.$name);
+	}
+
+	public function eqTemplate($name) {
+		return view('report/eq/'.$name);
+	}
+
 	public function result()
 	{
 		$questionaires = Questionaire::with('results.participant', 'criteria')
@@ -61,6 +70,10 @@ class ReportController extends Controller {
 	public function resultByRoom($id, $class, $room, $year) {
 		if ($id == env('APP_RISK_ID')) {
 			return $this->riskResult($id, $class, $room, $year);
+		} else if (Questionaire::isSDQReport($id)) {
+			return (new SDQReportController())->resultByRoom($id, $class, $room, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->eqResult($id, $class, $room, $year);
 		} else {
 			return $this->normalResultByRoom($id, $class, $room, $year);
 		}
@@ -137,6 +150,7 @@ class ReportController extends Controller {
 									 ->where('questionaire_results.value', '<=', $c->to)
 									 ->where('participants.class', $class)
 									 ->where('participants.room', $room)
+									 ->where('academicYear', $year)
 									 ->join(
 									 	'participants', 
 									 	'questionaire_results.participantID',
@@ -161,38 +175,42 @@ class ReportController extends Controller {
 			$sumnum += $c->number;
 		}
         
-        if ($sumnum < 1) {
+		if ($sumnum > 0) {
+			$avg = round($sumval / $sumnum, 2);
+
+			foreach ($criteria as $c) {
+				$c->percent = round($c->number / $sumnum * 100, 2);
+			}
+
+			$carr = $criteria->toArray();
+			usort($carr, function($a, $b){
+				return $a['percent'] < $b['percent'];
+			});
+
+			return response()->json([
+				'success' => true,
+				'data' => [[
+					'avgRisk' => Criterion::riskString($criteria, $avg),
+					'avgValue' => $avg,
+					'total' => $sumnum,
+					'criteria' => $carr
+				]]
+			]);
+		} else {
             return response()->json([
-                'success' => false,
-                'message' => 'ไม่พบข้อมูลรายงาน'
+                'success' => true,
+                'data' => [[]]
             ]);
         }
-        
-		$avg = round($sumval / $sumnum, 2);
-
-		foreach ($criteria as $c) {
-			$c->percent = round($c->number / $sumnum * 100, 2);
-		}
-
-		$carr = $criteria->toArray();
-		usort($carr, function($a, $b){
-			return $a['percent'] < $b['percent'];
-		});
-
-		return response()->json([
-			'success' => true,
-			'data' => [[
-				'avgRisk' => Criterion::riskString($criteria, $avg),
-				'avgValue' => $avg,
-				'total' => $sumnum,
-				'criteria' => $carr
-			]]
-		]);
 	}
 
 	public function resultByClass($id, $class, $year) {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing ull on room parameter will pull a class
+			return $this->riskResult($id, $class, null, $year);
+		} else if (Questionaire::isSDQReport($id)) {
+			return (new SDQReportController())->resultByClass($id, $class, $year);
+		} else if ($id == env('APP_EQ_ID')) {
 			return $this->riskResult($id, $class, null, $year);
 		} else {
 			return $this->normalResultByClass($id, $class, $year);
@@ -209,6 +227,7 @@ class ReportController extends Controller {
 			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
 									 ->where('questionaire_results.value', '>=', $c->from)
 									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->where('questionaire_results.academicYear', $year)
 									 ->where('participants.class', $class)
 									 ->join(
 									 	'participants', 
@@ -232,16 +251,20 @@ class ReportController extends Controller {
 			$sumnum += $c->number;
 		}
 
-		$avg = round($sumval / $sumnum, 2);
+		$avg = 0;
+		$carr = [];
+		if ($sumnum > 0) {
+			$avg = round($sumval / $sumnum, 2);
 
-		foreach ($criteria as $c) {
-			$c->percent = round($c->number / $sumnum * 100, 2);
+			foreach ($criteria as $c) {
+				$c->percent = round($c->number / $sumnum * 100, 2);
+			}
+
+			$carr = $criteria->toArray();
+			usort($carr, function($a, $b){
+				return $a['percent'] < $b['percent'];
+			});
 		}
-
-		$carr = $criteria->toArray();
-		usort($carr, function($a, $b){
-			return $a['percent'] < $b['percent'];
-		});
 
 		return response()->json([
 			'success' => true,
@@ -257,64 +280,79 @@ class ReportController extends Controller {
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 
 		if ($id == env('APP_RISK_ID')) {
-			// Risk screening reports shows with different info
-			Questionaire::$PAGED_FROM = $from;
-			Questionaire::$PAGED_NUM = $num;
-			$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent')->find($id);
-			
-			if ($questionaire) {
-				$participants = [];
-				foreach ($questionaire->pagedResults as $res) {
-					$p = $res->participant;
-					$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+			return $this->resultByPersonRisk($id, $year, $from, $num);
+		} else if (Questionaire::isSDQReport($id)) {
+			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->resultByPersonEQ($id, $year, $from, $num);
+		} else  {
+			return $this->resultByPersonNormal($id, $year, $from, $num);
+		}
+	}
 
-					$p->talent = $mappedAnswers['talent'];
-					$p->disabilities = $mappedAnswers['disabilities'];
-					$p->risks = $mappedAnswers['aspects'];
-					$participants[] = $p;
-				}
+	private function resultByPersonNormal($id, $year, $from = 0, $num = 10) {
+		$q = Questionaire::with('criteria')
+						 ->where('id', $id)
+						 ->first();
 
-				if ($participants) {
-					return response()->json([
-						'success' => true,
-						'data' => $participants
-					]);
-				}
+		if ($q) {
+			$q->results($year);
+			foreach ($q->results as $r) {
+				$rs = Criterion::riskString($q->criteria, $r->value);
+				$r->risk =$rs;
 			}
-
 			return response()->json([
-				'success' => false,
-				'message' => 'ไม่พบข้อมูลรายงาน'
+				'success' => true,
+				'data' => $q->results
 			]);
 		} else {
-			$q = Questionaire::with('results.participant', 'criteria')
-							 ->where('id', $id)
-							 ->first();
+			return response()->json([
+				'success' => false,
+				'message' => 'result is empty'
+			]);
+		}
+	}
 
-			if ($q) {
-				foreach ($q->results as $r) {
-					$rs = Criterion::riskString($q->criteria, $r->value);
-					$r->risk =$rs;
-				}
+	private function resultByPersonRisk($id, $year, $from = 0, $num = 10) {
+		// Risk screening reports shows with different info
+		Questionaire::$PAGED_FROM = $from;
+		Questionaire::$PAGED_NUM = $num;
+		$questionaire = Questionaire::with('pagedResults.participant.answers.choice.parent')->find($id);
+		
+		if ($questionaire) {
+			$participants = [];
+			foreach ($questionaire->pagedResults as $res) {
+				$p = $res->participant;
+				$mappedAnswers = ParticipantController::riskNameMappedAnswers($p->answers);
+
+				$p->talent = $mappedAnswers['talent'];
+				$p->disabilities = $mappedAnswers['disabilities'];
+				$p->risks = $mappedAnswers['aspects'];
+				$participants[] = $p;
+			}
+
+			if ($participants) {
 				return response()->json([
 					'success' => true,
-					'data' => $q->results
-				]);
-			} else {
-				return response()->json([
-					'success' => false,
-					'message' => 'result is empty'
+					'data' => $participants
 				]);
 			}
 		}
 
-		
+		return response()->json([
+			'success' => false,
+			'message' => 'ไม่พบข้อมูลรายงาน'
+		]);
 	}
 
 	public function resultBySchool($id, $year) {
 		if ($id == env('APP_RISK_ID')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
+		} else if (Questionaire::isSDQReport($id)) {
+			return (new SDQReportController())->resultBySchool($id, $year);
+		} else if ($id == env('APP_EQ_ID')) {
+			return $this->resultBySchool($id, null, null, $year);
 		} else {
 			return $this->normalResultBySchool($id, $year);
 		}
@@ -330,6 +368,7 @@ class ReportController extends Controller {
 			$r = QuestionaireResult::where('questionaire_results.questionaireID', $id)
 									 ->where('questionaire_results.value', '>=', $c->from)
 									 ->where('questionaire_results.value', '<=', $c->to)
+									 ->where('academicYear', $year)
 									 ->join(
 									 	'participants', 
 									 	'questionaire_results.participantID',
@@ -375,5 +414,12 @@ class ReportController extends Controller {
                 'data' => [[]]
             ]);
         }
+	}
+
+	public function numberOfPages($id, $year, $numRows = 10)
+	{
+		$count = Questionaire::participantsCountForQuestionaire($id, $year);
+		$numberOfPages = floor($count / $numRows);
+		return $numberOfPages;
 	}
 }

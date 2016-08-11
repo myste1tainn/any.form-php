@@ -16,7 +16,8 @@ class CreateQuestionairesTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->timestamps();
+			$table->timestamp('created_at')->nullable();
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 		});
 	}
 

@@ -1,15 +1,23 @@
-<class class="col-xs-12 std-pad"
-	   ui-view="report.type.form">
+<class class="col-xs-12 std-pad">
 
-	<div class="col-xs-9"></div>
-	<div class="col-xs-1 text-right" style="margin-top: 6px">ชั้น</div>
-	<div class="col-xs-2" style="margin-bottom: 20px">
-		<select class="form-control"
-				ng-model="class"
-				ng-change="classChange()"
-				ng-options="c as c.value for c in classes">
+	<div class="pull-right" style="margin-bottom: 20px">
+		<select class="form-control" 
+				ng-model="nav.year"
+				ng-change="nav.yearChange()"
+				ng-options="y as y.value for y in nav.years">
 		</select>
 	</div>
+	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ปีการศึกษา</div>
+
+
+	<div class="pull-right" style="margin-bottom: 20px">
+		<select class="form-control"
+				ng-model="nav.class"
+				ng-change="nav.classChange()"
+				ng-options="c as c.value for c in nav.classes">
+		</select>
+	</div>
+	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ชั้น</div>
 
 	<table class="form questions col-xs-12"
 		   st-table="displayedResults"
@@ -38,12 +46,12 @@
 				<td class="text-center col-xs-1">
 					[[ criterion.percent ]]
 				</td>
-				<td class="text-center col-xs-1"
+				<td class="text-center theme-border col-xs-1 bgcolor-secondary color-accent1"
 					style="font-size: 2em; font-weight: 900; color: #1237BD"
 					rowspan="[[ class.criteria.length ]]"
 					ng-if="$index == 0">
 					[[ class.avgRisk ]] ([[ class.avgValue ]])
-					<p style="font-size: 0.7">จากนักเรียนจำนวน [[ class.total ]] คน</p>
+					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน [[ class.total ]] คน</p>
 				</td>
 			</tr>
 		</tbody>

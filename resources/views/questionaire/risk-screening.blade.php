@@ -1,8 +1,10 @@
 <div class="container form-list" risk-screening>
-	<h3>แบบคัดกรองนักเรียนรายบุคคล</h3>
-	<hr />
+	<div class="col-xs-12 std-pad border-bottom">
+		<h3 class="text-center no-margin">แบบคัดกรองนักเรียนรายบุคคล</h3>
+	</div>
+
 	<form>
-		<div class="col-xs-12" style="padding: 0">
+		<div class="col-xs-12 large-margin-top large-margin-bottom" style="padding: 0">
 
 			<!-- <table class="name col-xs-4 pull-right"> -->
 			<table class="name col-xs-12" participant-info>
@@ -45,7 +47,8 @@
 
 		<div class="col-xs-12" style="padding: 0" ng-repeat="q in screening.questions">
 
-			<div class="col-xs-12 font-weight-bold std-pad indent-1" style="background: #eee">
+			<div class="col-xs-12 font-weight-bold std-pad indent-1 bgcolor-secondary text-center" 
+				 style="border-radius: 50px">
 				[[ q.label+' '+q.name ]]
 			</div>
 
@@ -128,7 +131,7 @@
 
 		<button type="submit" 
 				ng-click="submit()"
-				class="pull-right std-pad std-margin submit" 
+				class="pull-right std-margin submit" 
 				style="margin-bottom:100px">
 			บันทึกข้อมูล
 		</button>

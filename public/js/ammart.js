@@ -1,13 +1,54 @@
 (function(){
 	
 	var module = angular.module('ammart', [
+		// Core
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router', 'ngAnimate',
-		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr'
+		
+		// Components
+		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
+
+		// Collections
+		'Questions', 'Groups'
 	])
+
+	.service('ArrayHelper', function(){
+
+		var _removeBySplice = function(target, items){
+			var index = items.indexOf(target);
+			if (index > -1) {
+				items.splice(index, 1);
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		var _searchByID = function(target, items){
+			for (var i = items.length - 1; i >= 0; i--) {
+				var item = items[i];
+				if (item.id == target.id) {
+					return item;
+				}
+			}
+			return null;
+		}
+
+		this.remove = function(target, items) {
+			if (!_removeBySplice(target, items)) {
+				var item = _searchByID(target, items)
+				if (item) {
+					console.log(item, 'removed');
+					items = _removeBySplice(item, items);
+				}
+			}
+			return items;
+		}
+	})
 
 	.config(function(
 		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
-		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider
+		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider,
+		RISK_ID, SDQ_ID, EQ_ID, CURRENT_YEAR
 	){
 
 		$interpolateProvider.startSymbol('[[').endSymbol(']]');
@@ -19,19 +60,12 @@
 		$stateProvider
 		.state('home', {
 			url: '/home',
-			templateUrl: ''
 		})
 		.state('login', {
 			url: '/auth/login',
 			templateUrl: 'auth/login'
 		})
-		.state('auth.logout', {
-			url: '/auth/logout',
-			redirectTo: function(){
-				window.location.href = 'auth/logout'
-			}
-		})
-		.state('auth.register', {
+		.state('register', {
 			url: '/auth/register',
 			templateUrl: 'auth/register'
 		})
@@ -60,6 +94,39 @@
 				}
 			}
 		})
+		.state('form-create', {
+			url: '/form/create',
+			params: { form: null, formID: null },
+			templateUrl: 'form/create'
+		})
+		.state('form-edit', {
+			url: '/form/edit/:formID',
+			params: { form: null, formID: null },
+			views: {
+				'': {
+					templateUrl: 'form/create',
+				}
+			}
+		})
+		.state('question-grouping', {
+			url: '/question/grouping',
+			views: {
+				'': {
+					templateUrl: 'template/question/grouping'
+				}
+			}
+		})
+		.state('question-grouping.show', {
+			url: '/form/:formID/group/:groupID',
+			params: { form: null, group: null },
+			views: {
+				'group': {
+					templateUrl: 'template/question/grouping-body',
+					controller: 'QuestionGroupController',
+					controllerAs: 'grouper'
+				}
+			}
+		})
 		.state('risk-screening', {
 			url: '/teacher/risk-screening',
 			templateUrl: 'template/risk/do',
@@ -71,22 +138,17 @@
 			controller: 'ReportNavigationController',
 			controllerAs: 'nav',
 			templateUrl: 'template/report/main',
-			deepStateRedirect: { 
-				default: { 
-					state: 'report.overview',
-					params: { type: 'person', form: null, formID: null },
-				},
-			},
 		})
 		.state('report.overview', {
-			url: '/type/:type',
+			url: '/type/:type/form/:formID/year/:year',
+			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
 			views: {
 				'report': {
 					templateUrl: function($stateParams) {
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
-					controllerAs: 'reportTab'
+					controllerAs: 'report'
 				}
 			}
 		})
@@ -103,6 +165,8 @@
 			}
 		})
 		.state('report.risk.overview', {
+			url: '/year/:year',
+			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
 			views: {
 				'report.risk.overview': {
 					templateUrl: 'template/report-risk/overview',
@@ -113,6 +177,7 @@
 		})
 		.state('report.risk.list', {
 			url: '/list/:year',
+			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
 			views: {
 				'report.risk.body': {
 					templateUrl: function($stateParams) {
@@ -133,6 +198,52 @@
 					},
 					controller: 'ReportRiskPersonDetailController',
 					controllerAs: 'tab'
+				}
+			}
+		})
+		.state('report.sdq', {
+			url: '/:type/sdq',
+			params: { formID: null, form: null },
+			views: {
+				'report': {
+					templateUrl: function($stateParams) {
+						return 'template/report/sdq/'+$stateParams.type;
+					},
+					controller: 'SDQReportToolbarController',
+					controllerAs: 'toolbar'
+				},
+			}
+		})
+		.state('report.sdq.list', {
+			url: '/list/:year',
+			views: {
+				'report.sdq.body': {
+					templateUrl: function($stateParams){
+						return 'template/report/sdq/'+$stateParams.type+'-body';
+					},
+					controller: 'SDQReportListController',
+					controllerAs: 'list'
+				}
+			}
+		})
+		.state('report.sdq.detail', {
+			url: '/participant/:participantID/year/:year',
+			views: {
+				'report.sdq': {
+					templateUrl: 'template/report/sdq/person-detail',
+					controller: 'SDQReportDetailController',
+					controllerAs: 'detail'
+				}
+			}
+		})
+		.state('report.sdq.overview', {
+			url: '/year/:year',
+			params: { class: null, room: null, year: CURRENT_YEAR },
+			views: {
+				'report.sdq.overview': {
+					templateUrl: 'template/report/sdq/overview',
+					controller: 'SDQReportOverviewController',
+					controllerAs: 'overview'
 				}
 			}
 		})
@@ -232,6 +343,26 @@
 				sys.dialog.error(res);
 			});
 		}
+	})
+
+	.service('User', function($http){
+		var _this = this;
+
+		this.name = null;
+		this.level = null;
+
+		$http.get('user')
+		.success(function(res, status, headers, config){
+			_this.name = res.name;
+			_this.level = res.level;	
+
+			if (_this.level === undefined) {
+				_this.level = 0;
+			}
+		})
+		.error(function(res, status, headers, config){
+			
+		});
 	})
 
 })();

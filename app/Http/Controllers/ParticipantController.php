@@ -5,7 +5,9 @@ use App\Http\Controllers\Controller;
 
 use App\Participant;
 use App\Question;
+use App\QuestionGroup;
 use App\Questionaire;
+use App\Criterion;
 use Illuminate\Http\Request;
 
 class ParticipantController extends Controller {
@@ -27,8 +29,50 @@ class ParticipantController extends Controller {
 	}
 
 	public function result($participantID, $formID, $year) {
-		$talent = null;
-		$disabilities = [];
+		if ($formID == env('APP_RISK_ID')) {
+			return $this->riskResult($participantID, $formID, $year);
+		} else if (Questionaire::isSDQReport($formID)) {
+			return $this->sdqResult($participantID, $formID, $year);
+		} else if ($formID == env('APP_EQ_ID')) {
+			return $this->eqResult($participantID, $formID, $year);
+		}
+	}
+
+	private function sdqResult($participantID, $formID, $year) {
+		$participant = Participant::find($participantID);
+		$form = Questionaire::with('questionGroups.criteria')
+							->where('id', $formID)
+							->first();
+
+		if ($form) {
+			$participant->groups = $form->questionGroups;
+			$participant->lifeProblems($formID);
+			$participant->chronic($formID);
+			$participant->notease($formID);
+			$participant->comments($formID);
+
+			foreach ($participant->groups as $g) {
+				$g->result = Criterion::riskStringWithModifiers(
+					$g->criteria, $g->sumAnswersValueOfParticiant($participant)
+				);
+			}
+
+			return response()->json([
+				'status' => 200,
+				'success' => true,
+				'data' => $participant
+			]);
+		} else {
+			return response()->json([
+				'status' => 403,
+				'success' => false,
+				'message' => 'ไม่พบข้อมูลรายงาน'
+			]);
+		}
+
+	}
+
+	private function riskResult($participantID, $formID, $year) {
 		$participant = Participant::find($participantID);
 		$form = Questionaire::find($formID);
 		$result = $participant->results()

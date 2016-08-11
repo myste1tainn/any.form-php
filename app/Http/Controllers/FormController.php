@@ -59,8 +59,12 @@ class FormController extends Controller {
 		return view('questionaire/do');
 	}
 
-	public function template($type, $subType) {
-		return view('questionaire/'.$type.'-'.$subType);
+	public function template($type, $subType = null) {
+		if ($subType) {
+			return view('questionaire/'.$type.'-'.$subType);
+		} else {
+			return view('questionaire/'.$type);
+		}
 	}
 
 	/**
@@ -180,6 +184,7 @@ class FormController extends Controller {
 	public function submit()
 	{
 		$choices 		= Request::input('choices');
+
 		$questionaire	= $this->prepareQuestionaire();
 		$participant 	= $this->prepareParticipant();		
 
@@ -200,6 +205,11 @@ class FormController extends Controller {
 		$qr->questionaireID = $questionaire->id;
 		$qr->value			= $summation;
 		$qr->academicYear 	= Cache::get('settings.current_academic_year');
+
+		if (!$qr->academicYear) {
+			$qr->academicYear = $participant->academicYear;
+		}
+
 		$qr->save(); 
 
 		return response()->json([
@@ -212,6 +222,7 @@ class FormController extends Controller {
 		$identifier 	= Request::input('identifier');
 		$fname 			= Request::input('firstname');
 		$lname 			= Request::input('lastname');
+		$number			= Request::input('number');
 		$class 			= Request::input('class');
 		$room 			= Request::input('room');
 
@@ -223,9 +234,14 @@ class FormController extends Controller {
 		$participant->identifier = $identifier;
 		$participant->firstname = $fname;
 		$participant->lastname = $lname;
+		$participant->number = $number;
 		$participant->class = $class;
 		$participant->room = $room;
 		$participant->save();
+
+		if (Request::has('academicYear')) {
+			$participant->academicYear = Request::input('academicYear');
+		}
 
 		return $participant;
 	}

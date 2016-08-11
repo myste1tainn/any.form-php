@@ -1,32 +1,71 @@
-/* 
-#0B2171 : ammart blue
-#0C257E : Domniant 
-#1237BD : Secondary
-#FDC119 : Yellow Accent 
-#3A5392 : Pale blue Accent 
-#ffffff : Main Text
-#333333 : Secondary Text
-#ffffff : Text Background
-#808080 : Placeholder
-*/
+html, body {
+	color: #333333;
+}
 
-.color-accent 		{ color: #3A5392; }
-.color-dominant 	{ color: #FFFFFF; }
-.color-secondary 	{ color: #555555; }
-.color-tertiary 	{ color: #FBFBFB; }
-.color-highlight 	{ color: #2299DD; }
-.color-lowlight 	{ color: #999999; }
+.bgcolor-clear,
+.bgcolor-clear.children * {
+	background-color: transparent !important;
+}
 
-.bgcolor-accent 	{ background-color: #3A5392; }
-.bgcolor-dominant 	{ background-color: #FFFFFF; }
-.bgcolor-secondary 	{ background-color: #555555; }
-.bgcolor-tertiary 	{ background-color: #FBFBFB; }
-.bgcolor-highlight 	{ background-color: #2299DD; }
-.bgcolor-lowlight 	{ background-color: #999999; }
+.color-accent1 		{ color: #DEAD26 !important; }
+.color-accent2 		{ color: #CCCCCC !important; }
+.color-dominant 	{ color: #FFFFFF !important; }
+.color-secondary 	{ color: #2546BD !important; }
+.color-tertiary 	{ color: #333333 !important; }
+/*.color-highlight 	{ color: #2299DD; }
+.color-lowlight 	{ color: #999999; }*/
+
+.bgcolor-accent1 	{
+	background-color: #DEAD26;
+	color: #333333;
+}
+.bgcolor-accent2 	{
+	background-color: #CCCCCC;
+	color: #333333;
+}
+.bgcolor-dominant 	{
+	background-color: #FFFFFF;
+	color: #333333;
+}
+.bgcolor-secondary,
+.bgcolor-secondary.children * 	{ 
+	background-color: #2546BD;
+	color: #FFFFFF;
+}
+.bgcolor-tertiary 	{
+	background-color: #333333;
+	color: #FFFFFF;
+}
+/*.bgcolor-highlight 	{ background-color: #2299DD; }
+.bgcolor-lowlight 	{ background-color: #999999; }*/
+
+.bgcolor-secondary.highlightable:hover {
+	background-color: #3455CC;
+}
+.highlightable:hover {
+	background-color: #F7F7F7;
+}
 
 .friendly			{ color: #44aa44; }
 .destructive		{ color: #aa4444; }
 .alarming			{ color: #ddcc00; }
+.friendly-light		{ color: #bbffbb; }
+.destructive-light	{ color: #ffbbbb; }
+.alarming-light		{ color: #eeffaa; }
+
+.friendly.child *			{ color: #44aa44; }
+.destructive.child *		{ color: #aa4444; }
+.alarming.child *			{ color: #ddcc00; }
+.friendly-light.child *		{ color: #bbffbb; }
+.destructive-light.child *	{ color: #ffbbbb; }
+.alarming-light.child *		{ color: #eeffaa; }
+
+.bg-friendly			{ background-color: #44aa44; }
+.bg-destructive			{ background-color: #aa4444; }
+.bg-alarming			{ background-color: #ddcc00; }
+.bg-friendly-light		{ background-color: #bbffbb; }
+.bg-destructive-light	{ background-color: #ffbbbb; }
+.bg-alarming-light		{ background-color: #eeffaa; }
 
 .bg-friendly		{ background-color: #44aa44; }
 .bg-destructive		{ background-color: #ff4444; }

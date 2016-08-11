@@ -1,6 +1,4 @@
-@extends((Request::ajax()) ? 'nilview' : 'app')
-@section('content')
-<div class="container">
-	<h1 style="text-align:center">ระบบช่วยประเมินผล SDQ/EQ</h1>
+<navbar></navbar>
+<div class="col-xs-9 col-lg-10 no-pad">
+	<router-outlet></router-outlet>
 </div>
-@endsection

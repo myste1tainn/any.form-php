@@ -21,7 +21,8 @@ class CreateChoicesTable extends Migration {
 			$table->string('note')->nullable();
 			$table->integer('value');
 			$table->integer('questionID')->unsigned();
-			$table->timestamps();
+			$table->timestamp('created_at')->nullable();
+			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
 
 			$table->foreign('questionID')
 				  ->references('id')
