@@ -182,7 +182,7 @@ class FormController extends Controller {
 		$choices 		= Request::input('choices');
 
 		$questionaire	= $this->prepareQuestionaire();
-		$participant 	= $this->prepareParticipant();		
+		$participant 	= Participant::createOrUpdateWithRequest();
 
 		// Retain only one copy of question answers of each participant
 		ParticipantAnswer::where('participantID', $participant->id)
@@ -212,32 +212,6 @@ class FormController extends Controller {
 			'success' => true,
 			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์'
 		]);
-	}
-
-	private function prepareParticipant() {
-		$identifier 	= Request::input('identifier');
-		$fname 			= Request::input('firstname');
-		$lname 			= Request::input('lastname');
-		$class 			= Request::input('class');
-		$room 			= Request::input('room');
-
-		$participant = Participant::where('identifier', $identifier)->first();
-		if (!$participant) {
-			$participant = new Participant();
-		}
-
-		$participant->identifier = $identifier;
-		$participant->firstname = $fname;
-		$participant->lastname = $lname;
-		$participant->class = $class;
-		$participant->room = $room;
-		$participant->save();
-
-		if (Request::has('academicYear')) {
-			$participant->academicYear = Request::input('academicYear');
-		}
-
-		return $participant;
 	}
 
 	private function prepareQuestionaire() {

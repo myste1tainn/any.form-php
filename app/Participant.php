@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use Request;
 use Illuminate\Database\Eloquent\Model;
 
 class Participant extends Model {
@@ -142,6 +143,34 @@ class Participant extends Model {
 
 		$this->comments = $comments;
 		return $comments;
+	}
+
+	public static function createOrUpdateWithRequest() {
+		$identifier 	= Request::input('identifier');
+		$fname 			= Request::input('firstname');
+		$lname 			= Request::input('lastname');
+		$number			= Request::input('number');
+		$class 			= Request::input('class');
+		$room 			= Request::input('room');
+
+		$participant = static::where('identifier', $identifier)->first();
+		if (!$participant) {
+			$participant = new static();
+		}
+
+		$participant->identifier = $identifier;
+		$participant->firstname = $fname;
+		$participant->lastname = $lname;
+		$participant->number = $number;
+		$participant->class = $class;
+		$participant->room = $room;
+		$participant->save();
+
+		if (Request::has('academicYear')) {
+			$participant->academicYear = Request::input('academicYear');
+		}
+
+		return $participant;
 	}
 
 }
