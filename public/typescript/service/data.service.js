@@ -11,25 +11,23 @@ System.register(['angular2/core'], function(exports_1, context_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var LoginComponent;
+    var DataService;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
             }],
         execute: function() {
-            LoginComponent = (function () {
-                function LoginComponent() {
+            DataService = (function () {
+                function DataService() {
                 }
-                LoginComponent = __decorate([
-                    core_1.Component({
-                        templateUrl: 'template/auth/login'
-                    }), 
+                DataService = __decorate([
+                    core_1.Injectable(), 
                     __metadata('design:paramtypes', [])
-                ], LoginComponent);
-                return LoginComponent;
+                ], DataService);
+                return DataService;
             }());
-            exports_1("LoginComponent", LoginComponent);
+            exports_1("DataService", DataService);
         }
     }
 });
