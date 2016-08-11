@@ -34,6 +34,11 @@
 						   ng-model="participant.room"
 						   placeholder="ห้อง" />
 				</td>
+				<td class="" style="width:6%">
+					<input class="text-center" 
+						   ng-model="participant.number"
+						   placeholder="เลขที่" />
+				</td>
 				<td class="" style="width:10%">
 					<input class="text-center" 
 						   ng-model="participant.academicYear"
