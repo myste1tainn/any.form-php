@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration {
 			$table->rememberToken();
 			$table->timestamp('created_at')->nullable();
 			$table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
+			$table->integer('level');
 		});
 
 		Schema::create('sessions', function(Blueprint $table)
@@ -36,7 +37,16 @@ class CreateUsersTable extends Migration {
 			'name' => 'AM Teacher',
 			'username' => 'ammart',
 			'email' => 'kru@ammart.ac.th',
-			'password' => bcrypt('kru@ammart')
+			'password' => bcrypt('kru@ammart'),
+			'level' => 1
+		]);
+
+		User::create([
+			'name' => 'Mysteltainn',
+			'username' => 'myste1tainn',
+			'email' => 'msyte1tainn.icez@gmail.com',
+			'level' => 999,
+			'password' => bcrypt('asdfjkl;')
 		]);
 	}
 

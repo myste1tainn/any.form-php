@@ -18,6 +18,7 @@ Route::controllers([
 ]);
 
 Route::get('/', 'HomeController@index');
+Route::get('/user', 'HomeController@user');
 Route::get('/home', 'HomeController@index');
 Route::get('/form', 'HomeController@index');
 Route::get('/form/list', 'HomeController@index');
