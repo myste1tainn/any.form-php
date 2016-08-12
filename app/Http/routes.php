@@ -1,4 +1,3 @@
-
 <?php
 
 /*
@@ -17,14 +16,14 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
+Route::get('/template/{p1}/{p2?}/{p3?}/{p4?}', 'HomeController@template');
 Route::get('/', 'HomeController@index');
-Route::get('/user', 'HomeController@user');
-Route::get('/home', 'HomeController@index');
-Route::get('/template/shared/home', 'HomeController@home');
-Route::get('/template/head', 'HomeController@head');
+Route::get('/{p1?}/{p2?}/{p3?}/{p4?}/{p5?}/{p6?}/{p7?}/{p8?}', 'HomeController@index');
 
 require_once('routes.form.php');
 require_once('routes.question.php');
 require_once('routes.participant.php');
 require_once('routes.report.php');
 require_once('routes.apis.php');
+
+?>
