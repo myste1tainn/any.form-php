@@ -23,7 +23,7 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 }
                 FormListComponent = __decorate([
                     core_1.Component({
-                        templateUrl: './list.html'
+                        templateUrl: 'template/form/list'
                     }), 
                     __metadata('design:paramtypes', [])
                 ], FormListComponent);

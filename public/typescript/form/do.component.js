@@ -23,7 +23,7 @@ System.register(['angular2/core'], function(exports_1, context_1) {
                 }
                 FormDoComponent = __decorate([
                     core_1.Component({
-                        templateUrl: './do.html'
+                        templateUrl: 'template/form/do'
                     }), 
                     __metadata('design:paramtypes', [])
                 ], FormDoComponent);

@@ -1,7 +1,7 @@
 import {Component} 				from 'angular2/core';
 
 @Component({
-	templateUrl: './do.html'
+	templateUrl: 'template/form/do'
 })
 
 export class FormDoComponent {}
