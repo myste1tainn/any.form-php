@@ -16,43 +16,34 @@ use Request;
 
 class FormController extends Controller {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		return view('questionaire/main');
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		return view('questionaire/create');
-	}
-
-	public function edit($questionaireID) {
-		return view('questionaire/create');
-	}
-
-	public function load($id) {
-		$questionaire = Questionaire::with('criteria', 'questions.meta')
+	public function load($id = null) {
+		if ($id) {
+			$questionaire = Questionaire::with('criteria', 'questions.meta')
 									->where('id', $id)	
 									->first();
 
-		foreach ($questionaire->questions as $q) {
-			$q->choices = Choice::with('subchoices', 'inputs')
-								->where('questionID', $q->id)
-								->whereNull('parentID')
-								->get();
-		}
+			if (!$questionaire) {
+				return response()->json(null, 404);
+			}
 
-		return response()->json($questionaire);
+			if ($questionaire->level > 0) {
+				if (\Auth::check()) {
+				} else {
+					return response()->json('auth/login', 302);
+				}
+			}
+
+			foreach ($questionaire->questions as $q) {
+				$q->choices = Choice::with('subchoices', 'inputs')
+									->where('questionID', $q->id)
+									->whereNull('parentID')
+									->get();
+			}
+
+			return response()->json($questionaire);
+		} else {
+			return $this->all();
+		}
 	}
 
 	public function show($id = null) {
@@ -112,9 +103,8 @@ class FormController extends Controller {
 		}
 
 		return response()->json([
-			'success' => true,
 			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์',
-			'data' => $ans
+			'results' => $ans
 		]);
 	}
 
@@ -165,10 +155,7 @@ class FormController extends Controller {
 			}
 		}
 
-		return response()->json([
-			'success' => true,
-			'data' => $questionaires
-		]);
+		return response()->json($questionaires);
 	}
 
 	/**
@@ -209,13 +196,13 @@ class FormController extends Controller {
 		$qr->save(); 
 
 		return response()->json([
-			'success' => true,
+			'results' => $questionaire,
 			'message' => 'บันทึกข้อมูลแบบฟอร์มเสร็จสมบูรณ์'
 		]);
 	}
 
 	private function prepareQuestionaire() {
-		$id = Request::input('questionaireID');
+		$id = Request::input('formID');
 		$questionaire = Questionaire::find($id);
 
 		if (!$questionaire) {
@@ -243,8 +230,8 @@ class FormController extends Controller {
 		}
 
 		return response()->json([
-		                        'success' => true,
-		                        'data' => $answers
+		                        'message' => '',
+		                        'results' => $answers
 		                        ]);
 	}
 }

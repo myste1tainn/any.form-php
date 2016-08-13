@@ -1,5 +1,7 @@
 <?php
 
+Route::get('/api/v1/user', 'HomeController@user');
+
 /* DEPRECATED */Route::get('/class/all', 'ClassController@all');
 /* NEW */Route::get('/api/v1/class/all', 'ClassController@all');
 

@@ -6,15 +6,15 @@
 		<b>คำถาม</b>
 	</div>
 	<div class="col-xs-10 std-pad">
-		<button ng-repeat="question in questionaire.questions"
+		<button ng-repeat="question in form.questions"
 				ng-click="showPage($index)"
 				ng-class="{'danger' : ($index == currentPage) }">
-			[[$index + 1]]
+			{{$index + 1}}
 		</button>
 	</div>
 </div>
 <div class="classified que col-xs-12 no-pad"
-	 ng-repeat="question in questionaire.questions"
+	 ng-repeat="question in form.questions"
 	 ng-if="$index == currentPage">
 	<div class="col col-xs-1 question"></div>
 	<div class="col col-xs-11" style="padding: 0px">
@@ -47,7 +47,7 @@
 			</tr>
 			<tr>
 				<td colspan="7" style="padding: 0px">
-					<questionaire-choices></questionaire-choices>
+					<form-choices></form-choices>
 				</td>
 			</tr>
 		</table>

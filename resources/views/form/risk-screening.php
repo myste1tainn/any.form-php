@@ -49,7 +49,7 @@
 
 			<div class="col-xs-12 font-weight-bold std-pad indent-1 bgcolor-secondary text-center" 
 				 style="border-radius: 50px">
-				[[ q.label+' '+q.name ]]
+				{{ q.label+' '+q.name }}
 			</div>
 
 			<div ng-switch="q.type">
@@ -58,18 +58,18 @@
 						<tr ng-repeat="c in q.choices">
 							<td style="width:42px;">
 								<input type="radio" 
-									   name="[[ q.name ]]" 
+									   name="{{ q.name }}" 
 									   ng-model="q.selected" 
 									   ng-value="c" />
 							</td>		
 							<td>
-								[[ c.name ]]
+								{{ c.name }}
 							</td>
 							<td ng-if="c.inputs.length > 0">
 								<div ng-repeat="i in c.inputs">
 									<input class="col-xs-5 space-left" 
 										   ng-model="i.value" 
-										   placeholder="[[ i.placeholder ]]" />
+										   placeholder="{{ i.placeholder }}" />
 								</div>
 							</td>
 						</tr>
@@ -79,10 +79,10 @@
 					<div class="col-xs-6 indent-2 std-pad" ng-repeat="c in q.choices">
 						<input type="checkbox" ng-model="c.checked" class="col-xs-1">
 						<div class="col-xs-11">
-							<div ng-class="{'col-xs-4' : (c.inputs.length > 0)}">[[ c.name ]]</div>
+							<div ng-class="{'col-xs-4' : (c.inputs.length > 0)}">{{ c.name }}</div>
 							<div ng-repeat="i in c.inputs" class="col-xs-8">
 								<input ng-model="i.value" 
-									   placeholder="[[ i.placeholder ]]" />
+									   placeholder="{{ i.placeholder }}" />
 							</div>
 						</div>
 					</div>
@@ -94,7 +94,7 @@
 								<input type="checkbox" 
 									   ng-disabled="!c.checked && c.subchoices.length > 0"
 									   ng-model="c.checked"
-									   ng-change="checkChoice(c)"> [[ c.name ]]
+									   ng-change="checkChoice(c)"> {{ c.name }}
 							</th>
 						</tr>
 						<tr>
@@ -107,13 +107,13 @@
 												   ng-change="checkSubchoice(sc, c)">
 										</td>
 										<td ng-click="toggleCheck(sc, c)" style="cursor: pointer">
-											[[ sc.name ]]
+											{{ sc.name }}
 										</td>
 										<td ng-if="sc.inputs.length > 0">
 											<div ng-repeat="i in sc.inputs">
 												<input class="col-xs-5 space-left" 
 													   ng-model="i.value" 
-													   placeholder="[[ i.placeholder ]]" />
+													   placeholder="{{ i.placeholder }}" />
 											</div>
 										</td>
 									</tr>

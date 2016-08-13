@@ -46,14 +46,18 @@ class AuthController extends Controller {
 
 		if ($this->auth->attempt($credentials, $request->has('remember')))
 		{
-			return redirect()->intended($this->redirectPath());
+			return response()->json(null, 200);
 		}
 
-		return redirect($this->loginPath())
-					->withInput($request->only('username', 'remember'))
-					->withErrors([
-						'username' => $this->getFailedLoginMessage(),
-					]);
+		$lpath = $this->loginPath();
+		if ($lpath == '/auth/login') {
+			$lpath = '/user/login';
+		}
+
+		return response()->json([
+					'input' => $request->only('username', 'remember'),
+					'message' => $this->getFailedLoginMessage()
+				], 401);
 	}
 
 }

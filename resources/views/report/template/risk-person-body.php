@@ -15,12 +15,12 @@
 	<tr ng-repeat="p in list.displays"
 		ng-click="list.select(p)"
 		ng-class="{'odd': ($index % 2 == 1)}">
-		<td class="text-center">[[ p.identifier ]]</td>
-		<td class="text-left">[[ p.firstname ]] [[ p.lastname ]]</td>
-		<td class="text-center">[[ p.class ]]/[[ p.room ]]</td>
-		<td class="text-center">[[ p.number ]]</td>
-		<td class="text-center">[[ p.risks.countHighRisk || 0]]</td>
-		<td class="text-center">[[ p.risks.countVeryHighRisk || 0]]</td>
+		<td class="text-center">{{ p.identifier }}</td>
+		<td class="text-left">{{ p.firstname }} {{ p.lastname }}</td>
+		<td class="text-center">{{ p.class }}/{{ p.room }}</td>
+		<td class="text-center">{{ p.number }}</td>
+		<td class="text-center">{{ p.risks.countHighRisk || 0}}</td>
+		<td class="text-center">{{ p.risks.countVeryHighRisk || 0}}</td>
 		<td class="text-center" ng-if="p.hasTalent()">
 			<i class="fa fa-check-circle friendly" >
 		</td>

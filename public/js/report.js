@@ -123,7 +123,7 @@
 
 	.controller('ReportNavigationController', function(
 		$scope, 
-		$questionaire, 
+		formService, 
 		$report,
 		$state,
 		$class, 
@@ -149,7 +149,7 @@
 
 		if (!this.form) {
 			this.form = { id: localStorage.getItem('formID') }
-			$questionaire.injectFunctions(this.form);
+			formService.injectFunctions(this.form);
 		}
 
 		this.classChange = function() {
@@ -192,7 +192,7 @@
 			};
 		}
 
-		$questionaire.all(function(forms) {
+		formService.load(function(forms) {
 			self.forms = forms;
 			if (forms.length > 0) {
 				self.form = forms[0];
@@ -240,7 +240,7 @@
 			var stateName = 'report.overview';
 			
 			if (self.form && !self.form.injectedFunctions) {
-				$questionaire.injectFunctions(self.form);
+				formService.injectFunctions(self.form);
 			}
 
 			if (self.form) {

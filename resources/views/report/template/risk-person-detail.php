@@ -8,10 +8,10 @@
 				<div class="row indent-left-2">
 					<p class="text-left color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						[[participant.identifier]] 
+						{{participant.identifier}} 
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						[[participant.firstname]] [[participant.lastname]]
+						{{participant.firstname}} {{participant.lastname}}
 					</p>
 				</div>
 			</div>
@@ -19,10 +19,10 @@
 				<div class="row text-center">
 					<p class="text-left color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						ห้อง [[participant.class]]/[[participant.room]] 
+						ห้อง {{participant.class}}/{{participant.room}} 
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						เลขที่ [[participant.number]]
+						เลขที่ {{participant.number}}
 					</p>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 						ความสามารถพิเศษ
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						[[participant.talent || 'ไม่มี']]
+						{{participant.talent || 'ไม่มี'}}
 					</p>
 				</div>
 			</div>
@@ -49,7 +49,7 @@
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
 						ng-if="participant.disabilities.length == 1">
-						[[ participant.disabilities[0] ]]
+						{{ participant.disabilities[0] }}
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
 						ng-if="participant.disabilities.length == 0">
@@ -84,12 +84,12 @@
 			 ng-click="tab.selectAspect(aspect)">
 			
 			<h1 style="font-size:4em" 
-				ng-data-type="[[ aspect.name ]]"
+				ng-data-type="{{ aspect.name }}"
 				ng-class="{'selected':tab.isSelected(aspect), 'rveryhigh' : aspect.veryHigh.length > 0, 'rhigh' : aspect.high.length, 'rnormal' : aspect.veryHigh.length == 0 && aspect.high.length == 0 > 0}">
-				[[
+				{{
 				aspect.high.length +
 				aspect.veryHigh.length
-				]]
+				}}
 			</h1>
 			
 		</div> -->
@@ -101,10 +101,10 @@
 					<h1 style="font-size:4em" 
 						data-type="การเรียน"
 						ng-class="{'selected':tab.isSelected(participant.risks.study), 'rveryhigh' : participant.risks.study.veryHigh.length > 0, 'rhigh' : participant.risks.study.high.length > 0, 'rnormal' : participant.risks.study.veryHigh.length == 0 && participant.risks.study.high.length == 0}">
-						[[
+						{{
 						participant.risks.study.high.length +
 						participant.risks.study.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -114,10 +114,10 @@
 					<h1 style="font-size:4em" 
 						data-type="สุขภาพ"
 						ng-class="{'selected':tab.isSelected(participant.risks.health), 'rveryhigh' : participant.risks.health.veryHigh.length > 0, 'rhigh' : participant.risks.health.high.length > 0, 'rnormal' : participant.risks.health.veryHigh.length == 0 && participant.risks.health.high.length == 0}">
-						[[
+						{{
 						participant.risks.health.high.length +
 						participant.risks.health.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -127,10 +127,10 @@
 					<h1 style="font-size:4em" 
 						data-type="ความรุนแรง"
 						ng-class="{'selected':tab.isSelected(participant.risks.aggressiveness), 'rveryhigh' : participant.risks.aggressiveness.veryHigh.length > 0, 'rhigh' : participant.risks.aggressiveness.high.length > 0, 'rnormal' : participant.risks.aggressiveness.veryHigh.length == 0 && participant.risks.aggressiveness.high.length == 0}">
-						[[
+						{{
 						participant.risks.aggressiveness.high.length +
 						participant.risks.aggressiveness.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -142,10 +142,10 @@
 					<h1 style="font-size:4em" 
 						data-type="เศรษฐกิจ"
 						ng-class="{'selected':tab.isSelected(participant.risks.economy), 'rveryhigh' : participant.risks.economy.veryHigh.length > 0, 'rhigh' : participant.risks.economy.high.length > 0, 'rnormal' : participant.risks.economy.veryHigh.length == 0 && participant.risks.economy.high.length == 0}">
-						[[
+						{{
 						participant.risks.economy.high.length +
 						participant.risks.economy.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -155,10 +155,10 @@
 					<h1 style="font-size:4em" 
 						data-type="ความปลอดภัย"
 						ng-class="{'selected':tab.isSelected(participant.risks.security), 'rveryhigh' : participant.risks.security.veryHigh.length > 0, 'rhigh' : participant.risks.security.high.length > 0, 'rnormal' : participant.risks.security.veryHigh.length == 0 && participant.risks.security.high.length == 0}">
-						[[
+						{{
 						participant.risks.security.high.length +
 						participant.risks.security.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -168,10 +168,10 @@
 					<h1 style="font-size:4em" 
 						data-type="สารเสพติด"
 						ng-class="{'selected':tab.isSelected(participant.risks.drugs), 'rveryhigh' : participant.risks.drugs.veryHigh.length > 0, 'rhigh' : participant.risks.drugs.high.length > 0, 'rnormal' : participant.risks.drugs.veryHigh.length == 0 && participant.risks.drugs.high.length == 0}">
-						[[
+						{{
 						participant.risks.drugs.high.length +
 						participant.risks.drugs.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -183,10 +183,10 @@
 					<h1 style="font-size:4em" 
 						data-type="เพศ"
 						ng-class="{'selected':tab.isSelected(participant.risks.sexuality), 'rveryhigh' : participant.risks.sexuality.veryHigh.length > 0, 'rhigh' : participant.risks.sexuality.high.length > 0, 'rnormal' : participant.risks.sexuality.veryHigh.length == 0 && participant.risks.sexuality.high.length == 0}">
-						[[
+						{{
 						participant.risks.sexuality.high.length +
 						participant.risks.sexuality.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -196,10 +196,10 @@
 					<h1 style="font-size:4em" 
 						data-type="ติดเกม"
 						ng-class="{'selected':tab.isSelected(participant.risks.games), 'rveryhigh' : participant.risks.games.veryHigh.length > 0, 'rhigh' : participant.risks.games.high.length > 0, 'rnormal' : participant.risks.games.veryHigh.length == 0 && participant.risks.games.high.length == 0}">
-						[[
+						{{
 						participant.risks.games.high.length +
 						participant.risks.games.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -209,10 +209,10 @@
 					<h1 style="font-size:4em" 
 						data-type="เครื่องมือสื่อสาร"
 						ng-class="{'selected':tab.isSelected(participant.risks.electronics), 'rveryhigh' : participant.risks.electronics.veryHigh.length > 0, 'rhigh' : participant.risks.electronics.high.length, 'rnormal' : participant.risks.electronics.veryHigh.length == 0 && participant.risks.electronics.high.length == 0 > 0}">
-						[[
+						{{
 						participant.risks.electronics.high.length +
 						participant.risks.electronics.veryHigh.length
-						]]
+						}}
 					</h1>
 					
 				</td>
@@ -243,13 +243,13 @@
 				<ul ng-if="tab.selectedAspect.high.length > 0">
 					<div class="color-accent">เสี่ยง</div>
 					<li ng-repeat="item in tab.selectedAspect.high">
-						[[item.name]]
+						{{item.name}}
 					</li>
 				</ul>
 				<ul ng-if="tab.selectedAspect.veryHigh.length > 0"> 
 					<div class="color-accent">มีปัญหา</div>
 					<li ng-repeat="item in tab.selectedAspect.veryHigh">
-						[[item.name]]
+						{{item.name}}
 					</li>
 				</ul>
 			</div>
@@ -262,6 +262,6 @@
 	 style="height: 82.5vh" 
 	 ng-if="participant == null">
 	<h2 class="col-xs-12 text-center">
-		[[ errorMessage ]]
+		{{ errorMessage }}
 	</h2>
 </div>

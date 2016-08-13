@@ -14,11 +14,11 @@
 			<button ng-click="addQuestionHeaderRow(question)">+</button>
 			<table ng-show="question.hasHeader" ng-repeat="r in question.meta.header.rows">
 				<tr>
-					<td>แถวที่ [[ $index+1 ]]</td>
+					<td>แถวที่ {{ $index+1 }}</td>
 				</tr>
 				<tr ng-repeat="c in r.cols">
 					<td>
-						คอลัมน์ที่ [[ $index+1 ]]
+						คอลัมน์ที่ {{ $index+1 }}
 						<button ng-click="addHeaderCol(r)">+</button>
 					</td>
 					<td>
@@ -42,7 +42,7 @@
 			<button ng-repeat="choice in question.choices"
 					ng-click="showPage($index)"
 					ng-class="{'danger' : ($index == currentPage) }">
-				[[$index + 1]]
+				{{$index + 1}}
 			</button>
 		</td>
 	</tr>
@@ -90,8 +90,8 @@
 				</tr>
 			</table>
 
-			<questionaire-additional-inputs></questionaire-additional-inputs>
-			<questionaire-subchoices></questionaire-subchoices>
+			<form-additional-inputs></form-additional-inputs>
+			<form-subchoices></form-subchoices>
 		</td>
 
 	</tr>

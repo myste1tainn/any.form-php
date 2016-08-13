@@ -2,7 +2,7 @@
 	 ng-repeat="group in overview.results">
 
 	<div class="col-xs-6">
-		[[ group.name ]]
+		{{ group.name }}
 	</div>
 	<div class="col-xs-2" 
 		 ng-repeat="criterion in group.criteria">
@@ -10,10 +10,10 @@
 			  ng-class="{'friendly' : criterion.label == 'ปกติ' || criterion.label == 'เป็นจุดแข็ง',
 						 'alarming' : criterion.label == 'เสี่ยง',
 						 'destructive' : criterion.label == 'มีปัญหา' || criterion.label == 'ไม่มีจุดแข็ง'}">
-			[[ criterion.label ]]
+			{{ criterion.label }}
 		</span>
 		<span class="col-xs-12 small-pad">
-			[[ criterion.count || 0 ]]
+			{{ criterion.count || 0 }}
 		</span>
 	</div>
 

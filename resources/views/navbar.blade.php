@@ -15,7 +15,7 @@
 			<ul class="nav navbar-nav col-xs-12">
 				<li class="section">นักเรียน</li>
 				<li id="form">
-					<a ui-sref="form.list" class="bgcolor-clear children">
+					<a ui-sref="Forms" class="bgcolor-clear children">
 						<table>
 						<tr>
 							<td><span class="fa fa-pencil-square-o color-accent1"></span></td>
@@ -37,16 +37,6 @@
 				</li>
 				@else
 				<li class="section">อาจารย์</li>
-				<li id="risk-screening">
-					<a ui-sref="risk-screening" class="bgcolor-clear children">
-						<table>
-						<tr>
-							<td><span class="fa fa-pencil-square-o color-accent1"></span></td>
-							<td>แบบคัดกรอง</td>
-						</tr>
-						</table>
-					</a>
-				</li>
 				<li id="report">
 					<a ui-sref="report({type:'person'})" class="bgcolor-clear children">
 						<table>
@@ -68,7 +58,7 @@
 					</a>
 				</li>
 				<li id="logout">
-					<a href="auth/logout" class="bgcolor-clear children">
+					<a ui-sref="logout" class="bgcolor-clear children">
 						<table>
 						<tr>
 							<td><span class="fa fa-sign-out color-accent1"></span></td>

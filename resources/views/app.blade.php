@@ -26,7 +26,7 @@ use Cache;
 		angular.module('ammart').constant('CSRF_TOKEN', '{{ csrf_token() }}');
 		angular.module('ammart').constant('CURRENT_YEAR', '{{ Cache::get('settings.current_academic_year') }}');
 
-		// ID of the risk screening questionaire
+		// ID of the risk screening form
 		angular.module('ammart').constant('RISK_ID', {{ env('APP_RISK_ID') }});
 		angular.module('ammart').constant('SDQ_ID', {{ env('APP_SDQ_ID') }});
 		angular.module('ammart').constant('SDQT_ID', {{ env('APP_SDQT_ID') }});
@@ -45,8 +45,7 @@ use Cache;
 	
 	@include('navbar')
 	
-	<div ui-view class="body" style="overflow-x: hidden;">
-		
+	<div ui-view class="col-xs-9 col-lg-10 no-pad body" style="overflow-x: hidden;">
 	</div>
 </body>
 </html>

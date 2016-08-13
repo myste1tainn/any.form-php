@@ -33,25 +33,25 @@
 			<tr ng-repeat="criterion in class.criteria">
 				<td class="text-center col-xs-1"
 					style="font-size: 4em; font-weight: 900; color: #1237BD"
-					rowspan="[[ class.criteria.length ]]"
+					rowspan="{{ class.criteria.length }}"
 					ng-if="$index == 0">
-					[[ criterion.class ]]
+					{{ criterion.class }}
 				</td>
 				<td class="text-left col-xs-2">
-					[[ criterion.label ]]
+					{{ criterion.label }}
 				</td>
 				<td class="text-center col-xs-1">
-					[[ criterion.number || 0 ]]
+					{{ criterion.number || 0 }}
 				</td>
 				<td class="text-center col-xs-1">
-					[[ criterion.percent ]]
+					{{ criterion.percent }}
 				</td>
 				<td class="text-center theme-border col-xs-1 bgcolor-secondary color-accent1"
 					style="font-size: 2em; font-weight: 900; color: #1237BD"
-					rowspan="[[ class.criteria.length ]]"
+					rowspan="{{ class.criteria.length }}"
 					ng-if="$index == 0">
-					[[ class.avgRisk ]] ([[ class.avgValue ]])
-					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน [[ class.total ]] คน</p>
+					{{ class.avgRisk }} ({{ class.avgValue }})
+					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน {{ class.total }} คน</p>
 				</td>
 			</tr>
 		</tbody>
