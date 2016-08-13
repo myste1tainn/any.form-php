@@ -8,11 +8,6 @@ use Request;
 
 class QuestionController extends Controller {
 
-	public function template($name)
-	{
-		return view('question/'.$name);
-	}
-
 	public function all($formID) {
 		if ($formID) {
 			return response()->json(Question::where('questionaireID', $formID)->get());

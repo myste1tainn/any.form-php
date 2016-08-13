@@ -16,54 +16,26 @@ use Request;
 
 class FormController extends Controller {
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		return view('questionaire/main');
-	}
-
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		return view('questionaire/create');
-	}
-
-	public function edit($questionaireID) {
-		return view('questionaire/create');
-	}
-
-	public function load($id) {
-		$questionaire = Questionaire::with('criteria', 'questions.meta')
+	public function load($id = null) {
+		if ($id) {
+			$questionaire = Questionaire::with('criteria', 'questions.meta')
 									->where('id', $id)	
 									->first();
 
-		foreach ($questionaire->questions as $q) {
-			$q->choices = Choice::with('subchoices', 'inputs')
-								->where('questionID', $q->id)
-								->whereNull('parentID')
-								->get();
-		}
+			if ($questionaire) {
+				foreach ($questionaire->questions as $q) {
+					$q->choices = Choice::with('subchoices', 'inputs')
+										->where('questionID', $q->id)
+										->whereNull('parentID')
+										->get();
+				}
 
-		return response()->json($questionaire);
-	}
-
-	public function show($id = null) {
-		return view('questionaire/do');
-	}
-
-	public function template($type, $subType = null) {
-		if ($subType) {
-			return view('questionaire/'.$type.'-'.$subType);
+				return response()->json($questionaire);
+			} else {
+				return response()->json(null, 404);
+			}
 		} else {
-			return view('questionaire/'.$type);
+			return $this->all();
 		}
 	}
 
@@ -149,17 +121,14 @@ class FormController extends Controller {
 			$questionaire->header = null;
 		}
 		$questionaire->save();
-
 		$questionaire->criteria = Criterion::updateWith($questionaire, $iCriteria);
 		$questionaire->questions = Question::updateWith($questionaire, $iQuestions);
-
 		return $questionaire;
 	}
 
 	public function all()
 	{
 		$questionaires = Questionaire::with('criteria', 'questions')->get();
-
 		foreach ($questionaires as $qq) {
 			foreach ($qq->questions as $q) {
 				$q->choices = Choice::with('subchoices', 'inputs')
@@ -168,11 +137,7 @@ class FormController extends Controller {
 									->get();
 			}
 		}
-
-		return response()->json([
-			'success' => true,
-			'data' => $questionaires
-		]);
+		return response()->json($questionaires);
 	}
 
 	/**
