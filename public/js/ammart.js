@@ -58,6 +58,7 @@
 			return null;
 		}
 
+		this.find = _searchByID;
 		this.remove = function(target, items) {
 			if (!_removeBySplice(target, items)) {
 				var item = _searchByID(target, items)
