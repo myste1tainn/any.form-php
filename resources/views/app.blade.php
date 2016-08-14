@@ -43,8 +43,7 @@ use Cache;
 <body>
 	<base href="{{ env('APP_URI') }}"></base>
 	
-	@include('navbar')
-	
+	<navbar></navbar>
 	<div ui-view class="col-xs-9 col-lg-10 no-pad body" style="overflow-x: hidden;">
 	</div>
 </body>
