@@ -149,24 +149,48 @@
 	.service('User', function($http){
 		var _this = this;
 
+		this.subscriber = null;
 		this.name = null;
 		this.level = null;
 
-		$http.get('api/v1/user')
-		.success(function(res, status, headers, config){
-			_this.name = res.name;
-			_this.level = res.level;	
+		this.reload = function(){
+			$http.get('api/v1/user')
+			.success(function(res, status, headers, config){
+				_this.name = res.name;
+				_this.level = res.level;	
 
-			if (_this.level === undefined) {
-				_this.level = 0;
-			}
-		})
-		.error(function(res, status, headers, config){
-			
-		});
+				if (_this.level === undefined) {
+					_this.level = 0;
+				}
+
+				_this.subscriber();
+			})
+			.error(function(res, status, headers, config){
+				
+			});
+		}
+
+		this.subscribe = function(obj) {
+			this.subscriber = obj;
+		}
+
+		this.reload();
 	})
 
-	.controller('LoginController', function($scope, $http, $state){
+	.directive('navbar', function($http, User){
+		return {
+			restrict: 'E',
+			templateUrl: 'template/navbar',
+			controllerAs: 'navbar',
+			controller: function($scope, $element, $attrs){
+				User.subscribe(function () {
+					$scope.user = User.name;
+				})
+			}
+		}
+	})
+
+	.controller('LoginController', function($scope, $http, $state, User){
 		$scope.login = function(){
 			$http.post('auth/login', {
 				username: $scope.username,
@@ -177,6 +201,7 @@
 				if (status == 401) {
 					$scope.error = res.message;
 				} else {
+					User.reload();
 					$state.go('home');
 				}
 			})
