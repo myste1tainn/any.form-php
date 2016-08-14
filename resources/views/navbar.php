@@ -38,7 +38,7 @@
 				</div>
 				<div ng-if="!!user">
 					<li class="section" >อาจารย์</li>
-					<li id="report">
+					<li id="ReportDisplay">
 						<a ui-sref="report({type:'person'})" class="bgcolor-clear children">
 							<table>
 							<tr>

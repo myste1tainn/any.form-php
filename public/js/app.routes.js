@@ -78,18 +78,48 @@
 			controller: 'FormDoController',
 			controllerAs: 'form',
 		})
-		.state('report', {
+		.state('ReportDisplay', {
 			url: '/report',
-			controller: 'ReportNavigationController',
-			controllerAs: 'nav',
-			templateUrl: 'template/report/main',
+			controller: 'ReportFormSelectionController',
+			templateUrl: 'template/report/main'
+		})
+		.state('ReportDisplay.Show', {
+			url: '/form/:formID/type/:type',
+			views: {
+				'report-navigator': {
+					templateUrl: function($stateParams) {
+						if ($stateParams.type == 'person') {
+							return 'template/controls/report-person-navigator';
+						} else {
+							return 'template/controls/report-navigator';
+						}
+					}
+				},
+				'report-body': {
+					templateUrl: function($stateParams) {
+						if ($stateParams.formID == SDQ_ID) {
+							return 'template/report/sdq/'+$stateParams.type;
+						}
+						if ($stateParams.formID == EQ_ID) {
+							return 'template/report/eq/'+$stateParams.type;
+						}
+
+						return 'template/report/'+$stateParams.type;
+					}
+				}
+			}
 		})
 		.state('report.overview', {
 			url: '/type/:type/form/:formID/year/:year',
 			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
 			views: {
-				'report': {
+				'report-navigator': {
+					controller: 'ReportNavigationController',
+					templateUrl: 'template/controls/report-navigator',
+				},
+				'report-body': {
 					templateUrl: function($stateParams) {
+						console.log($stateParams.type, $stateParams);
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
@@ -100,7 +130,11 @@
 		.state('report.risk', {
 			url: '/:type/risk-screening',
 			views: {
-				'report': {
+				'report-navigator': {
+					controller: 'ReportNavigationController',
+					templateUrl: 'template/controls/report-navigator',
+				},
+				'report-body': {
 					templateUrl: function($stateParams) {
 						return 'template/report-risk/'+$stateParams.type;
 					},
