@@ -23,7 +23,7 @@ require_once('routes.report.php');
 require_once('routes.apis.php');
 
 Route::get('/', 'HomeController@index');
-Route::get('/{p1?}/{p2?}/{p3?}/{p4?}/{p5?}/{p6?}/{p7?}/{p8?}', 'HomeController@index');
-Route::get('/template/{p1}/{p2?}/{p3?}/{p4?}', 'HomeController@template');
+Route::get('/{p1?}/{p2?}/{p3?}/{p4?}/{p5?}/{p6?}/{p7?}/{p8?}/{p9?}', 'HomeController@index');
+Route::get('/template/{p1}/{p2?}/{p3?}/{p4?}{p5?}/{p6?}/{p7?}/{p8?}', 'HomeController@template');
 
 ?>

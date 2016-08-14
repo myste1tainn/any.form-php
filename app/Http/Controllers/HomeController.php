@@ -46,18 +46,18 @@ class HomeController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function index($p1 = null, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null)
+	public function index($p1 = null, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null, $p9 = null)
 	{
 		if ($p1 == 'head') {
 			return $this->head();
 		} else if ($p1 == 'template') {
-			return $this->template($p2,$p3,$p4,$p5);
+			return $this->template($p2,$p3,$p4,$p5,$p6,$p7,$p8,$p9);
 		} else {
 			return view('app');
 		}
 	}
 
-	public function template($p1, $p2 = null, $p3 = null, $p4 = null)
+	public function template($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null)
 	{
 		if ($p1 == 'head') {
 			return $this->head();

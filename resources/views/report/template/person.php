@@ -1,12 +1,5 @@
 <div class="col-xs-12 std-pad">
-	<div class="pull-right" style="margin-bottom: 20px">
-		<select class="form-control" 
-				ng-model="nav.year"
-				ng-change="nav.yearChange()"
-				ng-options="y as y.value for y in nav.years">
-		</select>
-	</div>
-	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ปีการศึกษา</div>
+
 	<table class="form questions" 
 		   st-table="displayedResults" 
 		   st-safe-src="results">
