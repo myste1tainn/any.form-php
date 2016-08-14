@@ -23,7 +23,7 @@
 						ng-click="changePage(page)"
 						class="clickable"
 						style="width: 40px">
-					[[page+1]]
+					{{page+1}}
 				</button>
 			</div>
 

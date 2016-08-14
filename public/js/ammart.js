@@ -5,11 +5,36 @@
 		'ngRoute', 'ngDialog', 'smart-table', 'angular-loading-bar', 'ui.router', 'ngAnimate',
 		
 		// Components
-		'questionaire', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
+		'form', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
 
 		// Collections
 		'Questions', 'Groups'
 	])
+
+	.factory('redirectInterceptor', function($q,$location,$window){
+	return  {
+		'responseError': function(response){
+			if (response.status == 302) {
+				$window.location.href = response.data;
+				return $q.reject(response);
+			}else{
+				return response;
+			}
+		}
+	}
+
+	})
+
+	.config(function(
+		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
+		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider
+	){
+		$httpProvider.interceptors.push('redirectInterceptor');
+		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+		$httpProvider.defaults.headers.common['X-Csrf-Token'] = CSRF_TOKEN;
+		$locationProvider.html5Mode(true);
+		$urlRouterProvider.otherwise('');
+	})
 
 	.service('ArrayHelper', function(){
 
@@ -43,210 +68,6 @@
 			}
 			return items;
 		}
-	})
-
-	.config(function(
-		$interpolateProvider, $httpProvider, $stateProvider, $urlRouterProvider,
-		$locationProvider, $routeProvider, CSRF_TOKEN, $rootScopeProvider,
-		RISK_ID, SDQ_ID, EQ_ID, CURRENT_YEAR
-	){
-
-		$interpolateProvider.startSymbol('[[').endSymbol(']]');
-		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-		$httpProvider.defaults.headers.common['X-Csrf-Token'] = CSRF_TOKEN;
-
-		$locationProvider.html5Mode(true);
-		$urlRouterProvider.otherwise('');
-		$stateProvider
-		.state('home', {
-			url: '/home',
-		})
-		.state('login', {
-			url: '/auth/login',
-			templateUrl: 'auth/login'
-		})
-		.state('register', {
-			url: '/auth/register',
-			templateUrl: 'auth/register'
-		})
-		.state('form', {
-			url: '/form',
-			templateUrl: 'template/head'
-		})
-		.state('form.list', {
-			url: '/list',
-			views: {
-				'head': {
-					templateUrl: 'template/form',
-					controller: 'QuestionaireListController',
-					controllerAs: 'list'
-				}
-			}
-		})
-		.state('form.do', {
-			url: '/do/:formID',
-			params: { formID: null, form: null },
-			views: {
-				'head': {
-					templateUrl: 'template/form/do',
-					controller: 'QuestionaireDoController',
-					controllerAs: 'form'
-				}
-			}
-		})
-		.state('form-create', {
-			url: '/form/create',
-			params: { form: null, formID: null },
-			templateUrl: 'form/create'
-		})
-		.state('form-edit', {
-			url: '/form/edit/:formID',
-			params: { form: null, formID: null },
-			views: {
-				'': {
-					templateUrl: 'form/create',
-				}
-			}
-		})
-		.state('question-grouping', {
-			url: '/question/grouping',
-			views: {
-				'': {
-					templateUrl: 'template/question/grouping'
-				}
-			}
-		})
-		.state('question-grouping.show', {
-			url: '/form/:formID/group/:groupID',
-			params: { form: null, group: null },
-			views: {
-				'group': {
-					templateUrl: 'template/question/grouping-body',
-					controller: 'QuestionGroupController',
-					controllerAs: 'grouper'
-				}
-			}
-		})
-		.state('risk-screening', {
-			url: '/teacher/risk-screening',
-			templateUrl: 'template/risk/do',
-			controller: 'QuestionaireDoController',
-			controllerAs: 'form',
-		})
-		.state('report', {
-			url: '/report',
-			controller: 'ReportNavigationController',
-			controllerAs: 'nav',
-			templateUrl: 'template/report/main',
-		})
-		.state('report.overview', {
-			url: '/type/:type/form/:formID/year/:year',
-			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
-			views: {
-				'report': {
-					templateUrl: function($stateParams) {
-						return 'template/report/'+$stateParams.type;
-					},
-					controller: 'ReportTabController',
-					controllerAs: 'report'
-				}
-			}
-		})
-		.state('report.risk', {
-			url: '/:type/risk-screening',
-			views: {
-				'report': {
-					templateUrl: function($stateParams) {
-						return 'template/report-risk/'+$stateParams.type;
-					},
-					controller: 'ReportPersonRiskToolbarController',
-					controllerAs: 'toolbar'
-				},
-			}
-		})
-		.state('report.risk.overview', {
-			url: '/year/:year',
-			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
-			views: {
-				'report.risk.overview': {
-					templateUrl: 'template/report-risk/overview',
-					controller: 'ReportRiskOverviewController',
-					controllerAs: 'report'
-				}
-			}
-		})
-		.state('report.risk.list', {
-			url: '/list/:year',
-			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
-			views: {
-				'report.risk.body': {
-					templateUrl: function($stateParams) {
-						return 'template/report-risk/'+$stateParams.type+'-body';
-					},
-					controller: 'ReportPersonRiskListController',
-					controllerAs: 'list'
-				},
-			}
-		})
-		.state('report.risk.detail', {
-			url: '/participant/:participantID/year/:year',
-			params: { participant: null, participantID: null },
-			views: {
-				'report.risk': {
-					templateUrl: function($stateParams) {
-						return 'template/report-risk/'+$stateParams.type+'-detail';
-					},
-					controller: 'ReportRiskPersonDetailController',
-					controllerAs: 'tab'
-				}
-			}
-		})
-		.state('report.sdq', {
-			url: '/:type/sdq',
-			params: { formID: null, form: null },
-			views: {
-				'report': {
-					templateUrl: function($stateParams) {
-						return 'template/report/sdq/'+$stateParams.type;
-					},
-					controller: 'SDQReportToolbarController',
-					controllerAs: 'toolbar'
-				},
-			}
-		})
-		.state('report.sdq.list', {
-			url: '/list/:year',
-			views: {
-				'report.sdq.body': {
-					templateUrl: function($stateParams){
-						return 'template/report/sdq/'+$stateParams.type+'-body';
-					},
-					controller: 'SDQReportListController',
-					controllerAs: 'list'
-				}
-			}
-		})
-		.state('report.sdq.detail', {
-			url: '/participant/:participantID/year/:year',
-			views: {
-				'report.sdq': {
-					templateUrl: 'template/report/sdq/person-detail',
-					controller: 'SDQReportDetailController',
-					controllerAs: 'detail'
-				}
-			}
-		})
-		.state('report.sdq.overview', {
-			url: '/year/:year',
-			params: { class: null, room: null, year: CURRENT_YEAR },
-			views: {
-				'report.sdq.overview': {
-					templateUrl: 'template/report/sdq/overview',
-					controller: 'SDQReportOverviewController',
-					controllerAs: 'overview'
-				}
-			}
-		})
 	})
 
 	.service('sys', function(ngDialog, $rootScope){
@@ -289,12 +110,7 @@
 		this.getData = function(url, callback) {
 			$http.get(url)
 			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					var err = (res.message) ? res.message : res;
-					sys.dialog.error(err);
-				}
+				callback(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);
@@ -303,12 +119,7 @@
 		this.getMessage = function(url, callback) {
 			$http.get(url)
 			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.message);
-				} else {
-					var err = (res.message) ? res.message : res;
-					sys.dialog.error(err);
-				}
+				callback(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);
@@ -318,12 +129,7 @@
 		this.postData = function(url, payload, callback) {
 			$http.post(url, payload)
 			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					var err = (res.message) ? res.message : res;
-					sys.dialog.error(err);
-				}
+				callback(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);
@@ -332,12 +138,7 @@
 		this.postMessage = function(url, payload, callback) {
 			$http.post(url, payload)
 			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.message);
-				} else {
-					var err = (res.message) ? res.message : res;
-					sys.dialog.error(err);
-				}
+				(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);
@@ -348,21 +149,66 @@
 	.service('User', function($http){
 		var _this = this;
 
+		this.subscriber = null;
 		this.name = null;
 		this.level = null;
 
-		$http.get('user')
-		.success(function(res, status, headers, config){
-			_this.name = res.name;
-			_this.level = res.level;	
+		this.reload = function(){
+			$http.get('api/v1/user')
+			.success(function(res, status, headers, config){
+				_this.name = res.name;
+				_this.level = res.level;	
 
-			if (_this.level === undefined) {
-				_this.level = 0;
+				if (_this.level === undefined) {
+					_this.level = 0;
+				}
+
+				_this.subscriber();
+			})
+			.error(function(res, status, headers, config){
+				
+			});
+		}
+
+		this.subscribe = function(obj) {
+			this.subscriber = obj;
+		}
+
+		this.reload();
+	})
+
+	.directive('navbar', function($http, User){
+		return {
+			restrict: 'E',
+			templateUrl: 'template/navbar',
+			controllerAs: 'navbar',
+			controller: function($scope, $element, $attrs){
+				User.subscribe(function () {
+					$scope.user = User.name;
+				})
 			}
-		})
-		.error(function(res, status, headers, config){
-			
-		});
+		}
+	})
+
+	.controller('LoginController', function($scope, $http, $state, User){
+		$scope.login = function(){
+			$http.post('auth/login', {
+				username: $scope.username,
+				password: $scope.password,
+				remember: $scope.remember
+			})
+			.success(function(res, status, headers, config){
+				if (status == 401) {
+					$scope.error = res.message;
+				} else {
+					User.reload();
+					$state.go('home');
+				}
+			})
+			.error(function(res, status, headers, config){
+				$scope.error = res.error;
+			});
+		}
 	})
 
 })();

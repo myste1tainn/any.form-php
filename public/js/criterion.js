@@ -90,7 +90,7 @@
 				label: criterion.label,
 				from: criterion.from,
 				to: criterion.to,
-				questionaireID: _formID,
+				formID: _formID,
 				groupID: _groupID
 			});
 			$scope.criterion.label = '';

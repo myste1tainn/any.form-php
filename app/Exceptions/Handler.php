@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler {
 		if ($this->isHttpException($e))
 		{
 			if ($request->ajax()) {
-				dd($e);
+				return response()->json($e->getMessage(), 500);
 			} else {
 				return $this->renderHttpException($e);
 			}
@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler {
 		else
 		{
 			if ($request->ajax()) {
-				return dd($e);
+				return response()->json($e->getMessage(), 500);
 			} else {
 				return parent::render($request, $e);
 			}

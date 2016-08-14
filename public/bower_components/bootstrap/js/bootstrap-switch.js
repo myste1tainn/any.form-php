@@ -394,10 +394,10 @@
       };
 
       BootstrapSwitch.prototype.destroy = function() {
-        var $form;
-        $form = this.$element.closest("form");
-        if ($form.length) {
-          $form.off("reset.bootstrapSwitch").removeData("bootstrap-switch");
+        var formService;
+        formService = this.$element.closest("form");
+        if (formService.length) {
+          formService.off("reset.bootstrapSwitch").removeData("bootstrap-switch");
         }
         this.$container.children().not(this.$element).remove();
         this.$element.unwrap().unwrap().off(".bootstrapSwitch").removeData("bootstrap-switch");
@@ -634,14 +634,14 @@
       };
 
       BootstrapSwitch.prototype._formHandler = function() {
-        var $form;
-        $form = this.$element.closest("form");
-        if ($form.data("bootstrap-switch")) {
+        var formService;
+        formService = this.$element.closest("form");
+        if (formService.data("bootstrap-switch")) {
           return;
         }
-        return $form.on("reset.bootstrapSwitch", function() {
+        return formService.on("reset.bootstrapSwitch", function() {
           return window.setTimeout(function() {
-            return $form.find("input").filter(function() {
+            return formService.find("input").filter(function() {
               return $(this).data("bootstrap-switch");
             }).each(function() {
               return $(this).bootstrapSwitch("state", this.checked);

@@ -2,7 +2,7 @@
 	
 	var module = angular.module('risk-screening', [])
 
-	.directive('riskScreening', function($questionaire, $participant, $answer, $stateParams, 
+	.directive('riskScreening', function(formService, $participant, $answer, $stateParams, 
 	                                     ngDialog, RISK_ID, ACADEMIC_YEAR){
 		return {
 			restrict: 'EA',
@@ -39,7 +39,7 @@
 
 				// Match between answers and questions
 				// To create answered questions matrix
-				// qq is questionaire, aa is answers
+				// qq is Form, aa is answers
 				var createAnsweredQuestionMatrix = function (qq, aa) {
 					for (var i = qq.questions.length - 1; i >= 0; i--) {
 						var q = qq.questions[i];
@@ -68,9 +68,9 @@
 					}
 				}
 
-				// Load the questionaire questions
-				$questionaire.load(RISK_ID, function(questionaire){
-					$scope.screening = questionaire;
+				// Load the Form questions
+				formService.load(RISK_ID, function(Form){
+					$scope.screening = Form;
 
 					if ($stateParams.studentID) {
 						$participant.load($stateParams.studentID, function(participant){
@@ -79,7 +79,7 @@
 						})
 
 						$answer.load(RISK_ID, $stateParams.year, $stateParams.studentID, function(answers) {
-							createAnsweredQuestionMatrix(questionaire, answers)
+							createAnsweredQuestionMatrix(Form, answers)
 						});
 					}
 				});
@@ -151,9 +151,9 @@
 
 					if ($scope.validateFormInput()) {
 						$scope.participant.choices = choices;
-						$scope.participant.questionaireID = $scope.screening.id;
+						$scope.participant.formID = $scope.screening.id;
 
-						$questionaire.submit($scope.participant, function (response) {
+						formService.submit($scope.participant, function (response) {
 							ngDialog.open({
 								plain: true,
 								template: response

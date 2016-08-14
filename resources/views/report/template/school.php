@@ -21,20 +21,20 @@
 		<tbody ng-repeat="school in displayedResults">
 			<tr ng-repeat="criterion in school.criteria">
 				<td class="text-left col-xs-2">
-					[[ criterion.label ]]
+					{{ criterion.label }}
 				</td>
 				<td class="text-center col-xs-1">
-					[[ criterion.number || 0 ]]
+					{{ criterion.number || 0 }}
 				</td>
 				<td class="text-center col-xs-1">
-					[[ criterion.percent ]]
+					{{ criterion.percent }}
 				</td>
 				<td class="text-center theme-border col-xs-1 bgcolor-secondary color-accent1"
 					style="font-size: 2em; font-weight: 900; color: #1237BD"
-					rowspan="[[ school.criteria.length ]]"
+					rowspan="{{ school.criteria.length }}"
 					ng-if="$index == 0">
-					[[ school.avgRisk ]] ([[ school.avgValue ]])
-					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน [[ school.total ]] คน</p>
+					{{ school.avgRisk }} ({{ school.avgValue }})
+					<p style="font-size: 0.7" class="color-dominant">จากนักเรียนจำนวน {{ school.total }} คน</p>
 				</td>
 			</tr>
 		</tbody>

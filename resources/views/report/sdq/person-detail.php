@@ -8,10 +8,10 @@
 				<div class="row indent-left-2">
 					<p class="text-left one-line color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						[[participant.identifier]] 
+						{{participant.identifier}} 
 					</p>
 					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
-						[[participant.firstname]] [[participant.lastname]]
+						{{participant.firstname}} {{participant.lastname}}
 					</p>
 				</div>
 			</div>
@@ -19,10 +19,10 @@
 				<div class="row text-center">
 					<p class="text-left one-line color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						ห้อง [[participant.class]]/[[participant.room]] 
+						ห้อง {{participant.class}}/{{participant.room}} 
 					</p>
 					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
-						เลขที่ [[participant.number]]
+						เลขที่ {{participant.number}}
 					</p>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 						เพิ่มเติม
 					</p>
 					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
-						[[ participant.comments ]]
+						{{ participant.comments }}
 					</p>
 				</div>
 			</div>
@@ -50,19 +50,19 @@
 			<tr>
 				<td class="text-center" ng-repeat="g in participant.groups">
 					<h1 style="font-size:1.7em" 
-						class="[[g.result.modifier]]"
-						data-type="[[g.label]]">
-						[[g.result.string]]
+						class="{{g.result.modifier}}"
+						data-type="{{g.label}}">
+						{{g.result.string}}
 					</h1>
 				</td>
 			</tr>
 		</table>
 
 		<h4 class="col-xs-12 text-center">ความเรื้อรังของปัญหา</h4>
-		<div class="col-xs-12 text-center text-xxxl border-tb">[[ participant.chronic ]]</div>
+		<div class="col-xs-12 text-center text-xxxl border-tb">{{ participant.chronic }}</div>
 
 		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหาทำให้ไม่สบายใจ</h4>
-		<div class="col-xs-12 text-center text-xxxl ">[[ participant.notease ]]</div>
+		<div class="col-xs-12 text-center text-xxxl ">{{ participant.notease }}</div>
 
 	</div>
 
@@ -72,8 +72,8 @@
 		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหารบกวนชีวิตประจำวัน</h4>
 		<div class="col-xs-12">
 			<div ng-repeat="problem in participant.lifeProblems">
-				<span class="text-normal col-xs-6 std-pad text-left">[[problem.name]]</span>
-				<span class="text-normal col-xs-6 std-pad text-right">[[problem.label]]</span>
+				<span class="text-normal col-xs-6 std-pad text-left">{{problem.name}}</span>
+				<span class="text-normal col-xs-6 std-pad text-right">{{problem.label}}</span>
 			</div>
 		</div>
 		
@@ -85,6 +85,6 @@
 	 style="height: 82.5vh" 
 	 ng-if="participant == null">
 	<h2 class="col-xs-12 text-center">
-		[[ errorMessage ]]
+		{{ errorMessage }}
 	</h2>
 </div>

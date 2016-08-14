@@ -44,10 +44,10 @@
 		}
 	})
 
-	.directive('formSelect', function($questionaire, $state){
+	.directive('formSelect', function(formService, $state){
 		return {
 			restrict: 'E',
-			templateUrl: 'template/shared/form-select',
+			templateUrl: 'template/form-select',
 			controllerAs: 'nav',
 			controller: function($scope, $element){
 				var _this = this;
@@ -59,7 +59,7 @@
 					})
 				}
 
-				$questionaire.all(function(forms) {
+				formService.load(function(forms) {
 					_this.forms = forms;
 					if (forms.length > 0) {
 						_this.select(forms[0]);
@@ -104,7 +104,7 @@
 		$scope.addGroup = function(group) {
 			Groups.insert({
 				name: group.name,
-				questionaireID: _formID
+				formID: _formID
 			});
 			$scope.group.name = '';
 		}

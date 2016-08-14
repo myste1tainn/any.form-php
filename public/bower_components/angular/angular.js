@@ -22735,7 +22735,7 @@ var inputType = {
 };
 
 function stringBasedInputType(ctrl) {
-  ctrl.$formatters.push(function(value) {
+  ctrl.formServiceatters.push(function(value) {
     return ctrl.$isEmpty(value) ? value : value.toString();
   });
 }
@@ -22960,7 +22960,7 @@ function createDateInputType(type, regexp, parseDate, format) {
       return undefined;
     });
 
-    ctrl.$formatters.push(function(value) {
+    ctrl.formServiceatters.push(function(value) {
       if (value && !isDate(value)) {
         throw ngModelMinErr('datefmt', 'Expected `{0}` to be a date', value);
       }
@@ -23031,7 +23031,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser) {
     return undefined;
   });
 
-  ctrl.$formatters.push(function(value) {
+  ctrl.formServiceatters.push(function(value) {
     if (!ctrl.$isEmpty(value)) {
       if (!isNumber(value)) {
         throw ngModelMinErr('numfmt', 'Expected `{0}` to be a number', value);
@@ -23156,7 +23156,7 @@ function checkboxInputType(scope, element, attr, ctrl, $sniffer, $browser, $filt
     return value === false;
   };
 
-  ctrl.$formatters.push(function(value) {
+  ctrl.formServiceatters.push(function(value) {
     return equals(value, trueValue);
   });
 
@@ -25706,7 +25706,7 @@ var ngListDirective = function() {
       };
 
       ctrl.$parsers.push(parse);
-      ctrl.$formatters.push(function(value) {
+      ctrl.formServiceatters.push(function(value) {
         if (isArray(value)) {
           return value.join(ngList);
         }
@@ -25764,7 +25764,7 @@ will be set to `undefined` unless {@link ngModelOptions `ngModelOptions.allowInv
 is set to `true`. The parse error is stored in `ngModel.$error.parse`.
 
  *
- * @property {Array.<Function>} $formatters Array of functions to execute, as a pipeline, whenever
+ * @property {Array.<Function>} formServiceatters Array of functions to execute, as a pipeline, whenever
        the model value changes. The functions are called in reverse array order, each passing the value through to the
        next. The last return value is used as the actual DOM value.
        Used to format / convert values for display in the control.
@@ -25774,7 +25774,7 @@ is set to `true`. The parse error is stored in `ngModel.$error.parse`.
  *     return value.toUpperCase();
  *   }
  * }
- * ngModel.$formatters.push(formatter);
+ * ngModel.formServiceatters.push(formatter);
  * ```
  *
  * @property {Object.<string, function>} $validators A collection of validators that are applied
@@ -25950,7 +25950,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
   this.$validators = {};
   this.$asyncValidators = {};
   this.$parsers = [];
-  this.$formatters = [];
+  this.formServiceatters = [];
   this.$viewChangeListeners = [];
   this.$untouched = true;
   this.$touched = false;
@@ -26062,7 +26062,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * @description
    * Change the validity state, and notify the form.
    *
-   * This method can be called within $parsers/$formatters or a custom validation implementation.
+   * This method can be called within $parsers/formServiceatters or a custom validation implementation.
    * However, in most cases it should be sufficient to use the `ngModel.$validators` and
    * `ngModel.$asyncValidators` collections which will call `$setValidity` automatically.
    *
@@ -26527,7 +26527,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
    * out of sync. It's also important to note that `$setViewValue` does not call `$render` or change
    * the control's DOM value in any way. If we want to change the control's DOM value
    * programmatically, we should update the `ngModel` scope expression. Its new value will be
-   * picked up by the model controller, which will run it through the `$formatters`, `$render` it
+   * picked up by the model controller, which will run it through the `formServiceatters`, `$render` it
    * to update the DOM, and finally call `$validate` on it.
    * </div>
    *
@@ -26591,7 +26591,7 @@ var NgModelController = ['$scope', '$exceptionHandler', '$attrs', '$element', '$
       ctrl.$modelValue = ctrl.$$rawModelValue = modelValue;
       parserValid = undefined;
 
-      var formatters = ctrl.$formatters,
+      var formatters = ctrl.formServiceatters,
           idx = formatters.length;
 
       var viewValue = modelValue;
@@ -29909,7 +29909,7 @@ var SelectController =
  *             ngModel.$parsers.push(function(val) {
  *               return parseInt(val, 10);
  *             });
- *             ngModel.$formatters.push(function(val) {
+ *             ngModel.formServiceatters.push(function(val) {
  *               return '' + val;
  *             });
  *           }

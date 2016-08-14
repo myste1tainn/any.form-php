@@ -27,7 +27,19 @@
 
 <!-- Application -->
 <script src="{{ asset('/js/ammart.js') }}"></script>
-<script src="{{ asset('/js/questionaire.js') }}"></script>
+<script src="{{ asset('/js/app.routes.js') }}"></script>
+<script src="{{ asset('/js/form.js') }}"></script>
+<script src="{{ asset('/js/form.list.component.js') }}"></script>
+<script src="{{ asset('/js/form.do.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.criteria.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.questions.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.choices.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.additional-inputs.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.header-toggler.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.question-header-toggler.component.js') }}"></script>
+<script src="{{ asset('/js/form.create.choice-enabled-toggler.component.js') }}"></script>
+<script src="{{ asset('/js/form.service.js') }}"></script>
 <script src="{{ asset('/js/question.js') }}"></script>
 <script src="{{ asset('/js/criterion.js') }}"></script>
 <script src="{{ asset('/js/choice.js') }}"></script>

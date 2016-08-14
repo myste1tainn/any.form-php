@@ -3,9 +3,9 @@
 		ชื่อ
 	</div>
 	<div class="col-xs-11">
-		<input class="col-xs-8" name="name" ng-model="questionaire.name" type="text" />
-		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="questionaire.level" value="0" />
-		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="questionaire.type" value="0" />
+		<input class="col-xs-8" name="name" ng-model="form.name" type="text" />
+		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="form.level" value="0" />
+		<input class="col-xs-1 col-xs-offset-1" type="number" ng-model="form.type" value="0" />
 	</div>
 </div>
 <div class="std-pad col-xs-12">
@@ -15,13 +15,13 @@
 		<button ng-click="addHeaderRow()">+</button>
 	</div>
 	<div class="col col-xs-11 col-xs-offset-1">
-		<table ng-show="hasHeader()" ng-repeat="r in questionaire.header.rows">
+		<table ng-show="hasHeader()" ng-repeat="r in form.header.rows">
 			<tr>
-				<td>แถวที่ [[ $index+1 ]]</td>
+				<td>แถวที่ {{ $index+1 }}</td>
 			</tr>
 			<tr ng-repeat="c in r.cols">
 				<td>
-					คอลัมน์ที่ [[ $index+1 ]]
+					คอลัมน์ที่ {{ $index+1 }}
 					<button ng-click="addHeaderCol(r)">+</button>
 				</td>
 				<td>
