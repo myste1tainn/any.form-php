@@ -35,28 +35,22 @@
 		$scope.currentType = $state.params.type || null;
 
 		var _changeStateIfNeeded = function() {
-			console.log(!!$scope.currentForm, !!$scope.currentType);
-			console.log($scope.currentForm, $scope.currentType);
 			if (!!$scope.currentForm && !!$scope.currentType) {
-				_form = $scope.currentForm;
-				_type = $scope.currentType;
-
-				console.log('called');
-
+				var _form = $scope.currentForm;
+				var _type = $scope.currentType;
 				$state.go('ReportDisplay.Show', {
 					formID: _form.id,
+					form: _form,
 					type: _type.value
 				})
 			}
 		}
 
 		$scope.onFormChange = function(form) {
-			console.log(form);
 			$scope.currentForm = form;
 			_changeStateIfNeeded();
 		}
 		$scope.onTypeChange = function(type) {
-			console.log(type);
 			$scope.currentType = type;
 			_changeStateIfNeeded();
 		}
@@ -66,17 +60,16 @@
 		_delegation.onTypeChange = $scope.onTypeChange;
 	})
 
-	.controller('ReportTabController', function($scope, reportService, $state) {
+	.controller('ReportDataController', function(
+		$scope, reportService, $state,
+		ReportNavigationControllerDelegate
+	) {
+		console.log('loaded', $state.params);
+		_delegation = ReportNavigationControllerDelegate
 		$scope.results 			= [];
 		$scope.displayedResults = [];
 		$scope.type 			= $state.params.type;
 		$scope.form 			= $state.params.form;
-
-		if ($scope.$parent.nav) {
-			$scope.$parent.nav.report = this;
-			$scope.class = $scope.$parent.nav.class;
-			$scope.room = $scope.$parent.nav.room;
-		}
 
 		$scope.getData = function() {
 
@@ -85,13 +78,13 @@
 				var payload = {};
 
 				if ($scope.type == 'person') {
-					payload.id = $scope.nav.form.id;
+					payload.id = $scope.form.id;
 				} else if ($scope.type == 'room') {
-					payload.id = $scope.nav.form.id;
+					payload.id = $scope.form.id;
 
 					if ($scope.class && $scope.room) {
-						payload.class = $scope.nav.class.value;
-						payload.room = $scope.nav.room.value;
+						payload.class = $scope.class.value;
+						payload.room = $scope.room.value;
 					} else {
 						return;
 					}
@@ -100,16 +93,19 @@
 					payload.id = $scope.form.id;
 
 					if ($scope.class) {
-						payload.class = $scope.nav.class.value;
+						payload.class = $scope.class.value;
 					} else {
 						return;
 					}
 
 				} else if ($scope.type == 'school') {
-					payload.id = $scope.nav.form.id;
+					payload.id = $scope.form.id;
 				}
 
-				payload.year = $scope.nav.year.value;
+				// CONTINUE ON THIS
+				// Error: Cannot read property value of undefined
+				// You should call onYearChange when the year is loaded and set on navigation controller
+				payload.year = $scope.year.value;
 
 				if (payload.id == "") {
 					return;
@@ -135,51 +131,25 @@
 			if ($scope.form) $scope.getData();
 		}
 
-		this.getData = function() {
+		_delegation.onYearChange = function(year){
+			console.log('called     onYearChange');
+			$scope.year = year;
 			$scope.getData();
 		}
-	})
-
-	.controller('PaginationController', function($scope, reportService, $state){
-		$scope.numRows = 10;
-		$scope.numPage = 0;
-		$scope.pages = [];
-		$scope.currentPage = 0;
-
-		$scope.year = { value: 2559 };
-
-		reportService.numberOfPages($scope.reportID, $scope.year.value, $scope.numRows, function(numPage){
-			$scope.pages = [];
-			$scope.numPage = numPage || 0;
-
-			var limit = ($scope.numPage > 7) ? 7 : $scope.numPage;
-			for (var i = 0; i <= limit; i++) {
-				$scope.pages.push(i);
-			}
-		})
-
-		$scope.changePage = function(page) {
-			$scope.currentPage = page;
-			var params = {
-				class: $scope.class.value,
-				room: $scope.room.value,
-				year: $scope.year.value,
-				from: $scope.currentPage * $scope.numRows,
-				num : $scope.numRows
-			};
-
-			var last = $scope.pages.length - 1;
-			if ($scope.currentPage == $scope.pages[last] && last > 0) {
-				$scope.pages.shift();
-				$scope.pages.push($scope.pages[last - 1] + 1);
-			}
-			if ($scope.currentPage == $scope.pages[0] && $scope.pages[0] != 0) {
-				for (var i = $scope.pages.length - 1; i >= 0; i--) {
-					$scope.pages[i]--;
-				}
-			}
-
-			$state.go($scope.stateName, params);
+		_delegation.onClassChange = function(c) {
+			console.log('called     onClassChange');
+			$scope.class = c;
+			$scope.getData();
+		}
+		_delegation.onRoomChange = function(room){
+			console.log('called     onRoomChange');
+			$scope.room = room;
+			$scope.getData();
+		}
+		_delegation.onPageChange = function(page){
+			console.log('called     onPageChange');
+			$scope.page = page;
+			$scope.getData();
 		}
 	})
 

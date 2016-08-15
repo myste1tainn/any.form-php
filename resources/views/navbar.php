@@ -38,8 +38,8 @@
 				</div>
 				<div ng-if="!!user">
 					<li class="section" >อาจารย์</li>
-					<li id="ReportDisplay">
-						<a ui-sref="report({type:'person'})" class="bgcolor-clear children">
+					<li id="report">
+						<a ui-sref="ReportDisplay" class="bgcolor-clear children">
 							<table>
 							<tr>
 								<td><span class="fa fa-file-text color-accent1"></span></td>

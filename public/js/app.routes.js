@@ -85,8 +85,10 @@
 		})
 		.state('ReportDisplay.Show', {
 			url: '/form/:formID/type/:type',
+			params: {formID: null, form: null, type: 'person'},
 			views: {
 				'report-navigator': {
+					controller: 'ReportNavigationController',
 					templateUrl: function($stateParams) {
 						if ($stateParams.type == 'person') {
 							return 'template/controls/report-person-navigator';
@@ -96,7 +98,11 @@
 					}
 				},
 				'report-body': {
+					controller: 'ReportDataController',
 					templateUrl: function($stateParams) {
+						if (!!!$stateParams.type) {
+							return null;
+						}
 						if ($stateParams.formID == SDQ_ID) {
 							return 'template/report/sdq/'+$stateParams.type;
 						}
@@ -109,6 +115,8 @@
 				}
 			}
 		})
+
+		// DEPRECATED
 		.state('report.overview', {
 			url: '/type/:type/form/:formID/year/:year',
 			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
@@ -119,7 +127,6 @@
 				},
 				'report-body': {
 					templateUrl: function($stateParams) {
-						console.log($stateParams.type, $stateParams);
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
@@ -127,6 +134,33 @@
 				}
 			}
 		})
+		.state('ReportDisplay.Show.List', {
+			url: '/list/:year/:class?/:room?/:from?/:num?',
+			params: { form: null, class: "1", room: "1", from: "0", num: "10" },
+			views: {
+				'report-body': {
+					templateUrl: function($stateParams) {
+						if (!!!$stateParams.type) {
+							return null;
+						}
+
+						if ($stateParams.formID == RISK_ID) {
+							return 'template/report/risk/by-'+$stateParams.type+'-list';
+						} else if ($stateParams.formID == SDQ_ID) {
+							return 'template/report/sdq/'+$stateParams.type+'-body';
+						} else if ($stateParams.formID == EQ_ID) {
+							return 'template/report/eq/'+$stateParams.type+'-body';
+						} else {
+							return 'template/report/eq/'+$stateParams.type+'-body';
+						}
+					},
+					controller: 'ReportPersonRiskListController',
+					controllerAs: 'list'
+				},
+			}
+		})
+
+		// DEPRECATED
 		.state('report.risk', {
 			url: '/:type/risk-screening',
 			views: {
@@ -143,6 +177,8 @@
 				},
 			}
 		})
+
+		// DEPRECATED
 		.state('report.risk.overview', {
 			url: '/year/:year',
 			params: { form: null, class: 1, room: 1, from: 0, num: 10 },

@@ -18,6 +18,34 @@
 		}
 	})
 
+	.service('ReportNavigationControllerDelegate', function() {
+		this.onClassChange = null;
+		this.onRoomChange = null;
+		this.onYearChange = null;
+		this.onPageChange = null;
+
+		this.classChange = function(c) {
+			if (this.onClassChange) {
+				this.onClassChange(c)
+			}
+		}
+		this.roomChange = function(room) {
+			if (this.onRoomChange) {
+				this.onRoomChange(room)
+			}
+		}
+		this.yearChange = function(year) {
+			if (this.onYearChange) {
+				this.onYearChange(year)
+			}
+		}
+		this.pageChange = function(page) {
+			if (this.onPageChange) {
+				this.onPageChange(page)
+			}
+		}
+	})
+
 	/*
 		Control form & type selection
 	*/
@@ -25,7 +53,7 @@
 		$scope, $state, reportService, formService, ArrayHelper,
 		ReportFormSelectionControllerDelegate
 	){
-		var _currentID = $state.params.formID || null;
+		var _currentID = $state.params.formID || localStorage.getItem('formID') || null;
 		$scope.delegate = ReportFormSelectionControllerDelegate;
 		$scope.expanded = false;
 		$scope.forms = [];
@@ -37,9 +65,9 @@
 		var _setForms = function(forms) {
 			$scope.forms = forms;
 			if (!!_currentID) {
-				$result = ArrayHelper.find(_currentID, forms);
+				$result = ArrayHelper.find({id:_currentID}, forms);
 				if ($result) {
-					$scope.selectedForm = form;
+					$scope.selectedForm = $result;
 				}
 			}
 		}
@@ -48,14 +76,34 @@
 			_setForms(forms);
 		})
 
+		var _writeToLocal = function(form){
+			localStorage.setItem('formID', form.id);
+		}
+
 		$scope.toggleExpand = function() {
 			$scope.expanded = !$scope.expanded;
+			if ($scope.expanded) {
+				setTimeout(function() {
+					angular.element('body').click(function(){
+						$scope.$apply(function(){
+							$scope.expanded = false;
+							angular.element('body').off();
+						});
+					})
+				}, 10);
+			} else {
+				angular.element('body').off();
+			}
 		}
+
 		$scope.selectForm = function(form) {
 			$scope.selectedForm = form;
 			$scope.toggleExpand();
 			$scope.delegate.onFormChange(form);
+
+			_writeToLocal(form);
 		}
+
 
 		$scope.selectType = function(type) {
 			$scope.selectedType = type;
@@ -64,14 +112,12 @@
 	})
 
 	.controller('ReportNavigationController', function(
-		$scope,  formService,  reportService, $state, $class,  RISK_ID,  SDQ_ID,  EQ_ID,  $time)
+		$scope, reportService, $state, $class, $time,
+		ReportNavigationControllerDelegate)
 	{
-		var _currentID = $state.params.formID || null;
-		$scope.forms 	= [];
-		$scope.type 	= $state.params.type || 'person';
-		$scope.form 	= $state.params.form || null;
+		_delegation = ReportNavigationControllerDelegate;
 		$scope.rooms 	= [];
-		$scope.classes = [];
+		$scope.classes 	= [];
 		$scope.room 	= null;
 		$scope.class 	= null;
 
@@ -80,52 +126,14 @@
 		$scope.years = $time.years();
 		$scope.year = $time.yearObjectForYear(pyear);
 
-		if (!$scope.form) {
-			$scope.form = { id: localStorage.getItem('formID') }
-			formService.injectFunctions($scope.form);
-		}
-
 		$scope.classChange = function() {
-			$state.go('^.overview', {
-				class: $scope.class.value,
-				room: $scope.room.value,
-				year: $scope.year.value,
-				type: $scope.type,
-			})
+			_delegation.onClassChange($scope.class.value);
 		}
 		$scope.roomChange = function() {
-			$state.go('^.overview', {
-				class: $scope.class.value,
-				room: $scope.room.value,
-				year: $scope.year.value,
-				type: $scope.type,
-			})
+			_delegation.onRoomChange($scope.room.value);
 		}
 		$scope.yearChange = function() {
-			$state.go('^.overview', {
-				class: $scope.class.value,
-				room: $scope.room.value,
-				year: $scope.year.value,
-				type: $scope.type,
-			})
-		}
-
-		/** Constructor
-		 * Initial state controlling
-		 */
-		var components = window.location.pathname.split('/');
-		var count = components.length;
-
-		if ($state.current.name == 'report.overview' &&
-			$state.url === undefined) {
-			$scope.form = { id: components[count - 3] };
-		}
-
-		var createDisplayedResult = function() {
-			for (var i = $scope.forms.length - 1; i >= 0; i--) {
-				var f = $scope.forms[i];
-				f.displayedResults = [].concat(f.results);
-			};
+			_delegation.onYearChange($scope.year.value);
 		}
 
 		var changeStateBlock = function() {
@@ -136,16 +144,6 @@
 			}
 
 			if ($scope.form) {
-				if ($scope.form.isRiskScreeningForm()) {
-					stateName = 'report.risk';
-				} else if ($scope.form.isSDQForm()) {
-					stateName = 'report.sdq';
-				} else if ($scope.form.isEQForm()) {
-					stateName = 'report.eq';
-				} else {
-					stateName = 'report.overview';
-				}
-
 				var form = $scope.form;
 				var formID = form.id;
 
@@ -189,32 +187,59 @@
 			}
 		}
 
-		/**
-		 * UI Controlling part
-		 */
-		$scope.expanded = false;
-		$scope.toggleExpand = function() {
-			$scope.expanded = !$scope.expanded;
-			if ($scope.expanded) {
-				setTimeout(function() {
-					angular.element('body').click(function(){
-						$scope.$apply(function(){
-							$scope.expanded = false;
-							angular.element('body').off();
-						});
-					})
-				}, 10);
-			} else {
-				angular.element('body').off();
-			}
-		}
-
-		$scope.select = function(form) {
-			$scope.form = form;
-			$scope.selectType($scope.type);
-		}
-
 		loadClassesIfNeeded();
+
+		/*******************
+		* Pagination
+		*******************/
+
+		$scope.numRows = 10;
+		$scope.numPage = 0;
+		$scope.pages = [];
+		$scope.currentPage = 0;
+
+		var _loadNumberOfPageIfNeeded = function(){
+			if (!!!$scope.reportID || !!!$scope.year.value || !!!$scope.numRows) {
+				// Either one of these not exists, do not load
+				return;
+			}
+
+			reportService.numberOfPages($scope.reportID, $scope.year.value, $scope.numRows, function(numPage){
+				$scope.pages = [];
+				$scope.numPage = numPage || 0;
+
+				var limit = ($scope.numPage > 7) ? 7 : $scope.numPage;
+				for (var i = 0; i <= limit; i++) {
+					$scope.pages.push(i);
+				}
+			})
+		}
+		_loadNumberOfPageIfNeeded();
+
+		$scope.changePage = function(page) {
+			$scope.currentPage = page;
+			_delegation.onPageChange(page);
+			// var params = {
+			// 	class: $scope.class.value,
+			// 	room: $scope.room.value,
+			// 	year: $scope.year.value,
+			// 	from: $scope.currentPage * $scope.numRows,
+			// 	num : $scope.numRows
+			// };
+
+			// var last = $scope.pages.length - 1;
+			// if ($scope.currentPage == $scope.pages[last] && last > 0) {
+			// 	$scope.pages.shift();
+			// 	$scope.pages.push($scope.pages[last - 1] + 1);
+			// }
+			// if ($scope.currentPage == $scope.pages[0] && $scope.pages[0] != 0) {
+			// 	for (var i = $scope.pages.length - 1; i >= 0; i--) {
+			// 		$scope.pages[i]--;
+			// 	}
+			// }
+
+			// $state.go($scope.stateName, params);
+		}
 	})
 
 })();

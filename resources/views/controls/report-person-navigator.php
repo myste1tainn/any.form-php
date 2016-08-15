@@ -1,4 +1,4 @@
-<div class="row std-pad-lr std-pad-bottom border-b border-lightgray" ui-view="report.sdq">
+<div class="row std-pad-lr std-pad-bottom border-b border-lightgray">
 	<div class="std-pad-top">
 		<div class="col-xs-4">
 			<div class="pull-left">
@@ -11,7 +11,7 @@
 						ng-options="y as y.value for y in years">
 				</select>
 			</div>
-			<button ui-sref="report.sdq.list({year:year.value})">
+			<button ui-sref="ReportDisplay.Show.List({year:year.value})">
 				ดูรายงาน
 			</button>
 		</div>
@@ -28,7 +28,7 @@
 		<div class="col-xs-4">
 			<form>
 				<button class="pull-right"
-						ui-sref="report.sdq.detail({participantID: searchID, year:year.value})">
+						ui-sref="ReportDisplay.Show.Detail({participantID: searchID, year:year.value})">
 					ค้นหา
 				</button>
 				<input class="col-xs-6 pull-right text-center" type="text" 

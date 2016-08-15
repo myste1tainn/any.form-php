@@ -164,7 +164,9 @@
 					_this.level = 0;
 				}
 
-				_this.subscriber();
+				if (!!_this.subscriber) {
+					_this.subscriber();
+				}
 			})
 			.error(function(res, status, headers, config){
 				
