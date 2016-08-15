@@ -28,6 +28,10 @@
 		}
 
 		this.functionForType = function(type) {
+			if (typeof type == 'object') {
+				type = type.value;
+			}
+			
 			if (type === 'person') { return this.person; }
 			else if (type === 'room') { return this.room; }
 			else if (type === 'class') { return this.class; }

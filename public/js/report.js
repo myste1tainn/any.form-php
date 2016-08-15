@@ -62,54 +62,31 @@
 
 	.controller('ReportDataController', function(
 		$scope, reportService, $state,
-		ReportNavigationControllerDelegate
+		ReportNavigationControllerDelegate, ReportFormSelectionControllerDelegate
 	) {
-		console.log('loaded', $state.params);
-		_delegation = ReportNavigationControllerDelegate
+		_delegation = ReportNavigationControllerDelegate;
+		_formSelectionController = ReportFormSelectionControllerDelegate.formSelectionController;
+
 		$scope.results 			= [];
 		$scope.displayedResults = [];
-		$scope.type 			= $state.params.type;
-		$scope.form 			= $state.params.form;
+		$scope.type 			= _formSelectionController.selectedType;
+		$scope.form 			= _formSelectionController.selectedForm;
 
 		$scope.getData = function() {
-
-			if ($scope.form !== undefined) {
+			if (!!$scope.form && !!$scope.type) {
 				var fn = reportService.functionForType($scope.type);
-				var payload = {};
-
-				if ($scope.type == 'person') {
-					payload.id = $scope.form.id;
-				} else if ($scope.type == 'room') {
-					payload.id = $scope.form.id;
-
-					if ($scope.class && $scope.room) {
-						payload.class = $scope.class.value;
-						payload.room = $scope.room.value;
-					} else {
-						return;
-					}
-
-				} else if ($scope.type == 'class') {
-					payload.id = $scope.form.id;
-
-					if ($scope.class) {
-						payload.class = $scope.class.value;
-					} else {
-						return;
-					}
-
-				} else if ($scope.type == 'school') {
-					payload.id = $scope.form.id;
-				}
-
-				// CONTINUE ON THIS
-				// Error: Cannot read property value of undefined
-				// You should call onYearChange when the year is loaded and set on navigation controller
-				payload.year = $scope.year.value;
-
-				if (payload.id == "") {
-					return;
-				}
+				var clazz = (!!_delegation.navigationController.class) ? _delegation.navigationController.class.value : null;
+				var room = (!!_delegation.navigationController.room) ? _delegation.navigationController.room.value : null;
+				var year = (!!_delegation.navigationController.year) ? _delegation.navigationController.year.value : null;
+				var from = _delegation.navigationController.numRows * _delegation.navigationController.currentPage;
+				var payload = {
+					id: $scope.form.id,
+					class: clazz,
+					room: room,
+					year: year,
+					from: from,
+					num: _delegation.navigationController.numRows
+				};
 
 				fn(payload, function(result){
 					$scope.results = result;
@@ -117,40 +94,11 @@
 			}
 		}
 
-		// Constructor behaviour depends on type
-		if ($scope.type == 'person') {
-			// Get Data Immediately
-			if ($scope.form) $scope.getData();
-		} else if ($scope.type == 'room') {			
-			// Get class & room first then get data
-			if ($scope.form) $scope.getData();
-		} else if ($scope.type == 'class') {
-			// Get class first then get data
-			if ($scope.form) $scope.getData();
-		} else if ($scope.type == 'school') {
-			if ($scope.form) $scope.getData();
-		}
-
-		_delegation.onYearChange = function(year){
-			console.log('called     onYearChange');
-			$scope.year = year;
-			$scope.getData();
-		}
-		_delegation.onClassChange = function(c) {
-			console.log('called     onClassChange');
-			$scope.class = c;
-			$scope.getData();
-		}
-		_delegation.onRoomChange = function(room){
-			console.log('called     onRoomChange');
-			$scope.room = room;
-			$scope.getData();
-		}
-		_delegation.onPageChange = function(page){
-			console.log('called     onPageChange');
-			$scope.page = page;
-			$scope.getData();
-		}
+		_delegation.onReloadData 	= $scope.getData;
+		_delegation.onYearChange 	= $scope.getData;
+		_delegation.onClassChange 	= $scope.getData;
+		_delegation.onRoomChange	= $scope.getData;
+		_delegation.onPageChange	= $scope.getData;
 	})
 
 })();

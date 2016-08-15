@@ -11,7 +11,7 @@
 						ng-options="y as y.value for y in years">
 				</select>
 			</div>
-			<button ui-sref="ReportDisplay.Show.List({year:year.value})">
+			<button ng-click="getData()">
 				ดูรายงาน
 			</button>
 		</div>

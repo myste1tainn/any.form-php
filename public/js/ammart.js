@@ -48,14 +48,33 @@
 			}
 		}
 
-		var _searchByID = function(target, items){
-			for (var i = items.length - 1; i >= 0; i--) {
-				var item = items[i];
-				if (item.id == target.id) {
-					return item;
+		var _searchByID = function(target, items, key){
+			if (!!key) {
+				if (typeof target == 'object') {
+					for (var i = items.length - 1; i >= 0; i--) {
+						var item = items[i];
+						if (item[key] == target[key]) {
+							return item;
+						}
+					}
+				} else {
+					for (var i = items.length - 1; i >= 0; i--) {
+						var item = items[i];
+						if (item[key] == target) {
+							return item;
+						}
+					}
 				}
+				return null;
+			} else {
+				for (var i = items.length - 1; i >= 0; i--) {
+					var item = items[i];
+					if (item.id == target.id) {
+						return item;
+					}
+				}
+				return null;
 			}
-			return null;
 		}
 
 		this.find = _searchByID;
