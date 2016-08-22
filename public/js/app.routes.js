@@ -83,9 +83,9 @@
 			controller: 'ReportFormSelectionController',
 			templateUrl: 'template/report/main'
 		})
-		.state('ReportDisplay.Show', {
+		.state('ReportDisplay.List', {
 			url: '/form/:formID/type/:type',
-			params: {formID: null, form: null, type: 'person'},
+			params: {formID: null, type: 'person'},
 			views: {
 				'report-navigator': {
 					controller: 'ReportNavigationController',
@@ -103,14 +103,41 @@
 						if (!!!$stateParams.type) {
 							return null;
 						}
+						if ($stateParams.formID == RISK_ID) {
+							return 'template/report/risk/by-'+$stateParams.type+'-list';
+						}
 						if ($stateParams.formID == SDQ_ID) {
-							return 'template/report/sdq/'+$stateParams.type;
+							return 'template/report/sdq/by-'+$stateParams.type+'-list';
 						}
 						if ($stateParams.formID == EQ_ID) {
-							return 'template/report/eq/'+$stateParams.type;
+							return 'template/report/eq/by-'+$stateParams.type+'-list';
 						}
-
-						return 'template/report/'+$stateParams.type;
+						// return `template/report/by-${stateParams.type}-list`;
+						return 'template/report/by-'+$stateParams.type;
+					}
+				}
+			}
+		})
+		.state('ReportDisplay.Detail', {
+			url: '/form/:formID/participant/:participantID/year/:year',
+			views: {
+				'report-navigator': '',
+				'report-body': {
+					// TODO: User ReportDetailDataController instead
+					// lumping data & detail together is too much
+					controller: 'ReportDataController',
+					templateUrl: function($stateParams) {
+						if ($stateParams.formID == RISK_ID) {
+							return 'template/report/risk/by-person-detail';
+						}
+						if ($stateParams.formID == SDQ_ID) {
+							return 'template/report/sdq/by-person-detail';
+						}
+						if ($stateParams.formID == EQ_ID) {
+							return 'template/report/eq/by-person-detail';
+						}
+						// return 'yes';
+						return 'template/report/by-person-detail';
 					}
 				}
 			}
@@ -132,31 +159,6 @@
 					controller: 'ReportTabController',
 					controllerAs: 'report'
 				}
-			}
-		})
-		.state('ReportDisplay.Show.List', {
-			url: '/list/:year/:class?/:room?/:from?/:num?',
-			params: { form: null, class: "1", room: "1", from: "0", num: "10" },
-			views: {
-				'report-body': {
-					templateUrl: function($stateParams) {
-						if (!!!$stateParams.type) {
-							return null;
-						}
-
-						if ($stateParams.formID == RISK_ID) {
-							return 'template/report/risk/by-'+$stateParams.type+'-list';
-						} else if ($stateParams.formID == SDQ_ID) {
-							return 'template/report/sdq/'+$stateParams.type+'-body';
-						} else if ($stateParams.formID == EQ_ID) {
-							return 'template/report/eq/'+$stateParams.type+'-body';
-						} else {
-							return 'template/report/eq/'+$stateParams.type+'-body';
-						}
-					},
-					controller: 'ReportPersonRiskListController',
-					controllerAs: 'list'
-				},
 			}
 		})
 

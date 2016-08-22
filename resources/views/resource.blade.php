@@ -50,13 +50,14 @@
 <script src="{{ asset('/js/collections/groups.js') }}"></script>
 
 <!-- Report Module -->
+<script src="{{ asset('/js/report.interface.js') }}"></script>
 <script src="{{ asset('/js/report.js') }}"></script>
 <script src="{{ asset('/js/report.risk.js') }}"></script>
 <script src="{{ asset('/js/report.sdq.js') }}"></script>
 <script src="{{ asset('/js/report.navigation.component.js') }}"></script>
 <script src="{{ asset('/js/report.service.js') }}"></script>
 <script src="{{ asset('/js/room.js') }}"></script>
-<script src="{{ asset('/js/class.js') }}"></script>
+<script src="{{ asset('/js/class.service.js') }}"></script>
 <script src="{{ asset('/js/school.js') }}"></script>
 
 <link href="{{ url('css/app.css') }}" rel="stylesheet">

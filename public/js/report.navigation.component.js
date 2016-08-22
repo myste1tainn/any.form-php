@@ -2,57 +2,12 @@
 	
 	var module = angular.module('report.navigation', [])
 
-	.service('ReportFormSelectionControllerDelegate', function() {
+	.service('ReportFormSelectionService', function() {
 		this.formSelectionController = null;
-		this.onFormChange = null;
-		this.onTypeChange = null;
-
-		this.formChange = function(form) {
-			if (this.onFormChange) {
-				this.onFormChange(form)
-			}
-		}
-		this.typeChange = function(type) {
-			if (this.onTypeChange) {
-				this.onTypeChange(type)
-			}
-		}
 	})
 
-	.service('ReportNavigationControllerDelegate', function() {
+	.service('ReportNavigationService', function() {
 		this.navigationController = null;
-		this.onReloadData = null;
-		this.onClassChange = null;
-		this.onRoomChange = null;
-		this.onYearChange = null;
-		this.onPageChange = null;
-
-		this.reloadData = function() {
-			if (this.onReloadData) {
-				this.onReloadData();
-			}
-		}
-
-		this.classChange = function(c) {
-			if (this.onClassChange) {
-				this.onClassChange(c)
-			}
-		}
-		this.roomChange = function(room) {
-			if (this.onRoomChange) {
-				this.onRoomChange(room)
-			}
-		}
-		this.yearChange = function(year) {
-			if (this.onYearChange) {
-				this.onYearChange(year)
-			}
-		}
-		this.pageChange = function(page) {
-			if (this.onPageChange) {
-				this.onPageChange(page)
-			}
-		}
 	})
 
 	/*
@@ -60,12 +15,14 @@
 	*/
 	.controller('ReportFormSelectionController', function(
 		$scope, $state, reportService, formService, ArrayHelper,
-		ReportFormSelectionControllerDelegate
+		ReportFormSelectionService
 	){
 		var _currentID = $state.params.formID || localStorage.getItem('formID') || null;
-		var _delegation;
-		_delegation = ReportFormSelectionControllerDelegate;
-		_delegation.formSelectionController = $scope;
+		var _reportNavigationSerivce;
+		var _delegate = null;
+
+		_reportNavigationSerivce = ReportFormSelectionService;
+		_reportNavigationSerivce.formSelectionController = $scope;
 		$scope.expanded = false;
 		$scope.forms = [];
 		$scope.selectedForm = null;
@@ -79,7 +36,10 @@
 				$result = ArrayHelper.find({id:_currentID}, forms);
 				if ($result) {
 					$scope.selectedForm = $result;
-					_delegation.formChange($result);
+					if (_delegate) {
+						// TODO: Determine if this is needed (form change event from data loading)
+						_delegate.formSelectionDidChangeForm($scope, $result);
+					}
 				}
 			}
 		}
@@ -90,6 +50,10 @@
 
 		var _writeToLocal = function(form){
 			localStorage.setItem('formID', form.id);
+		}
+
+		$scope.setDelegate = function(delegate) {
+			_delegate = delegate;
 		}
 
 		$scope.toggleExpand = function() {
@@ -111,7 +75,7 @@
 		$scope.selectForm = function(form) {
 			$scope.selectedForm = form;
 			$scope.toggleExpand();
-			_delegation.formChange(form);
+			_delegate.formSelectionDidChangeForm($scope, form);
 
 			_writeToLocal(form);
 		}
@@ -119,22 +83,38 @@
 
 		$scope.selectType = function(type) {
 			$scope.selectedType = type;
-			_delegation.onTypeChange(type);
+			_delegate.formSelectionDidChangeType($scope, type);
 		}
 	})
 
 	.controller('ReportNavigationController', function(
-		$scope, reportService, $state, $class, $time,
-		ReportNavigationControllerDelegate)
-	{
-		var _delegation;
+		$scope, reportService, $state, ReportNavigationService
+	){
+		var _reportNavigationSerivce;
+		var _delegate = null;
+		var _dataSource = null;
+		var _type = $state.params.type;
+
+		$scope.enableClassSelector = true;
+		$scope.enableRoomSelector = true;
+
+		if (_type == 'class') {
+			$scope.enableClassSelector = true;
+			$scope.enableRoomSelector = false;
+		} else if (_type == 'room') {
+			$scope.enableClassSelector = true;
+			$scope.enableRoomSelector = true;
+		} else if (_type == 'school') {
+			$scope.enableClassSelector = false;
+			$scope.enableRoomSelector = false;
+		}
 
 		$scope.constructor = function(){
 			// For shorthand
-			_delegation = ReportNavigationControllerDelegate;
+			_reportNavigationSerivce = ReportNavigationService;
 
 			// Set this scope as current controller of the navigation
-			_delegation.navigationController = $scope;
+			_reportNavigationSerivce.navigationController = $scope;
 
 			$scope.rooms 	= [];
 			$scope.classes 	= [];
@@ -142,57 +122,18 @@
 			$scope.class 	= null;
 			$scope.currentPage = 0;
 
-			var currentYear = (new Date()).getFullYear() + 543;
-			var pyear = $state.params.year || currentYear;
-			$scope.years = $time.years();
-			$scope.year = $time.yearObjectForYear(pyear);
-
 			// Call for change once for each the recently set data
 			$scope.classChange();
 			$scope.roomChange();
 			$scope.changePage(0);
 			$scope.yearChange(); 
 
-			var loadClasses = function() {
-// TODO: This should be moved to data controller, navigation shouldn't know where to get
-				$class.all(function(res) {
-					for (var i = res.classes.length - 1; i >= 0; i--) {
-						var c = res.classes[i];
-						$scope.classes.push({text:c.class, value:c.class});
-					};
-
-					for (var i = res.rooms.length - 1; i >= 0; i--) {
-						var r = res.rooms[i];
-						$scope.rooms.push({text:r.room, value:r.room});
-					};
-
-					// Default select the first row found
-					$scope.class = $scope.classes[0];
-					$scope.room = $scope.rooms[0];
-				})
-			}
-
-			var loadClassesIfNeeded = function() {
-				// If this is of type room or class, loads all possible rooms & classes.
-				if ($scope.type == 'room' ||
-				    $scope.type == 'class') {
-
-					if ($scope.classes.length > 0) {
-						
-					} else {
-						loadClasses();
-					}
-				}
-			}
-
-			loadClassesIfNeeded();
-
 			/*******************
 			* Pagination
 			*******************/
-
 			$scope.numRows = 10;
 			$scope.numPage = 0;
+			$scope.totalPageCount = 0;
 			$scope.pages = [];
 			$scope.currentPage = 0;
 
@@ -201,65 +142,125 @@
 					// Either one of these not exists, do not load
 					return;
 				}
-
-// TODO: This should be moved to data controller, navigation shouldn't know where to get number of pages
-				reportService.numberOfPages($scope.reportID, $scope.year.value, $scope.numRows, function(numPage){
-					$scope.pages = [];
-					$scope.numPage = numPage || 0;
-
-					var limit = ($scope.numPage > 7) ? 7 : $scope.numPage;
-					for (var i = 0; i <= limit; i++) {
-						$scope.pages.push(i);
-					}
-				})
 			}
 			_loadNumberOfPageIfNeeded();
 		}
 
-		$scope.getData = function(){
-			_delegation.reloadData();
+		$scope.setDelegate = function(delegate) {
+			_delegate = delegate
+		}
+		$scope.setDataSource = function(dataSource) {
+			_dataSource = dataSource
+		}
+
+		$scope.reloadData = function() {
+			paginationObject = _dataSource.pagesForNavigationController($scope);
+
+			$scope.totalPageCount = paginationObject.pages.length;
+			$scope.numPage = paginationObject.numberOfPageDisplay;
+
+			if (paginationObject.pages.length > $scope.numPage) {
+				$scope.pages = [];
+				for (var i = 0; i < $scope.numPage; i++) {
+					$scope.pages.push(i);
+				}
+			}
+			
+			$scope.classes = _dataSource.classesForNavigationController($scope);
+			$scope.rooms = _dataSource.roomsForNavigationController($scope);
+			$scope.years = _dataSource.yearsForNavigationController($scope);
 		}
 
 		$scope.classChange = function() {
-			if (!!$scope.class) {
-				_delegation.classChange($scope.class.value);
+			if (!!$scope.class && !!_delegate) {
+				_delegate.navigationControllerDidChangeClass($scope, $scope.class);
 			}
 		}
 		$scope.roomChange = function() {
-			if (!!$scope.room) {
-				_delegation.roomChange($scope.room.value);
+			if (!!$scope.room && !!_delegate) {
+				_delegate.navigationControllerDidChangeRoom($scope, $scope.room);
 			}
 		}
 		$scope.yearChange = function() {
-			if (!!$scope.year) {
-				_delegation.yearChange($scope.year.value);
+			if (!!$scope.year && !!_delegate) {
+				_delegate.navigationControllerDidChangeYear($scope, $scope.year);
+			}
+		}
+		$scope.selectClass = function(clazz) { $scope.class = clazz; $scope.classChange(); }
+		$scope.selectRoom = function(room) { $scope.room = room; $scope.roomChange(); }
+		$scope.selectYear = function(year) { $scope.year = year; $scope.yearChange(); }
+
+		var _adjustPageToolbarWithNum = function(pageNum) {
+			$scope.pages = [];
+			if (pageNum == $scope.totalPageCount - 1) {
+				for(var i = 0; i < $scope.numPage; i++) {
+					$scope.pages.push((i + pageNum) - $scope.numPage + 1);
+				}
+			} else {
+				for(var i = 0; i < $scope.numPage; i++) {
+					$scope.pages.push(i + pageNum);
+				}
+			}
+		}
+		var _adjustPageToolbar = function(pageNum) {
+			if (!!$scope.pages) {
+				if ($scope.currentPage < $scope.totalPageCount &&
+					$scope.currentPage > 0) {
+
+					if (!!pageNum) {
+						_adjustPageToolbarWithNum(pageNum);
+					} else {
+						var last = $scope.pages.length - 1;
+						if ($scope.currentPage == $scope.pages[last] && last > 0) {
+							var newPage = $scope.pages[last - 1] + 1;
+							if (newPage < $scope.totalPageCount - 1) {
+								$scope.pages.shift();
+								$scope.pages.push($scope.pages[last - 1] + 1);
+							}
+						}
+						if ($scope.currentPage == $scope.pages[0] && $scope.pages[0] != 0) {
+							for (var i = $scope.pages.length - 1; i >= 0; i--) {
+								$scope.pages[i]--;
+							}
+						}
+					}
+					
+				} else {
+					if (typeof pageNum != 'undefined') {
+						_adjustPageToolbarWithNum(pageNum);
+					}
+				}
 			}
 		}
 
 		$scope.changePage = function(page) {
 			$scope.currentPage = page;
-			_delegation.pageChange(page);
-			// var params = {
-			// 	class: $scope.class.value,
-			// 	room: $scope.room.value,
-			// 	year: $scope.year.value,
-			// 	from: $scope.currentPage * $scope.numRows,
-			// 	num : $scope.numRows
-			// };
+			if (!!_delegate) {
+				_delegate.navigationControllerDidChangePage($scope, page);
+			}
+			_adjustPageToolbar();
+		}
+		$scope.gotoFirstPage = function() {
+			$scope.changePage(0);
+			_adjustPageToolbar(0);
+		}
+		$scope.gotoLastPage = function() {
+			$scope.changePage($scope.totalPageCount-1);
+			_adjustPageToolbar($scope.totalPageCount-1);
+		}
+		$scope.goBackwardOneSet = function() {
+			var newPage = $scope.currentPage - $scope.numPage
+			if (newPage < 0) newPage = 0;
 
-// TODO: Uncomment this to allow proper pagination
-			// var last = $scope.pages.length - 1;
-			// if ($scope.currentPage == $scope.pages[last] && last > 0) {
-			// 	$scope.pages.shift();
-			// 	$scope.pages.push($scope.pages[last - 1] + 1);
-			// }
-			// if ($scope.currentPage == $scope.pages[0] && $scope.pages[0] != 0) {
-			// 	for (var i = $scope.pages.length - 1; i >= 0; i--) {
-			// 		$scope.pages[i]--;
-			// 	}
-			// }
+			$scope.changePage(newPage);
+			_adjustPageToolbar(newPage);
+		}
+		$scope.goForwardOneSet = function() {
+			var newPage = $scope.currentPage + $scope.numPage
+			if (newPage > $scope.totalPageCount) newPage = $scope.totalPageCount - 1;
 
-			// $state.go($scope.stateName, params);
+			$scope.changePage(newPage);
+			_adjustPageToolbar(newPage);
 		}
 
 		$scope.constructor();

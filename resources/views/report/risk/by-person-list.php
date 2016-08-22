@@ -12,8 +12,8 @@
 		<th class="risk-count" style="width: 10%">เสี่ยง</th>
 		<th class="risk-count" style="width: 10%">มีปัญหา</th>
 	</tr>
-	<tr ng-repeat="p in list.displays"
-		ng-click="list.select(p)"
+	<tr ng-repeat="p in results"
+		ng-click="showDetail(p)"
 		ng-class="{'odd': ($index % 2 == 1)}">
 		<td class="text-center">{{ p.identifier }}</td>
 		<td class="text-left">{{ p.firstname }} {{ p.lastname }}</td>

@@ -1,38 +1,37 @@
-<room class="col-xs-12 std-pad">
-
-	<div class="pull-right" style="margin-bottom: 20px">
-		<select class="form-control" 
-				ng-model="nav.year"
-				ng-change="nav.yearChange()"
-				ng-options="y as y.value for y in nav.years">
-		</select>
+<div class="no-pad" ng-repeat="aspect in results">
+	<div class="col-xs-12 std-pad border-b" ng-if="$index == 0">
+		<div class="col-xs-4 border-r">
+			<h1 class="col-xs-12 text-right">{{aspect.countHighRisk || 0}}</h1>
+			<div class="pull-right">คน เสี่ยง</div>
+		</div>
+		<h1 class="col-xs-4 text-center space-top">
+			{{ aspect.shortName }}
+		</h1>
+		<div class="col-xs-4 border-l">
+			<h1 class="col-xs-12 text-left">{{aspect.countVeryHighRisk || 0}}</h1>
+			<div class="col-xs-12 text-left no-pad">คน มีปัญหา</div>
+		</div>
 	</div>
-	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ปีการศึกษา</div>
-
-
-	<div class="pull-right" style="margin-bottom: 20px">
-		<select class="form-control"
-				ng-model="nav.room"
-				ng-change="nav.roomChange()"
-				ng-options="c as c.value for c in nav.rooms">
-		</select>
+	<div class="col-xs-6 std-pad border-b" ng-if="$index > 0 && ($index % 2) == 1">
+		<h3 class="col-xs-6">{{ aspect.shortName }}</h3>
+		<div class="col-xs-3 border-l">
+			<h1 class="col-xs-12 text-center">{{aspect.countHighRisk || 0}}</h1>
+			<div class="col-xs-12 text-center no-pad">คน เสี่ยง</div>
+		</div>
+		<div class="col-xs-3 border-l">
+			<h1 class="col-xs-12 text-center">{{aspect.countVeryHighRisk || 0}}</h1>
+			<div class="col-xs-12 text-center no-pad">คน มีปัญหา</div>
+		</div>
 	</div>
-	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ห้อง</div>
-
-
-	<div class="pull-right" style="margin-bottom: 20px">
-		<select class="form-control"
-				ng-model="nav.class"
-				ng-change="nav.classChange()"
-				ng-options="c as c.value for c in nav.classes">
-		</select>
+	<div class="col-xs-6 std-pad border-b l-border-l" ng-if="$index > 0 && ($index % 2) == 0">
+		<div class="col-xs-3 border-r">
+			<h1 class="col-xs-12 text-center">{{aspect.countVeryHighRisk || 0}}</h1>
+			<div class="col-xs-12 text-center no-pad">คน มีปัญหา</div>
+		</div>
+		<div class="col-xs-3 border-r">
+			<h1 class="col-xs-12 text-center">{{aspect.countHighRisk || 0}}</h1>
+			<div class="col-xs-12 text-center no-pad">คน เสี่ยง</div>
+		</div>
+		<h3 class="col-xs-6 text-right">{{ aspect.shortName }}</h3>
 	</div>
-	<div class="pull-right text-right space-left space-right" style="margin-top: 6px">ชั้น</div>
-
-
-
-	<div ui-view="report.risk.overview">
-		
-	</div>
-	
-</room>
+</div>

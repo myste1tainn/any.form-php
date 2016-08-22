@@ -1,4 +1,4 @@
-<div class="row" ng-if="participant != null">
+<div class="row" ng-if="results != null">
 
 	<!-- Participant Information -->
 	<div class="row border-tb border-lightgray">
@@ -8,10 +8,10 @@
 				<div class="row indent-left-2">
 					<p class="text-left color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						{{participant.identifier}} 
+						{{results.identifier}} 
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						{{participant.firstname}} {{participant.lastname}}
+						{{results.firstname}} {{results.lastname}}
 					</p>
 				</div>
 			</div>
@@ -19,10 +19,10 @@
 				<div class="row text-center">
 					<p class="text-left color-highlight"
 					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						ห้อง {{participant.class}}/{{participant.room}} 
+						ห้อง {{results.class}}/{{results.room}} 
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						เลขที่ {{participant.number}}
+						เลขที่ {{results.number}}
 					</p>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 						ความสามารถพิเศษ
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;">
-						{{participant.talent || 'ไม่มี'}}
+						{{results.talent || 'ไม่มี'}}
 					</p>
 				</div>
 			</div>
@@ -44,15 +44,15 @@
 						ความต้องการพิเศษ
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
-						ng-if="participant.disabilities.length > 1">
+						ng-if="results.disabilities.length > 1">
 						พิการมากว่า 1 อย่าง
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
-						ng-if="participant.disabilities.length == 1">
-						{{ participant.disabilities[0] }}
+						ng-if="results.disabilities.length == 1">
+						{{ results.disabilities[0] }}
 					</p>
 					<p class="text-left" style="font-size: 1.7em; margin-bottom: 0px;"
-						ng-if="participant.disabilities.length == 0">
+						ng-if="results.disabilities.length == 0">
 						ไม่มี
 					</p>
 				</div>
@@ -80,7 +80,7 @@
 
 		 -->
 		<!-- <div class="text-center col-xs-4" 
-			 ng-repeat="aspect in participant.aspects"
+			 ng-repeat="aspect in results.aspects"
 			 ng-click="tab.selectAspect(aspect)">
 			
 			<h1 style="font-size:4em" 
@@ -96,40 +96,40 @@
 		<table class="risk">
 			<tr>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(participant.risks.study)">
+					ng-click="tab.selectAspect(results.aspects.study)">
 					
 					<h1 style="font-size:4em" 
 						data-type="การเรียน"
-						ng-class="{'selected':tab.isSelected(participant.risks.study), 'rveryhigh' : participant.risks.study.veryHigh.length > 0, 'rhigh' : participant.risks.study.high.length > 0, 'rnormal' : participant.risks.study.veryHigh.length == 0 && participant.risks.study.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.study), 'rveryhigh' : results.aspects.study.veryHigh.length > 0, 'rhigh' : results.aspects.study.high.length > 0, 'rnormal' : results.aspects.study.veryHigh.length == 0 && results.aspects.study.high.length == 0}">
 						{{
-						participant.risks.study.high.length +
-						participant.risks.study.veryHigh.length
+						results.aspects.study.high.length +
+						results.aspects.study.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.health)">
+					ng-click="tab.selectAspect(results.aspects.health)">
 					
 					<h1 style="font-size:4em" 
 						data-type="สุขภาพ"
-						ng-class="{'selected':tab.isSelected(participant.risks.health), 'rveryhigh' : participant.risks.health.veryHigh.length > 0, 'rhigh' : participant.risks.health.high.length > 0, 'rnormal' : participant.risks.health.veryHigh.length == 0 && participant.risks.health.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.health), 'rveryhigh' : results.aspects.health.veryHigh.length > 0, 'rhigh' : results.aspects.health.high.length > 0, 'rnormal' : results.aspects.health.veryHigh.length == 0 && results.aspects.health.high.length == 0}">
 						{{
-						participant.risks.health.high.length +
-						participant.risks.health.veryHigh.length
+						results.aspects.health.high.length +
+						results.aspects.health.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.aggressiveness)">
+					ng-click="tab.selectAspect(results.aspects.aggressiveness)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ความรุนแรง"
-						ng-class="{'selected':tab.isSelected(participant.risks.aggressiveness), 'rveryhigh' : participant.risks.aggressiveness.veryHigh.length > 0, 'rhigh' : participant.risks.aggressiveness.high.length > 0, 'rnormal' : participant.risks.aggressiveness.veryHigh.length == 0 && participant.risks.aggressiveness.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.aggressiveness), 'rveryhigh' : results.aspects.aggressiveness.veryHigh.length > 0, 'rhigh' : results.aspects.aggressiveness.high.length > 0, 'rnormal' : results.aspects.aggressiveness.veryHigh.length == 0 && results.aspects.aggressiveness.high.length == 0}">
 						{{
-						participant.risks.aggressiveness.high.length +
-						participant.risks.aggressiveness.veryHigh.length
+						results.aspects.aggressiveness.high.length +
+						results.aspects.aggressiveness.veryHigh.length
 						}}
 					</h1>
 					
@@ -137,40 +137,40 @@
 			</tr>
 			<tr>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.economy)">
+					ng-click="tab.selectAspect(results.aspects.economy)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เศรษฐกิจ"
-						ng-class="{'selected':tab.isSelected(participant.risks.economy), 'rveryhigh' : participant.risks.economy.veryHigh.length > 0, 'rhigh' : participant.risks.economy.high.length > 0, 'rnormal' : participant.risks.economy.veryHigh.length == 0 && participant.risks.economy.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.economy), 'rveryhigh' : results.aspects.economy.veryHigh.length > 0, 'rhigh' : results.aspects.economy.high.length > 0, 'rnormal' : results.aspects.economy.veryHigh.length == 0 && results.aspects.economy.high.length == 0}">
 						{{
-						participant.risks.economy.high.length +
-						participant.risks.economy.veryHigh.length
+						results.aspects.economy.high.length +
+						results.aspects.economy.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rhigh" 
-					ng-click="tab.selectAspect(participant.risks.security)">
+					ng-click="tab.selectAspect(results.aspects.security)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ความปลอดภัย"
-						ng-class="{'selected':tab.isSelected(participant.risks.security), 'rveryhigh' : participant.risks.security.veryHigh.length > 0, 'rhigh' : participant.risks.security.high.length > 0, 'rnormal' : participant.risks.security.veryHigh.length == 0 && participant.risks.security.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.security), 'rveryhigh' : results.aspects.security.veryHigh.length > 0, 'rhigh' : results.aspects.security.high.length > 0, 'rnormal' : results.aspects.security.veryHigh.length == 0 && results.aspects.security.high.length == 0}">
 						{{
-						participant.risks.security.high.length +
-						participant.risks.security.veryHigh.length
+						results.aspects.security.high.length +
+						results.aspects.security.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(participant.risks.drugs)">
+					ng-click="tab.selectAspect(results.aspects.drugs)">
 					
 					<h1 style="font-size:4em" 
 						data-type="สารเสพติด"
-						ng-class="{'selected':tab.isSelected(participant.risks.drugs), 'rveryhigh' : participant.risks.drugs.veryHigh.length > 0, 'rhigh' : participant.risks.drugs.high.length > 0, 'rnormal' : participant.risks.drugs.veryHigh.length == 0 && participant.risks.drugs.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.drugs), 'rveryhigh' : results.aspects.drugs.veryHigh.length > 0, 'rhigh' : results.aspects.drugs.high.length > 0, 'rnormal' : results.aspects.drugs.veryHigh.length == 0 && results.aspects.drugs.high.length == 0}">
 						{{
-						participant.risks.drugs.high.length +
-						participant.risks.drugs.veryHigh.length
+						results.aspects.drugs.high.length +
+						results.aspects.drugs.veryHigh.length
 						}}
 					</h1>
 					
@@ -178,40 +178,40 @@
 			</tr>
 			<tr>
 				<td class="text-center rhigh" 
-					ng-click="tab.selectAspect(participant.risks.sexuality)">
+					ng-click="tab.selectAspect(results.aspects.sexuality)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เพศ"
-						ng-class="{'selected':tab.isSelected(participant.risks.sexuality), 'rveryhigh' : participant.risks.sexuality.veryHigh.length > 0, 'rhigh' : participant.risks.sexuality.high.length > 0, 'rnormal' : participant.risks.sexuality.veryHigh.length == 0 && participant.risks.sexuality.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.sexuality), 'rveryhigh' : results.aspects.sexuality.veryHigh.length > 0, 'rhigh' : results.aspects.sexuality.high.length > 0, 'rnormal' : results.aspects.sexuality.veryHigh.length == 0 && results.aspects.sexuality.high.length == 0}">
 						{{
-						participant.risks.sexuality.high.length +
-						participant.risks.sexuality.veryHigh.length
+						results.aspects.sexuality.high.length +
+						results.aspects.sexuality.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(participant.risks.games)">
+					ng-click="tab.selectAspect(results.aspects.games)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ติดเกม"
-						ng-class="{'selected':tab.isSelected(participant.risks.games), 'rveryhigh' : participant.risks.games.veryHigh.length > 0, 'rhigh' : participant.risks.games.high.length > 0, 'rnormal' : participant.risks.games.veryHigh.length == 0 && participant.risks.games.high.length == 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.games), 'rveryhigh' : results.aspects.games.veryHigh.length > 0, 'rhigh' : results.aspects.games.high.length > 0, 'rnormal' : results.aspects.games.veryHigh.length == 0 && results.aspects.games.high.length == 0}">
 						{{
-						participant.risks.games.high.length +
-						participant.risks.games.veryHigh.length
+						results.aspects.games.high.length +
+						results.aspects.games.veryHigh.length
 						}}
 					</h1>
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(participant.risks.electronics)">
+					ng-click="tab.selectAspect(results.aspects.electronics)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เครื่องมือสื่อสาร"
-						ng-class="{'selected':tab.isSelected(participant.risks.electronics), 'rveryhigh' : participant.risks.electronics.veryHigh.length > 0, 'rhigh' : participant.risks.electronics.high.length, 'rnormal' : participant.risks.electronics.veryHigh.length == 0 && participant.risks.electronics.high.length == 0 > 0}">
+						ng-class="{'selected':tab.isSelected(results.aspects.electronics), 'rveryhigh' : results.aspects.electronics.veryHigh.length > 0, 'rhigh' : results.aspects.electronics.high.length, 'rnormal' : results.aspects.electronics.veryHigh.length == 0 && results.aspects.electronics.high.length == 0 > 0}">
 						{{
-						participant.risks.electronics.high.length +
-						participant.risks.electronics.veryHigh.length
+						results.aspects.electronics.high.length +
+						results.aspects.electronics.veryHigh.length
 						}}
 					</h1>
 					
@@ -260,7 +260,7 @@
 
 <div class="col-xs-12 text-center no-border flex-container flex-center" 
 	 style="height: 82.5vh" 
-	 ng-if="participant == null">
+	 ng-if="results == null">
 	<h2 class="col-xs-12 text-center">
 		{{ errorMessage }}
 	</h2>

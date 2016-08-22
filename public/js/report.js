@@ -5,7 +5,7 @@
 		'report.risk', 'report.sdq', 'report.navigation'
 	])
 
-	.service('$time', function() {
+	.service('timeService', function() {
 		var years = [];
 		var countBack = 10;
 		var currentYear = (new Date).getFullYear() + 543;
@@ -30,75 +30,220 @@
 		}
 	})
 
-	.controller('ReportDisplayController', function($scope, $state, ReportFormSelectionControllerDelegate) {
-		$scope.currentForm = $state.params.form || null;
+	// TODO: Move anything related to detail data to ReportDetailDataController
+	.controller('ReportDisplayController', function(
+		$scope, $state, ReportFormSelectionService, ReportNavigationService
+	) {
+		ReportFormSelectionService.formSelectionController.setDelegate($scope);
+
+		$scope.currentFormID = $state.params.formID || null;
 		$scope.currentType = $state.params.type || null;
 
 		var _changeStateIfNeeded = function() {
-			if (!!$scope.currentForm && !!$scope.currentType) {
-				var _form = $scope.currentForm;
+			if (!!$scope.currentFormID && !!$scope.currentType) {
+				var _formID = $scope.currentFormID;
 				var _type = $scope.currentType;
-				$state.go('ReportDisplay.Show', {
-					formID: _form.id,
-					form: _form,
-					type: _type.value
+				$state.go('ReportDisplay.List', {
+					formID: _formID,
+					type: (typeof _type == 'object') ? _type.value : _type
 				})
 			}
 		}
 
-		$scope.onFormChange = function(form) {
-			$scope.currentForm = form;
+		ReportFormSelectionService.formSelectionController.setDelegate($scope);
+
+		$scope.formSelectionDidChangeForm = function(s, form) {
+			$scope.currentFormID = form.id;
 			_changeStateIfNeeded();
 		}
-		$scope.onTypeChange = function(type) {
+		$scope.formSelectionDidChangeType = function(s, type) {
 			$scope.currentType = type;
 			_changeStateIfNeeded();
 		}
-
-		_delegation = ReportFormSelectionControllerDelegate;
-		_delegation.onFormChange = $scope.onFormChange;
-		_delegation.onTypeChange = $scope.onTypeChange;
 	})
 
 	.controller('ReportDataController', function(
-		$scope, reportService, $state,
-		ReportNavigationControllerDelegate, ReportFormSelectionControllerDelegate
+		$scope, reportService, classService, timeService, $state,
+		ReportNavigationService, ReportFormSelectionService
 	) {
-		_delegation = ReportNavigationControllerDelegate;
-		_formSelectionController = ReportFormSelectionControllerDelegate.formSelectionController;
+		// Implement super class;
+		ReportPagingationDataSource.call($scope);
+		ReportNavigationControllerDelegate.call($scope);
 
-		$scope.results 			= [];
-		$scope.displayedResults = [];
-		$scope.type 			= _formSelectionController.selectedType;
-		$scope.form 			= _formSelectionController.selectedForm;
+		var _class, _room, _year, _page = 0, _numRows = 10, _numPage = 5;
+		var _classes, _rooms, _years, _pages = [], _formSelectionController, _navigationController;
+		$scope.constructor = function() {
+			_formSelectionController = ReportFormSelectionService.formSelectionController;
+			_navigationController = ReportNavigationService.navigationController;
+			
+			if (_navigationController) {
+				_navigationController.setDelegate($scope);
+				_navigationController.setDataSource($scope);
+			}
 
-		$scope.getData = function() {
-			if (!!$scope.form && !!$scope.type) {
+			$scope.results 			= [];
+			$scope.displayedResults = [];
+			$scope.type 			= _formSelectionController.selectedType;
+			_formID 				= $state.params.formID;
+
+			$scope.getRequiredData();
+			if ($state.current.name == 'ReportDisplay.List') {
+				$scope.getReportPagesInfo();
+			} else {
+				$scope.getData();
+			}
+		}
+
+		$scope.getRequiredData = function() {
+			if ($state.current.name == 'ReportDisplay.List') {
+				if ($scope.type.value == 'person' || $scope.type.value == 'school') {
+
+				} else if ($scope.type.value == 'class' || $scope.type.value == 'room') {
+					// These two types need class/room data
+					$scope.getClasses();
+				}
+			}
+			$scope.getYears();
+		}
+
+		$scope.getClasses = function() {
+			classService.loadClassesAndRooms(function(res) {
+				_classes = res.classes;
+				_rooms = res.rooms;
+
+				_navigationController.reloadData();
+			})
+		}
+
+		$scope.getYears = function() {
+			var currentYear = (new Date()).getFullYear() + 543;
+			var pyear = $state.params.year || currentYear;
+			_years = timeService.years();
+			_year = timeService.yearObjectForYear(pyear);
+			
+			if (_navigationController) {
+				_navigationController.reloadData();
+				_navigationController.selectYear(_year);
+			}
+		}
+
+		$scope.getReportPagesInfo = function() {
+			if (!!!_formID || $state.current.name == 'ReportDisplay.Detail') return;
+			
+			reportService.numberOfPages(_formID, _year.value, _numRows, function(numPage){
+				for (var i = 0; i <= numPage; i++) {
+					_pages.push(i);
+				}
+				_navigationController.reloadData();
+			})
+		}
+
+		var _canDoRequestWithPayload = function(payload){
+			if ($scope.type.value == 'person' || $scope.type.value == 'school') {
+				return true;
+			} else if ($scope.type.value == 'class') {
+				if (!!payload.year && !!payload.class) {
+					return true;
+				}
+			} else if ($scope.type.value == 'room') {
+				if (!!payload.year && !!payload.class && !!payload.room) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		var _getListData = function() {
+			if (!!_formID && !!$scope.type) {
 				var fn = reportService.functionForType($scope.type);
-				var clazz = (!!_delegation.navigationController.class) ? _delegation.navigationController.class.value : null;
-				var room = (!!_delegation.navigationController.room) ? _delegation.navigationController.room.value : null;
-				var year = (!!_delegation.navigationController.year) ? _delegation.navigationController.year.value : null;
-				var from = _delegation.navigationController.numRows * _delegation.navigationController.currentPage;
+				var clazz = (!!_class) ? _class.value : null;
+				var room = (!!_room) ? _room.value : null;
+				var year = (!!_year) ? _year.value : null;
+				var from = _numRows * _page;
 				var payload = {
-					id: $scope.form.id,
+					id: _formID,
 					class: clazz,
 					room: room,
 					year: year,
 					from: from,
-					num: _delegation.navigationController.numRows
+					num: _numRows
 				};
 
-				fn(payload, function(result){
-					$scope.results = result;
-				})
+				if (_canDoRequestWithPayload(payload)) {
+					fn(payload, function(result){
+						$scope.results = result;
+					})
+				}
 			}
 		}
 
-		_delegation.onReloadData 	= $scope.getData;
-		_delegation.onYearChange 	= $scope.getData;
-		_delegation.onClassChange 	= $scope.getData;
-		_delegation.onRoomChange	= $scope.getData;
-		_delegation.onPageChange	= $scope.getData;
+		var _getDetailData = function() {
+			reportService.participantResult($state.params.participantID, _formID, _year.value, function(result) {
+				console.log(result);
+				$scope.results = result;
+			})
+		}
+
+		$scope.getData = function() {
+			if ($state.current.name == 'ReportDisplay.Detail') {
+				_getDetailData();
+			} else {
+				_getListData();
+			}
+		}
+
+		// MARK: Report Navigation Data Source
+		// TODO: Implement handler for each of these dataSource call
+		// Acutal data loading should be determine beforehand,
+		// by checking form/type, reloadData should be called subsequently to update interface
+		$scope.yearsForNavigationController = function(nav) {
+			return _years;
+		}
+		$scope.classesForNavigationController = function(nav) {
+			return _classes;
+		}
+		$scope.roomsForNavigationController = function(nav) {
+			return _rooms;
+		}
+		$scope.pagesForNavigationController = function(nav) {
+			return { pages: _pages, numberOfPageDisplay: _numPage };
+		}
+
+		// MARK: Report Navigation Delegate
+		// TODO: Implement handler for each of these delegate call
+		// Getting report results/data should be called,
+		// determining validity to do request perform by this class via form/type checking
+		$scope.navigationControllerDidChangeYear = function(nav, year) {
+			_year = year;
+			$scope.getData();
+		}
+		$scope.navigationControllerDidChangeClass = function(nav, clazz) {
+			_class = clazz;
+			$scope.getData();
+		}
+		$scope.navigationControllerDidChangeRoom = function(nav, room) {
+			_room = room;
+			$scope.getData();
+		}
+		$scope.navigationControllerDidChangePage = function(nav, page) {
+			_page = page;
+			$scope.getData();
+		}
+
+		$scope.showDetail = function(participant) {
+			var _type = $state.params.type;
+			$state.go('ReportDisplay.Detail', {
+				participantID: 22611,
+				year: 2559,
+				formID: _formID,
+				type: (typeof _type == 'object') ? _type.value : _type
+			})
+		}
+
+		$scope.constructor();
 	})
+
+	// TODO: Create ReportDetailDataController
+	// The controller should have ability to selectSubDetail() -- e.g. Aspect of risks in Risk-screening report
 
 })();
