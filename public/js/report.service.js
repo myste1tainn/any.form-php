@@ -17,92 +17,81 @@
 			value: 'school'
 		}];
 
-		this.numberOfPages = function(id, year, numRows, callback){
-			$http.get(`api/v1/report/${id}/year/${year}/number-of-rows/${numRows}/number-of-pages`)
-			.success(function(res, status, headers, config){
-				callback(res);
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error('Cannot get number of pages of report '+id);
-			});
+		var _errorHandler = function(res, status, headers, config){
+			if (res.message) {
+				sys.dialog.error("Error: " + status + " \n<br />" + res.message);
+			} else {
+				sys.dialog.error("Error: " + status + " \n<br />" + res);
+			}
+		};
+		var _success = {
+			callback: null,
+			handler: function(res, status, headers, config){
+				if (status > 299) {
+					_errorHandler(res, status, headers, config);
+				} else {
+					_success.callback(res);
+				}
+			}
 		}
 
 		this.functionForType = function(type) {
+			if (typeof type == 'object') {
+				type = type.value;
+			}
+			
 			if (type === 'person') { return this.person; }
 			else if (type === 'room') { return this.room; }
 			else if (type === 'class') { return this.class; }
 			else if (type === 'school') { return this.school; }
 		}
 
+		this.numberOfPages = function(id, year, numRows, callback){
+			_success.callback = callback;
+			$http.get(`api/v1/report/${id}/year/${year}/number-of-rows/${numRows}/number-of-pages`)
+			.success(_success.handler)
+			.error(_errorHandler);
+		}
+
 		this.results = function(callback) {
+			_success.callback = callback;
 			$http.get('report-results')
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					sys.dialog.error(res);
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error(res);
-			});
+			.success(_success.handler)
+			.error(_errorHandler);
 		}
 
 		this.person = function(payload, callback) {
-			$http.get(`report/by-person/${payload.id}/year/${payload.year}/from/${payload.from}/num/${payload.num}`)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					sys.dialog.error(res)
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error(res)
-			});
+			$http.get(`api/v1/report/by-person/${payload.id}/year/${payload.year}/from/${payload.from}/num/${payload.num}`)
+			.success(callback)
+			.error(_errorHandler);
 		}
 
 		this.school = function(payload, callback) {
-			$http.get('report/by-school/'+payload.id+'/year/'+payload.year)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					sys.dialog.error(res);
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error(res)
-			});
+			$http.get('api/v1/report/by-school/'+payload.id+'/year/'+payload.year)
+			.success(callback)
+			.error(_errorHandler);
 		}
 
 		// this.room = function(id, callback) {
 		this.room = function(payload, callback) {
-			$http.get('report/by-room/'+payload.id+'/class/'+payload.class+'/room/'+payload.room+'/year/'+payload.year)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					sys.dialog.error(res)
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error(res)
-			});
+			_success.callback = callback;
+			$http.get('api/v1/report/by-room/'+payload.id+'/class/'+payload.class+'/room/'+payload.room+'/year/'+payload.year)
+			.success(_success.handler)
+			.error(_errorHandler);
 		}
 
 		this.class = function(payload, callback) {
-			$http.get('report/by-class/'+payload.id+'/class/'+payload.class+'/year/'+payload.year)
-			.success(function(res, status, headers, config){
-				if (res.success) {
-					callback(res.data);
-				} else {
-					sys.dialog.error(res)
-				}
-			})
-			.error(function(res, status, headers, config){
-				sys.dialog.error(res)
-			});
+			_success.callback = callback;
+			$http.get('api/v1/report/by-class/'+payload.id+'/class/'+payload.class+'/year/'+payload.year)
+			.success(_success.handler)
+			.error(_errorHandler);
+		}
+
+		this.participantResult = function(id, formID, year, callback){
+			_success.callback = callback;
+			$http.get('api/v1/participant/'+id+'/form/'+formID+'/year/'+year)
+			.success(_success.handler)
+			.error(_errorHandler);
 		}
 	})
 

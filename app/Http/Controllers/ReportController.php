@@ -61,10 +61,7 @@ class ReportController extends Controller {
 			}
 		}
 
-		return response()->json([
-			'success' => true,
-			'data' => $questionaires
-		]);
+		return response()->json($questionaires);
 	}
 
 	public function resultByRoom($id, $class, $room, $year) {
@@ -92,7 +89,6 @@ class ReportController extends Controller {
 			$participants = [];
 
 			if ($question->isAspect()) {
-
 				$question->shortName = $question->info('name');
 
 				foreach ($choices as $choice) {
@@ -126,15 +122,9 @@ class ReportController extends Controller {
 		}
 
 		if (count($results) > 0) {
-			return response()->json([
-				'success' => true,
-				'data' => $results
-			]);
+			return response()->json($results);
 		} else {
-			return response()->json([
-				'success' => false,
-				'message' => 'ไม่พบข้อมูลรายงาน'
-			]);
+			return response()->json([], 404);
 		}
 	}
 
@@ -187,20 +177,14 @@ class ReportController extends Controller {
 				return $a['percent'] < $b['percent'];
 			});
 
-			return response()->json([
-				'success' => true,
-				'data' => [[
-					'avgRisk' => Criterion::riskString($criteria, $avg),
-					'avgValue' => $avg,
-					'total' => $sumnum,
-					'criteria' => $carr
-				]]
-			]);
+			return response()->json([[
+				'avgRisk' => Criterion::riskString($criteria, $avg),
+				'avgValue' => $avg,
+				'total' => $sumnum,
+				'criteria' => $carr
+			]]);
 		} else {
-            return response()->json([
-                'success' => true,
-                'data' => [[]]
-            ]);
+            return response()->json([[]], 404);
         }
 	}
 
@@ -266,19 +250,15 @@ class ReportController extends Controller {
 			});
 		}
 
-		return response()->json([
-			'success' => true,
-			'data' => [[
-				'avgRisk' => Criterion::riskString($criteria, $avg),
-				'avgValue' => $avg,
-				'total' => $sumnum,
-				'criteria' => $carr
-			]]
-		]);
+		return response()->json([[
+			'avgRisk' => Criterion::riskString($criteria, $avg),
+			'avgValue' => $avg,
+			'total' => $sumnum,
+			'criteria' => $carr
+		]]);
 	}
 
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
-
 		if ($id == env('APP_RISK_ID')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
 		} else if (Questionaire::isSDQReport($id)) {
@@ -296,20 +276,14 @@ class ReportController extends Controller {
 						 ->first();
 
 		if ($q) {
-			$q->results($year);
+			$q->results($year, $from, $num);
 			foreach ($q->results as $r) {
 				$rs = Criterion::riskString($q->criteria, $r->value);
 				$r->risk =$rs;
 			}
-			return response()->json([
-				'success' => true,
-				'data' => $q->results
-			]);
+			return response()->json($q->results);
 		} else {
-			return response()->json([
-				'success' => false,
-				'message' => 'result is empty'
-			]);
+			return response()->json([], 404);
 		}
 	}
 
@@ -332,17 +306,11 @@ class ReportController extends Controller {
 			}
 
 			if ($participants) {
-				return response()->json([
-					'success' => true,
-					'data' => $participants
-				]);
+				return response()->json($participants);
 			}
 		}
 
-		return response()->json([
-			'success' => false,
-			'message' => 'ไม่พบข้อมูลรายงาน'
-		]);
+		return response()->json([], 404);
 	}
 
 	public function resultBySchool($id, $year) {
@@ -399,20 +367,14 @@ class ReportController extends Controller {
                 return $a['percent'] < $b['percent'];
             });
 
-            return response()->json([
-                'success' => true,
-                'data' => [[
-                    'avgRisk' => Criterion::riskString($criteria, $avg),
-                    'avgValue' => $avg,
-                    'total' => $sumnum,
-                    'criteria' => $carr
-                ]]
-            ]);
+            return response()->json([[
+	            'avgRisk' => Criterion::riskString($criteria, $avg),
+	            'avgValue' => $avg,
+	            'total' => $sumnum,
+	            'criteria' => $carr
+	        ]]);
         } else {
-            return response()->json([
-                'success' => true,
-                'data' => [[]]
-            ]);
+            return response()->json([[]], 404);
         }
 	}
 

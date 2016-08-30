@@ -83,10 +83,12 @@
 			controller: 'ReportFormSelectionController',
 			templateUrl: 'template/report/main'
 		})
-		.state('ReportDisplay.Show', {
+		.state('ReportDisplay.List', {
 			url: '/form/:formID/type/:type',
+			params: {formID: null, type: 'person'},
 			views: {
 				'report-navigator': {
+					controller: 'ReportNavigationController',
 					templateUrl: function($stateParams) {
 						if ($stateParams.type == 'person') {
 							return 'template/controls/report-person-navigator';
@@ -96,19 +98,50 @@
 					}
 				},
 				'report-body': {
+					controller: 'ReportDataController',
 					templateUrl: function($stateParams) {
+						if (!!!$stateParams.type) {
+							return null;
+						}
+						if ($stateParams.formID == RISK_ID) {
+							return 'template/report/risk/by-'+$stateParams.type+'-list';
+						}
 						if ($stateParams.formID == SDQ_ID) {
-							return 'template/report/sdq/'+$stateParams.type;
+							return 'template/report/sdq/by-'+$stateParams.type+'-list';
 						}
 						if ($stateParams.formID == EQ_ID) {
-							return 'template/report/eq/'+$stateParams.type;
+							return 'template/report/eq/by-'+$stateParams.type+'-list';
 						}
-
-						return 'template/report/'+$stateParams.type;
+						// return `template/report/by-${stateParams.type}-list`;
+						return 'template/report/by-'+$stateParams.type;
 					}
 				}
 			}
 		})
+		.state('ReportDisplay.Detail', {
+			url: '/form/:formID/participant/:participantID/year/:year',
+			views: {
+				'report-navigator': '',
+				'report-body': {
+					controller: 'ReportDetailDataController',
+					templateUrl: function($stateParams) {
+						if ($stateParams.formID == RISK_ID) {
+							return 'template/report/risk/by-person-detail';
+						}
+						if ($stateParams.formID == SDQ_ID) {
+							return 'template/report/sdq/by-person-detail';
+						}
+						if ($stateParams.formID == EQ_ID) {
+							return 'template/report/eq/by-person-detail';
+						}
+						// return 'yes';
+						return 'template/report/by-person-detail';
+					}
+				}
+			}
+		})
+
+		// DEPRECATED
 		.state('report.overview', {
 			url: '/type/:type/form/:formID/year/:year',
 			params: { form: null, class: 1, room: 1, year: CURRENT_YEAR },
@@ -119,7 +152,6 @@
 				},
 				'report-body': {
 					templateUrl: function($stateParams) {
-						console.log($stateParams.type, $stateParams);
 						return 'template/report/'+$stateParams.type;
 					},
 					controller: 'ReportTabController',
@@ -127,6 +159,8 @@
 				}
 			}
 		})
+
+		// DEPRECATED
 		.state('report.risk', {
 			url: '/:type/risk-screening',
 			views: {
@@ -143,6 +177,8 @@
 				},
 			}
 		})
+
+		// DEPRECATED
 		.state('report.risk.overview', {
 			url: '/year/:year',
 			params: { form: null, class: 1, room: 1, from: 0, num: 10 },
