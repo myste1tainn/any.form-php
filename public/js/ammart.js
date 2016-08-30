@@ -48,14 +48,33 @@
 			}
 		}
 
-		var _searchByID = function(target, items){
-			for (var i = items.length - 1; i >= 0; i--) {
-				var item = items[i];
-				if (item.id == target.id) {
-					return item;
+		var _searchByID = function(target, items, key){
+			if (!!key) {
+				if (typeof target == 'object') {
+					for (var i = items.length - 1; i >= 0; i--) {
+						var item = items[i];
+						if (item[key] == target[key]) {
+							return item;
+						}
+					}
+				} else {
+					for (var i = items.length - 1; i >= 0; i--) {
+						var item = items[i];
+						if (item[key] == target) {
+							return item;
+						}
+					}
 				}
+				return null;
+			} else {
+				for (var i = items.length - 1; i >= 0; i--) {
+					var item = items[i];
+					if (item.id == target.id) {
+						return item;
+					}
+				}
+				return null;
 			}
-			return null;
 		}
 
 		this.find = _searchByID;
@@ -68,6 +87,23 @@
 				}
 			}
 			return items;
+		}
+	})
+
+	.service('injector', function($state){
+		this.parseAndInject = function($scope, propertyName, specificPropertyName) {
+			_prop = $state.params[propertyName];
+			if (_prop) {
+				
+			} else {
+				if (!!specificPropertyName) {
+					_prop = {};
+					_prop[specificPropertyName] = $state.params[propertyName+'ID'];
+				} else {
+					_prop = { id: $state.params[propertyName+'ID'] }
+				}
+			}
+			$scope['_' + propertyName] = _prop;
 		}
 	})
 
@@ -164,7 +200,9 @@
 					_this.level = 0;
 				}
 
-				_this.subscriber();
+				if (!!_this.subscriber) {
+					_this.subscriber();
+				}
 			})
 			.error(function(res, status, headers, config){
 				
