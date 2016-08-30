@@ -1,4 +1,4 @@
-System.register(['angular2/core', 'angular2/http', '../types/form', 'rxjs/Rx', 'rxjs/operator/map'], function(exports_1, context_1) {
+System.register(['angular2/core', 'angular2/http', '../app.config'], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -10,7 +10,7 @@ System.register(['angular2/core', 'angular2/http', '../types/form', 'rxjs/Rx', '
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1, http_1, form_1, Rx_1;
+    var core_1, http_1, app_config_1;
     var FormService;
     return {
         setters:[
@@ -20,50 +20,32 @@ System.register(['angular2/core', 'angular2/http', '../types/form', 'rxjs/Rx', '
             function (http_1_1) {
                 http_1 = http_1_1;
             },
-            function (form_1_1) {
-                form_1 = form_1_1;
-            },
-            function (Rx_1_1) {
-                Rx_1 = Rx_1_1;
-            },
-            function (_1) {}],
+            function (app_config_1_1) {
+                app_config_1 = app_config_1_1;
+            }],
         execute: function() {
             FormService = (function () {
                 function FormService(_http) {
                     this._http = _http;
                 }
-                FormService.prototype.handleErrors = function (error) {
-                    console.log(JSON.stringify(error));
-                    return Rx_1.Observable.throw(error);
+                FormService.prototype.headers = function () {
+                    var headers = new http_1.Headers();
+                    headers.append('Content-Type', 'application/json');
+                    return headers;
                 };
                 FormService.prototype.load = function (id) {
-                    var url = 'api/v1/forms' + ((id) ? '/' + id : '');
-                    return this._http.get(url)
-                        .map(function (res) { return res.json(); })
-                        .map(function (data) {
-                        var formList = [];
-                        data.forEach(function (form) {
-                            formList.push(new form_1.Form(form));
-                        });
-                        return formList;
-                    })
-                        .catch(this.handleErrors);
+                    if (!!id) {
+                        return this._http.get(app_config_1.Config.api('form/' + id));
+                    }
+                    else {
+                        return this._http.get(app_config_1.Config.api('forms'));
+                    }
                 };
                 FormService.prototype.add = function (form) {
-                    var headers = new http_1.Headers();
-                    var url = 'api/v1/forms';
-                    var body = JSON.stringify(form);
-                    return this._http.post(url, body, headers);
+                    return this._http.post(app_config_1.Config.api('form'), JSON.stringify(form), this.headers());
                 };
                 FormService.prototype.update = function (form) {
-                    var headers = new http_1.Headers();
-                    var url = 'api/v1/forms';
-                    var body = JSON.stringify(form);
-                    return this._http.post(url, body, headers);
-                };
-                FormService.prototype.delete = function (id) {
-                    var url = 'api/v1/forms/' + id;
-                    return this._http.delete(url);
+                    return this._http.put(app_config_1.Config.api('form/' + form.id), JSON.stringify(form), this.headers());
                 };
                 FormService = __decorate([
                     core_1.Injectable(), 
