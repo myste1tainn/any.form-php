@@ -61,16 +61,14 @@
 		}
 
 		this.person = function(payload, callback) {
-			_success.callback = callback;
 			$http.get(`api/v1/report/by-person/${payload.id}/year/${payload.year}/from/${payload.from}/num/${payload.num}`)
-			.success(_success.handler)
+			.success(callback)
 			.error(_errorHandler);
 		}
 
 		this.school = function(payload, callback) {
-			_success.callback = callback;
 			$http.get('api/v1/report/by-school/'+payload.id+'/year/'+payload.year)
-			.success(_success.handler)
+			.success(callback)
 			.error(_errorHandler);
 		}
 

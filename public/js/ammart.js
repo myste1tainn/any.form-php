@@ -90,6 +90,23 @@
 		}
 	})
 
+	.service('injector', function($state){
+		this.parseAndInject = function($scope, propertyName, specificPropertyName) {
+			_prop = $state.params[propertyName];
+			if (_prop) {
+				
+			} else {
+				if (!!specificPropertyName) {
+					_prop = {};
+					_prop[specificPropertyName] = $state.params[propertyName+'ID'];
+				} else {
+					_prop = { id: $state.params[propertyName+'ID'] }
+				}
+			}
+			$scope['_' + propertyName] = _prop;
+		}
+	})
+
 	.service('sys', function(ngDialog, $rootScope){
 		this.dialog = {
 			info: function(title, message) {

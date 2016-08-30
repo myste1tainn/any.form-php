@@ -81,7 +81,7 @@
 		 -->
 		<!-- <div class="text-center col-xs-4" 
 			 ng-repeat="aspect in results.aspects"
-			 ng-click="tab.selectAspect(aspect)">
+			 ng-click="selectSubdetail(aspect)">
 			
 			<h1 style="font-size:4em" 
 				ng-data-type="{{ aspect.name }}"
@@ -96,7 +96,7 @@
 		<table class="risk">
 			<tr>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(results.aspects.study)">
+					ng-click="selectSubdetail(results.aspects.study)">
 					
 					<h1 style="font-size:4em" 
 						data-type="การเรียน"
@@ -109,7 +109,7 @@
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(results.aspects.health)">
+					ng-click="selectSubdetail(results.aspects.health)">
 					
 					<h1 style="font-size:4em" 
 						data-type="สุขภาพ"
@@ -122,7 +122,7 @@
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(results.aspects.aggressiveness)">
+					ng-click="selectSubdetail(results.aspects.aggressiveness)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ความรุนแรง"
@@ -137,7 +137,7 @@
 			</tr>
 			<tr>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(results.aspects.economy)">
+					ng-click="selectSubdetail(results.aspects.economy)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เศรษฐกิจ"
@@ -150,7 +150,7 @@
 					
 				</td>
 				<td class="text-center rhigh" 
-					ng-click="tab.selectAspect(results.aspects.security)">
+					ng-click="selectSubdetail(results.aspects.security)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ความปลอดภัย"
@@ -163,7 +163,7 @@
 					
 				</td>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(results.aspects.drugs)">
+					ng-click="selectSubdetail(results.aspects.drugs)">
 					
 					<h1 style="font-size:4em" 
 						data-type="สารเสพติด"
@@ -178,7 +178,7 @@
 			</tr>
 			<tr>
 				<td class="text-center rhigh" 
-					ng-click="tab.selectAspect(results.aspects.sexuality)">
+					ng-click="selectSubdetail(results.aspects.sexuality)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เพศ"
@@ -191,7 +191,7 @@
 					
 				</td>
 				<td class="text-center rnormal" 
-					ng-click="tab.selectAspect(results.aspects.games)">
+					ng-click="selectSubdetail(results.aspects.games)">
 					
 					<h1 style="font-size:4em" 
 						data-type="ติดเกม"
@@ -204,7 +204,7 @@
 					
 				</td>
 				<td class="text-center rveryhigh" 
-					ng-click="tab.selectAspect(results.aspects.electronics)">
+					ng-click="selectSubdetail(results.aspects.electronics)">
 					
 					<h1 style="font-size:4em" 
 						data-type="เครื่องมือสื่อสาร"
@@ -224,7 +224,7 @@
 	<div class="col-xs-12 col-md-6"
 		 ui-view="risk-aspect-detail">
 		<div class="vertical-align text-center anim-fade"
-			 ng-if="!tab.selectedAspect">
+			 ng-if="!subdetail">
 			<h4 class="color-lowlight" 
 				style="margin:auto;">
 				กรุณาเลือกด้าน<br/>
@@ -232,23 +232,23 @@
 			</h4>
 		</div>
 		<div class="anim-fade"
-			 ng-if="tab.selectedAspect">
+			 ng-if="subdetail">
 			 <h4 class="text-center">รายละเอียดความเสี่ยง</h4>
-			<div ng-if="tab.selectedAspect.high.length == 0 && tab.selectedAspect.veryHigh.length == 0">
+			<div ng-if="subdetail.high.length == 0 && subdetail.veryHigh.length == 0">
 				<h1 class="auto-margin text-center" style="color: green">
 					ปกติ
 				</h1>
 			</div>
-			<div ng-if="tab.selectedAspect.high.length > 0 || tab.selectedAspect.veryHigh.length > 0">
-				<ul ng-if="tab.selectedAspect.high.length > 0">
+			<div ng-if="subdetail.high.length > 0 || subdetail.veryHigh.length > 0">
+				<ul ng-if="subdetail.high.length > 0">
 					<div class="color-accent">เสี่ยง</div>
-					<li ng-repeat="item in tab.selectedAspect.high">
+					<li ng-repeat="item in subdetail.high">
 						{{item.name}}
 					</li>
 				</ul>
-				<ul ng-if="tab.selectedAspect.veryHigh.length > 0"> 
+				<ul ng-if="subdetail.veryHigh.length > 0"> 
 					<div class="color-accent">มีปัญหา</div>
-					<li ng-repeat="item in tab.selectedAspect.veryHigh">
+					<li ng-repeat="item in subdetail.veryHigh">
 						{{item.name}}
 					</li>
 				</ul>

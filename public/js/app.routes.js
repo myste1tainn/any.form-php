@@ -123,9 +123,7 @@
 			views: {
 				'report-navigator': '',
 				'report-body': {
-					// TODO: User ReportDetailDataController instead
-					// lumping data & detail together is too much
-					controller: 'ReportDataController',
+					controller: 'ReportDetailDataController',
 					templateUrl: function($stateParams) {
 						if ($stateParams.formID == RISK_ID) {
 							return 'template/report/risk/by-person-detail';

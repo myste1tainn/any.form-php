@@ -30,7 +30,6 @@
 		}
 	})
 
-	// TODO: Move anything related to detail data to ReportDetailDataController
 	.controller('ReportDisplayController', function(
 		$scope, $state, ReportFormSelectionService, ReportNavigationService
 	) {
@@ -64,7 +63,7 @@
 
 	.controller('ReportDataController', function(
 		$scope, reportService, classService, timeService, $state,
-		ReportNavigationService, ReportFormSelectionService
+		ReportNavigationService, ReportFormSelectionService, RISK_ID
 	) {
 		// Implement super class;
 		ReportPagingationDataSource.call($scope);
@@ -154,6 +153,7 @@
 		}
 
 		var _getListData = function() {
+			console.log('called');
 			if (!!_formID && !!$scope.type) {
 				var fn = reportService.functionForType($scope.type);
 				var clazz = (!!_class) ? _class.value : null;
@@ -170,32 +170,27 @@
 				};
 
 				if (_canDoRequestWithPayload(payload)) {
+
 					fn(payload, function(result){
 						$scope.results = result;
+
+						if (_formID == RISK_ID) {
+							for (var i = 0; i < $scope.results.length; i++) {
+								$scope.results[i].hasTalent = function() {
+									return !!this.talent;
+								}
+							}
+						}
 					})
 				}
 			}
 		}
 
-		var _getDetailData = function() {
-			reportService.participantResult($state.params.participantID, _formID, _year.value, function(result) {
-				console.log(result);
-				$scope.results = result;
-			})
-		}
-
 		$scope.getData = function() {
-			if ($state.current.name == 'ReportDisplay.Detail') {
-				_getDetailData();
-			} else {
-				_getListData();
-			}
+			_getListData();
 		}
 
 		// MARK: Report Navigation Data Source
-		// TODO: Implement handler for each of these dataSource call
-		// Acutal data loading should be determine beforehand,
-		// by checking form/type, reloadData should be called subsequently to update interface
 		$scope.yearsForNavigationController = function(nav) {
 			return _years;
 		}
@@ -210,9 +205,6 @@
 		}
 
 		// MARK: Report Navigation Delegate
-		// TODO: Implement handler for each of these delegate call
-		// Getting report results/data should be called,
-		// determining validity to do request perform by this class via form/type checking
 		$scope.navigationControllerDidChangeYear = function(nav, year) {
 			_year = year;
 			$scope.getData();
@@ -232,9 +224,10 @@
 
 		$scope.showDetail = function(participant) {
 			var _type = $state.params.type;
+
 			$state.go('ReportDisplay.Detail', {
-				participantID: 22611,
-				year: 2559,
+				participantID: participant.identifier,
+				year: _year.value,
 				formID: _formID,
 				type: (typeof _type == 'object') ? _type.value : _type
 			})
@@ -243,7 +236,37 @@
 		$scope.constructor();
 	})
 
-	// TODO: Create ReportDetailDataController
 	// The controller should have ability to selectSubDetail() -- e.g. Aspect of risks in Risk-screening report
+	.controller('ReportDetailDataController', function(
+		$scope, reportService, classService, timeService, $state,
+		ReportNavigationService, ReportFormSelectionService, injector
+	) {
+		$scope.constructor = function(){
+			injector.parseAndInject($scope, 'form');
+			injector.parseAndInject($scope, 'participant', 'identifier');
+			injector.parseAndInject($scope, 'year');
 
+			$scope.getData();
+		}
+
+		var _getDetailData = function() {
+			reportService.participantResult(
+				$scope._participant.identifier, 
+				$scope._form.id, 
+				$scope._year, 
+			function(result) {
+				$scope.results = result;
+			})
+		}
+
+		$scope.getData = function() {
+			_getDetailData();
+		}
+
+		$scope.selectSubdetail = function(subdetail){
+			$scope.subdetail = subdetail;
+		}
+
+		$scope.constructor();
+	})
 })();
