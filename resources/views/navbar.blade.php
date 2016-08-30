@@ -15,7 +15,7 @@
 			<ul class="nav navbar-nav col-xs-12">
 				<li class="section">นักเรียน</li>
 				<li id="form">
-					<a ui-sref="form.list" class="bgcolor-clear children">
+					<a [routerLink]="['FormList']" class="bgcolor-clear children">
 						<table>
 						<tr>
 							<td><span class="fa fa-pencil-square-o color-accent1"></span></td>

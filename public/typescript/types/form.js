@@ -1,39 +1,42 @@
 System.register([], function(exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var TableHeaderColumn, TableHeaderRow, TableHeader, Form;
+    var Form, FormDoTableCell, FormDoTableRow, FormDoTableHeader;
     return {
         setters:[],
         execute: function() {
-            TableHeaderColumn = (function () {
-                function TableHeaderColumn() {
-                }
-                return TableHeaderColumn;
-            }());
-            exports_1("TableHeaderColumn", TableHeaderColumn);
-            TableHeaderRow = (function () {
-                function TableHeaderRow() {
-                }
-                return TableHeaderRow;
-            }());
-            exports_1("TableHeaderRow", TableHeaderRow);
-            TableHeader = (function () {
-                function TableHeader() {
-                }
-                return TableHeader;
-            }());
-            exports_1("TableHeader", TableHeader);
             Form = (function () {
-                function Form(response) {
-                    this.id = response.id;
-                    this.parentID = response.parentID;
-                    this.name = response.name;
-                    this.header = response.header;
-                    this.level = response.level;
+                function Form(data) {
+                    var parsedObject = data.json();
+                    this.id = parsedObject.id;
+                    this.name = parsedObject.name;
+                    this.header = parsedObject.header;
+                    this.level = parsedObject.level;
                 }
+                Form.prototype.headerObject = function () {
+                    return JSON.parse(this.header);
+                };
                 return Form;
             }());
             exports_1("Form", Form);
+            FormDoTableCell = (function () {
+                function FormDoTableCell() {
+                }
+                return FormDoTableCell;
+            }());
+            exports_1("FormDoTableCell", FormDoTableCell);
+            FormDoTableRow = (function () {
+                function FormDoTableRow() {
+                }
+                return FormDoTableRow;
+            }());
+            exports_1("FormDoTableRow", FormDoTableRow);
+            FormDoTableHeader = (function () {
+                function FormDoTableHeader() {
+                }
+                return FormDoTableHeader;
+            }());
+            exports_1("FormDoTableHeader", FormDoTableHeader);
         }
     }
 });
