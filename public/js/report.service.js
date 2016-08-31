@@ -23,6 +23,10 @@
 			} else {
 				sys.dialog.error("Error: " + status + " \n<br />" + res);
 			}
+
+			if (res.stackTrace) {
+				console.error('PHP STACK TRACE\n', res.stackTrace);
+			}
 		};
 		var _success = {
 			callback: null,

@@ -1,8 +1,5 @@
 <?php
 
-// Report APIs
-Route::get('/api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', 'ReportController@numberOfPages');
-
 /* DEPRECATED */ Route::get('teacher/risk-screening', 'HomeController@index');
 /* DEPRECATED */ Route::get('teacher/risk-screening/year/{year}/participant/{studentID}', 'HomeController@index');
 /* DEPRECATED */ Route::get('teacher/risk-screening/year/{year}', 'HomeController@index');
@@ -21,11 +18,6 @@ Route::get('/api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-p
 /* DEPRECATED */ Route::get('/report/{name}/sdq/list/{year}', 'HomeController@index');
 /* DEPRECATED */ Route::get('/report/{name}/sdq/participant/{number}/year/{year}', 'HomeController@index');
 /* DEPRECATED */ Route::get('/report-results', 'ReportController@result');
-/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}', 'ReportController@resultByPerson');
-/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}/from/{from}/num/{num}', 'ReportController@resultByPerson');
-/* DEPRECATED */ Route::get('/api/v1/report/by-room/{id}/class/{class}/room/{room}/year/{year}', 'ReportController@resultByRoom');
-/* DEPRECATED */ Route::get('/api/v1/report/by-class/{id}/class/{class}/year/{year}', 'ReportController@resultByClass');
-/* DEPRECATED */ Route::get('/api/v1/report/by-school/{id}/year/{year}', 'ReportController@resultBySchool');
 
 /* DEPRECATED */ Route::get('/template/report/{name}', 'ReportController@template');
 /* DEPRECATED */ Route::get('/template/report/sdq/{name}', 'ReportController@sdqTemplate');

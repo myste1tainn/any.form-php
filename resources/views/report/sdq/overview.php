@@ -1,5 +1,5 @@
 <div class="col-xs-12 border-b no-pad container-flex flex-center" 
-	 ng-repeat="group in overview.results">
+	 ng-repeat="group in results">
 
 	<div class="col-xs-6">
 		{{ group.name }}

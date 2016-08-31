@@ -36,10 +36,14 @@ class Handler extends ExceptionHandler {
 	 */
 	public function render($request, Exception $e)
 	{
+		$user = \Auth::user();
 		if ($this->isHttpException($e))
 		{
 			if ($request->ajax()) {
-				return response()->json($e->getMessage(), 500);
+				return response()->json([
+					'message' => $e->getMessage(),
+					'stackTrace' => ($user && $user->level == 999) ? $e->getTraceAsString() : ''
+				], 500);
 			} else {
 				return $this->renderHttpException($e);
 			}
@@ -47,7 +51,10 @@ class Handler extends ExceptionHandler {
 		else
 		{
 			if ($request->ajax()) {
-				return response()->json($e->getMessage(), 500);
+				return response()->json([
+					'message' => $e->getMessage(),
+					'stackTrace' => ($user && $user->level == 999) ? $e->getTraceAsString() : ''
+				], 500);
 			} else {
 				return parent::render($request, $e);
 			}
