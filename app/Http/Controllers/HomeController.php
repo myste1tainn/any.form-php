@@ -62,6 +62,12 @@ class HomeController extends Controller {
 		if ($p1 == 'head') {
 			return $this->head();
 		}
+		if ($p1 == 'definition') {
+			$user = \Auth::user();
+			if (!$user || $user->level < 999) {
+				return response('', 403);
+			}
+		}
 
 		$path = $p1.'/'.$p2.'/'.$p3.'/'.$p4;
 		$path = str_replace('//', '', $path);

@@ -140,6 +140,10 @@
 				}
 			}
 		})
+		.state('Definition', {
+			url: '/admin/definition',
+			templateUrl: 'template/definition/index'
+		})
 
 		// DEPRECATED
 		.state('report.overview', {
