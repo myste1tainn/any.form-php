@@ -1,15 +1,8 @@
-<div class="col-xs-12 no-pad">
-	<h3 class="col-xs-12 std-pad text-center">Definitions</h3>
-	<div class="col-xs-3">
-		Defition list
-	</div>
-	<div class="col-xs-3">
-		Table list
-	</div>
-	<div class="col-xs-3">
-		Column list
-	</div>
-	<div class="col-xs-3">
-		Value list
-	</div>
+<div class="col-xs-12 no-pad bgcolor-tertiary children full-height">
+	<h3 class="col-xs-12 std-pad no-margin text-center">Definitions Administration</h3>
+	<hr class="border-color-tertiary-tinted col-xs-12 no-margin" />
+	<div ui-view="definition-list" class="col-xs-3 no-pad border-right border-color-tertiary-tinted full-height"></div>
+	<div ui-view="table-list" class="col-xs-3 no-pad border-right border-color-tertiary-tinted full-height"></div>
+	<div ui-view="column-list" class="col-xs-3 no-pad border-right border-color-tertiary-tinted full-height"></div>
+	<div ui-view="value-list" class="col-xs-3 no-pad border-right border-color-tertiary-tinted full-height"></div>
 </div>

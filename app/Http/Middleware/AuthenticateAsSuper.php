@@ -2,8 +2,9 @@
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
+use Auth;
 
-class Authenticate {
+class AuthenticateAsSuper {
 
 	/**
 	 * The Guard implementation.
@@ -32,11 +33,11 @@ class Authenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
-		if ($this->auth->guest() || $this->auth->user->level < 999)
+		if (Auth::guest() || Auth::user()->level < 999)
 		{
 			if ($request->ajax())
 			{
-				return response()->json([ 'message' => 'Unauthorized.' ], 401);
+				return response()->json([ 'message' => 'Unauthorized.' ], 403);
 			}
 			else
 			{

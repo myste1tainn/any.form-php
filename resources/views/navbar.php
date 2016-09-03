@@ -58,6 +58,16 @@
 							</table>
 						</a>
 					</li>
+					<li ng-if="user.level >= 999">
+						<a ui-sref="AdminDefinition()" class="bgcolor-clear children">
+							<table>
+							<tr>
+								<td><span class="fa fa-gear color-accent1"></span></td>
+								<td>Definition</td>
+							</tr>
+							</table>
+						</a>
+					</li>
 					<li id="logout">
 						<a ui-sref="logout" class="bgcolor-clear children">
 							<table>

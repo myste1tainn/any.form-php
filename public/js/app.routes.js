@@ -140,9 +140,30 @@
 				}
 			}
 		})
-		.state('Definition', {
-			url: '/admin/definition',
+		.state('Admin', {
+			url: '/admin',
 			templateUrl: 'template/definition/index'
+		})
+		.state('Admin.Definition', {
+			url: '/definition',
+			views: {
+				'definition-list': {
+					templateUrl: 'template/definition/list',
+					controller: 'DefinitionListController'
+				},
+				'table-list': {
+					templateUrl: 'template/common/table-list',
+					controller: 'TableListController'
+				},
+				'column-list': {
+					templateUrl: 'template/common/column-list',
+					controller: 'ColumnListController'
+				},
+				'value-list': {
+					templateUrl: 'template/common/column-list',
+					controller: 'ValueListController'
+				},
+			}
 		})
 
 		// DEPRECATED
