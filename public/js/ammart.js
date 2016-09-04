@@ -6,7 +6,7 @@
 		
 		// Components
 		'form', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
-		'definition',
+		'definition', 'tableView',
 
 		// Collections
 		'Questions', 'Groups'

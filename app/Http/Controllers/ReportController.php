@@ -5,6 +5,7 @@ use App\QuestionaireResult;
 use App\QuestionGroup;
 use App\Criterion;
 use App\Participant;
+use App\Definition;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -65,11 +66,11 @@ class ReportController extends Controller {
 	}
 
 	public function resultByRoom($id, $class, $room, $year) {
-		if ($id == env('APP_RISK_ID')) {
+		if (Questionaire::is($id, 'RiskReport')) {
 			return $this->riskResult($id, $class, $room, $year);
-		} else if (Questionaire::isSDQReport($id)) {
+		} else if (Questionaire::is($id, 'SDQReport')) {
 			return (new SDQReportController())->resultByRoom($id, $class, $room, $year);
-		} else if ($id == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->eqResult($id, $class, $room, $year);
 		} else {
 			return $this->normalResultByRoom($id, $class, $room, $year);
@@ -81,14 +82,20 @@ class ReportController extends Controller {
 
 		$questionaire = Questionaire::find($id);
 
+
 		$questions = $questionaire->questions()->get();
+
+		// TODO: This is ugly, there should be a way to load definition within
+		// Question.php and make it retain and not having to be re-query
+		$def = Definition::where('name', 'QuestionRisks')->first();
 
 		foreach ($questions as $question) {
 			$choices = $question->choices(true)->get();
 
 			$participants = [];
 
-			if ($question->isAspect()) {
+			// TODO: This shouldn't take parameter, above reason
+			if ($question->isAspect($def)) {
 				$question->shortName = $question->info('name');
 
 				foreach ($choices as $choice) {
@@ -189,12 +196,12 @@ class ReportController extends Controller {
 	}
 
 	public function resultByClass($id, $class, $year) {
-		if ($id == env('APP_RISK_ID')) {
+		if (Questionaire::is($id, 'RiskReport')) {
 			// Passing ull on room parameter will pull a class
 			return $this->riskResult($id, $class, null, $year);
-		} else if (Questionaire::isSDQReport($id)) {
+		} else if (Questionaire::is($id, 'SDQReport')) {
 			return (new SDQReportController())->resultByClass($id, $class, $year);
-		} else if ($id == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->riskResult($id, $class, null, $year);
 		} else {
 			return $this->normalResultByClass($id, $class, $year);
@@ -259,11 +266,11 @@ class ReportController extends Controller {
 	}
 
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
-		if ($id == env('APP_RISK_ID')) {
+		if (Questionaire::is($id, 'RiskReport')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
-		} else if (Questionaire::isSDQReport($id)) {
+		} else if (Questionaire::is($id, 'SDQReport')) {
 			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
-		} else if ($id == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->resultByPersonEQ($id, $year, $from, $num);
 		} else  {
 			return $this->resultByPersonNormal($id, $year, $from, $num);
@@ -314,12 +321,12 @@ class ReportController extends Controller {
 	}
 
 	public function resultBySchool($id, $year) {
-		if ($id == env('APP_RISK_ID')) {
+		if (Questionaire::is($id, 'RiskReport')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
-		} else if (Questionaire::isSDQReport($id)) {
+		} else if (Questionaire::is($id, 'SDQReport')) {
 			return (new SDQReportController())->resultBySchool($id, $year);
-		} else if ($id == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->resultBySchool($id, null, null, $year);
 		} else {
 			return $this->normalResultBySchool($id, $year);

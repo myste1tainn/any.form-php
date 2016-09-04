@@ -40,7 +40,7 @@ Route::delete('api/v1/criterion/{id}', 'CriterionController@destroy');
 
 // API: Definition
 Route::get('api/v1/definition/tables', 'DefinitionController@allTables');
-Route::get('api/v1/definition/table/{tableName}', 'DefinitionController@allColumns');
+Route::get('api/v1/definition/table/{tableName}/columns', 'DefinitionController@allColumns');
 Route::get('api/v1/definition/table/{tableName}/column/{columnName}', 'DefinitionController@allValues');
 Route::get('api/v1/definition/{id}', 'DefinitionController@load');
 Route::get('api/v1/definitions', 'DefinitionController@load');

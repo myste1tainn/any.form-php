@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Request;
 use Auth;
 use DB;
+use Schema;
 
 class DefinitionController extends Controller {
 
@@ -18,7 +19,7 @@ class DefinitionController extends Controller {
 		if ($id) {
 			$definition = Definition::where('id', $id)->first();
 			if ($definition) {
-				$definition->values = explode('||', $definition->values);
+				$definition->values = explode('|', $definition->values);
 				return response()->json($definition, 200);
 			} else {
 				return response()->json([], 404);
@@ -26,7 +27,7 @@ class DefinitionController extends Controller {
 		} else {
 			$definitions = Definition::all();
 			foreach ($definitions as $definition) {
-				$definition->values = explode('||', $definition->values);
+				$definition->values = explode('|', $definition->values);
 			}
 			return response()->json($definitions, 200);
 		}
@@ -40,19 +41,22 @@ class DefinitionController extends Controller {
 	}
 
 	public function allColumns($tableName) {
-		return response()->json(DB::statement('SHOW columns FROM '.$tableName), 200);
+		return response()->json(Schema::getColumnListing($tableName), 200);	
+		// return response()->json(DB::execute('SHOW columns FROM '.$tableName), 200);
 	}
 
 	public function allValues($tableName, $columnName) {
-		return response()->json(DB::table($tableName)->get($columnName), 200);	
+		$values = DB::table($tableName)->get([$columnName.' as name']);
+		return response()->json($values, 200);	
 	}
 
 	public function create() {
 		$in = Request::all();
 		$definition = new Definition();
 		$definition->name = $in['name'];
-		$definition->attribute = $in['attribute'];
-		$definition->values = implode('||', $in['values']);
+		$definition->table = $in['table'];
+		$definition->column = $in['column'];
+		$definition->values = implode('|', $in['values']);
 		$definition->save();
 		return response()->json($definition, 200);
 	}
@@ -61,8 +65,9 @@ class DefinitionController extends Controller {
 		$in = Request::all();
 		$definition = Definition::find($id);
 		$definition->name = $in['name'];
-		$definition->attribute = $in['attribute'];
-		$definition->values = implode('||', $in['values']);	
+		$definition->table = $in['table'];
+		$definition->column = $in['column'];
+		$definition->values = implode('|', $in['values']);	
 		$definition->save();
 		return response()->json($definition, 200);
 	}

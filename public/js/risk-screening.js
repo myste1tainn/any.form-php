@@ -3,7 +3,7 @@
 	var module = angular.module('risk-screening', [])
 
 	.directive('riskScreening', function(formService, $participant, $answer, $stateParams, 
-	                                     ngDialog, RISK_ID, ACADEMIC_YEAR){
+	                                     ngDialog, ACADEMIC_YEAR){
 		return {
 			restrict: 'EA',
 			controllerAs: 'riskScreening',
@@ -69,7 +69,7 @@
 				}
 
 				// Load the Form questions
-				formService.load(RISK_ID, function(Form){
+				formService.load($stateParams.formID, function(Form){
 					$scope.screening = Form;
 
 					if ($stateParams.studentID) {
@@ -78,7 +78,7 @@
 							$scope.participant = participant;
 						})
 
-						$answer.load(RISK_ID, $stateParams.year, $stateParams.studentID, function(answers) {
+						$answer.load($stateParams.formID, $stateParams.year, $stateParams.studentID, function(answers) {
 							createAnsweredQuestionMatrix(Form, answers)
 						});
 					}

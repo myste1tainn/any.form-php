@@ -47,6 +47,10 @@
 <script src="{{ asset('/js/choice.js') }}"></script>
 <script src="{{ asset('/js/risk-screening.js') }}"></script>
 
+<!-- Common Components -->
+<script src="{{ asset('/js/tableview.interface.js') }}"></script>
+<script src="{{ asset('/js/tableview.component.js') }}"></script>
+
 <!-- Application Collections -->
 <script src="{{ asset('/js/collections/questions.js') }}"></script>
 <script src="{{ asset('/js/collections/groups.js') }}"></script>

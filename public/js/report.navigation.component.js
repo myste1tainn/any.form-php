@@ -37,7 +37,6 @@
 				if ($result) {
 					$scope.selectedForm = $result;
 					if (_delegate) {
-						// TODO: Determine if this is needed (form change event from data loading)
 						_delegate.formSelectionDidChangeForm($scope, $result);
 					}
 				}

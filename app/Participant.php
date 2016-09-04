@@ -50,6 +50,10 @@ class Participant extends Model {
 		return $query->get();
 	}
 
+	// TODO: Make this not having to take paramter
+	// REMARK: This takes parameter because
+	// There are few SDQ form student, teacher, and parents
+	// Each form has their own sets of life question
 	public function lifeProblems($id = null) {
 		$lifeProblems = [];
 

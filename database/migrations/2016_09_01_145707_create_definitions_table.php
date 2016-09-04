@@ -16,7 +16,8 @@ class CreateDefinitionsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->string('attribute');
+			$table->string('table');
+			$table->string('column');
 			$table->string('values', 1024);
 			$table->timestamps();
 		});

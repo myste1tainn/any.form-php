@@ -2,189 +2,164 @@
 	
 	var module = angular.module('definition', ['definition.service'])
 
-	.controller('DefinitionListController', function($scope, definitionService, definitionBuilder){
-		$scope.results = [];
-
-		var _loadData = function() {
-			definitionService.load().then(function(res){
-				$scope.results = res;
-			})
+	.directive('tableNameCell', function($http){
+		return {
+			restrict: 'E',
+			templateUrl: 'template/common/table-name-cell'
 		}
-		var _removeItem = function(definition) {
-			var i = $scope.results.indexOf(definition);
-			if (i > -1) $scope.results.splice(i, 1);
+	})
+	.directive('columnNameCell', function($http){
+		return {
+			restrict: 'E',
+			templateUrl: 'template/common/column-name-cell'
+		}
+	})
+	.directive('valueCell', function($http){
+		return {
+			restrict: 'E',
+			templateUrl: 'template/common/column-name-cell',
+			controller: function($scope){}
+		}
+	})
+	.directive('definitionCell', function($http){
+		return {
+			restrict: 'E',
+			require: '^definitionForm',
+			link: function($scope, $element, $attrs, $controller){
+				this.definitionForm = $controller;
+			},
+			templateUrl: 'template/common/definition-cell',
+			controller: function($scope){
+				// Link to defintionForm.save()
+				this.save = function(item) {
+					this.definitionForm.save(item);
+				}
+			}
+		}
+	})
+
+	.directive('definitionForm', function($http){
+		return {
+			restrict: 'E',
+			controllerAs: 'definitionForm',
+			controller: 'DefinitionFormController'
+		}
+	})
+
+	.controller('DefinitionFormController', function(
+		$scope, definitionService, schemaTableService, schemaColumnService, schemaValueService
+	) {
+		TableViewDelegate.call(this);
+		TableViewDataSource.call(this);
+
+		var _this			= this;
+		var _definitions 	= [];
+		var _tableNames 	= [];
+		var _columnNames 	= [];
+		var _values 		= [];
+
+		var _loadDefinitions = function() {
+			definitionService.load().then(function(res){ 
+				_definitions = res;
+				_this.definitionList.reloadData();
+				_this.definitionList.selectAtIndex(0);
+			});
+		}
+		var _loadTables = function() {
+			schemaTableService.load().then(function(res){ 
+				_tableNames = res;
+				_this.tableNameList.reloadData();
+			});
+		}
+		var _loadColumns = function(tableName) {
+			schemaColumnService.load(tableName).then(function(res){ 
+				_columnNames = res;
+				_this.columnNameList.reloadData();
+			});
+		}
+		var _loadValues = function(tableName, columnName) {
+			schemaValueService.load(tableName, columnName).then(function(res){ 
+				_values = res;
+				_this.valueList.reloadData();
+			});
 		}
 
-		$scope.constructor = function(){
-			_loadData();
+		this.constructor = function() {
+			_loadDefinitions();
 		}
 
-		$scope.select = function(definition) {
-			definitionBuilder.id = definition.id;
-			definitionBuilder.name = definition.name;
-			definitionBuilder.attribute = definition.attribute;
-			definitionBuilder.values = definition.values;
-			definitionBuilder.notify();
+		this.add = function() {
+			var item = definitionService.newObject();
+			_definitions.unshift(item);
+			this.definitionList.reloadData();
+			this.definitionList.select(item);
 		}
 
-		$scope.add = function() {
-			$scope.results.push(definitionBuilder.newObject());
+		this.viewDidLoad = function(view) {
+			if (view == this.tableNameList) {
+				_loadTables();
+			}
 		}
-
-		$scope.save = function() {
-			definitionService.store(definitionBuilder.build()).then(function(){
+		this.tableViewCommitEditingForItem = function(tableView, type, item) {
+			// We knows that this is always a definitionList, thus item is always a definition object
+			if (type == 'delete') {
+				var last = tableView.results.length - 2;
+				if (item.id > -1) {
+					definitionService.destroy(item).then(function(res){
+						tableView.commitDelete(item);
+						tableView.select(tableView.results[last]);
+					})
+				} else {
+					tableView.commitDelete(item);
+					tableView.select(tableView.results[last]);
+				}
+			} else if (type == 'edit') {
+				for (var i = item.values.length - 1; i >= 0; i--) {
+					item.values[i] = item.values[i].name;
+				}
 				
-			})
-		}
-
-		$scope.delete = function(definition) {
-			if (definition.id > -1) {
-				definitionService.destroy(definition).then(function(res){
-					_removeItem(definition);	
-				});
-			} else {
-				_removeItem(definition);
-			}
-		}
-
-		$scope.constructor();
-	})
-
-	// TODO: Looks like the code for table list repeat itself so much.
-	// Maybe you can create something generalized from it like UITableView in ObjC
-	// By allowing attribute setting on element of multiple/single selection mode
-	// Logic is switch accordingly.
-	// By subclassing this so called UITableView, the subclass should have the freedom
-	// to modify certain part of the code and do super.method() for the same functionality
-	//
-	// Maybe these controller are meant to be UITableViewDelegate, not the UITableView itself
-	// The UITableView itself should be some central code that can operate by just switching
-	// the service provider (e.g. definitionService) which acts as a data source
-	//
-	// What to do with the data when it is selected is up to these supposedly-to-be delegates
-
-	// TODO: Test this untested code.
-	.controller('TableListController', function($scope, definitionService, definitionBuilder){
-		$scope.selectedItem = null;
-		$scope.results = [];
-
-		var _loadData = function() {
-			definitionService.loadTables().then(function(res) {
-				$scope.results = res;
-			})
-		}
-
-		$scope.constructor = function() {
-			_loadData();
-		}
-
-		$scope.select = function(item) {
-			definitionBuilder.name = item.name;
-			definitionBuilder.notify();
-		}
-
-		definitionBuilder.ifChange().then(null, null, function(db){
-			if (!!definitionBuilder.name) {
-				for (var i = $scope.results.length - 1; i >= 0; i--) {
-					$scope.results[i].name = definitionBuilder.name;
-					$scope.selectedItem = $scope.results[i];
-					break;
-				}
-			}
-		})
-
-		$scope.constructor();
-	})
-
-	// TODO: Test this untested code.
-	.controller('ColumnListController', function($scope, definitionService, definitionBuilder){
-		$scope.selectedItem = null;
-		$scope.results = [];
-
-		var _loadData = function() {
-			if (!!definitionBuilder.name) {
-				// Load data only when the table name is known;
-				definitionService.loadColumns(definitionBuilder.name).then(function(res) {
-					$scope.results = res;
+				definitionService.store(item).then(function(res){
+					item.id = res.id;
 				})
 			}
 		}
+		this.tableViewDidSelectItem = function(tableView, item) {
+			if (tableView == this.tableNameList) {
+				var table = this.tableNameList.selectedItem.name;
+				_loadColumns(table);
 
-		$scope.constructor = function() {
-			_loadData();
-		}
+				this.definitionList.selectedItem.table = tableView.selectedItem.name;
+			} else if (tableView == this.columnNameList) {
+				var table = this.tableNameList.selectedItem.name;
+				var column = this.columnNameList.selectedItem;
+				_loadValues(table, column);
 
-		$scope.select = function(item) {
-			definitionBuilder.attribute = item.attribute;
-		}
-
-		definitionBuilder.ifChange().then(null, null, function(db){
-			_loadData();
-
-			if (!!definitionBuilder.attribute) {
-				for (var i = $scope.results.length - 1; i >= 0; i--) {
-					$scope.results[i].attribute = definitionBuilder.attribute;
-					$scope.selectedItem = $scope.results[i];
-					break;
-				}
+				this.definitionList.selectedItem.column = tableView.selectedItem;
+			} else if (tableView == this.valueList) {
+				this.definitionList.selectedItem.values = tableView.selectedItems;
 			}
-		})
+		}
+		this.tableViewDidDeselectItem = function(tableView, item) {
+			// Only value list table has multi selection enabled
+			if (tableView == this.valueList) {
+				this.definitionList.selectedItem.values = tableView.selectedItems;
+			}
+		}
+		this.itemsForTableView = function(tableView) {
+			if (tableView == this.definitionList) {
+				return _definitions;
+			} else if (tableView == this.tableNameList) {
+				return _tableNames;
+			} else if (tableView == this.columnNameList) {
+				return _columnNames;
+			} else if (tableView == this.valueList) {
+				return _values;
+			}
+		}
 
-		$scope.constructor();
+		this.constructor();
 	})
 
-	// TODO: Test this untested code.
-	// TODO: This serves as an example code logic for multiple selection enabled table view
-	.controller('ValueListController', function($scope, definitionService, definitionBuilder){
-		$scope.selectedItems = [];
-		$scope.results = [];
-
-		var _loadData = function() {
-			if (!!definitionBuilder.name) {
-				// Load data only when the table name is known;
-				definitionService.loadColumns(definitionBuilder.name).then(function(res) {
-					$scope.results = res;
-				})
-			}
-		}
-
-		$scope.constructor = function() {
-			_loadData();
-		}
-
-		$scope.select = function(item) {
-			var i = $scope.selectedItems.indexOf(item);
-			if (i > -1) {
-				$scope.selectedItems.splice(i, 1);
-			} else {
-				$scope.selectedItems.push(item);
-			}
-			definitionBuilder.value = $scope.selectedItems;
-		}
-
-		definitionBuilder.ifChange().then(null, null, function(db){
-			if (!!definitionBuilder.attribute) {
-				for (var i = $scope.results.length - 1; i >= 0; i--) {
-					for (var j = definitionBuilder.values.length - 1; j >= 0; j--) {
-						$scope.results[i] = definitionBuilder.values[j];
-
-						// The item is already exists, break;
-						var foundItem = $scope.results[i];
-						var i = $scope.selectedItems.indexOf(foundItem);
-						if (i > -1) break;
-
-						// Add to selected collection
-						$scope.selectedItems.push($scope.results[i]);
-
-						// One item in values can only be found once in results, 
-						// so break it and go for next round.
-						break;
-					}
-				}
-			}
-		})
-
-		$scope.constructor();
-	})
+	
 
 })();

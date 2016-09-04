@@ -3,8 +3,8 @@
 	var module = angular.module('form-service', [])
 
 	.service('formService', function(
-		$http, $question, $criterion, ngDialog, req, sys,
-		SDQ_ID, SDQT_ID, SDQP_ID, EQ_ID, RISK_ID) {
+		$http, $question, $criterion, ngDialog, req, sys
+	) {
 		var _this = this;
 
 		this.newInstance = function() {
@@ -41,10 +41,6 @@
 				callback = id;
 				$http.get('api/v1/forms')
 				.success(function(res, status, headers, config){
-					for (var i = res.length - 1; i >= 0; i--) {
-						_this.injectFunctions(res[i]);
-					}
-
 					callback(res);
 				})
 				.error(function(res, status, headers, config){
@@ -59,22 +55,6 @@
 					callback(this.newInstance());
 				});
 			}
-		}
-
-		this.injectFunctions = function(form){
-			form.isSDQForm = function(){ 
-				return this.id == SDQ_ID || this.id == SDQP_ID || this.id == SDQT_ID;
-			}
-			form.isEQForm = function(){ 
-				return this.id == EQ_ID;
-			}
-			form.isRiskScreeningForm = function(){ 
-				return this.id == RISK_ID;
-			}
-			form.isGeneralForm = function(){ 
-				return !(this.isSDQForm() || this.isRiskScreeningForm())
-			}
-			form.injectedFunctions = true;
 		}
 
 		this.save = function(Form, callback) {
