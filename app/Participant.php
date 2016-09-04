@@ -57,12 +57,8 @@ class Participant extends Model {
 	public function lifeProblems($id = null) {
 		$lifeProblems = [];
 
-		if ($id == env('APP_SDQ_ID') || $id == null) {
-			$id = env('APP_QUESTION_SDQ_LIFE');
-		} else if ($id == env('APP_SDQT_ID')) {
-			$id = env('APP_QUESTION_SDQT_LIFE');
-		} else if ($id == env('APP_SDQP_ID')) {
-			$id = env('APP_QUESTION_SDQP_LIFE');
+		if (Questionaire::is($id, 'SDQReport') || $id == null) {
+			$id = Definition::where('name', 'QuestionSDQLife')->first()->values;
 		}
 
 		$q = Question::find($id);
@@ -79,7 +75,6 @@ class Participant extends Model {
 		}
 
 		$this->lifeProblems = $lifeProblems;
-
 		return $lifeProblems;
 	}
 

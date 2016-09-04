@@ -153,7 +153,6 @@
 		}
 
 		var _getListData = function() {
-			console.log('called');
 			if (!!_formID && !!$scope.type) {
 				var fn = reportService.functionForType($scope.type);
 				var clazz = (!!_class) ? _class.value : null;
