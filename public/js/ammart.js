@@ -6,6 +6,7 @@
 		
 		// Components
 		'form', 'question', 'criterion', 'choice', 'report', 'ct.ui.router.extras.dsr',
+		'definition', 'tableView',
 
 		// Collections
 		'Questions', 'Groups'
@@ -175,7 +176,7 @@
 		this.postMessage = function(url, payload, callback) {
 			$http.post(url, payload)
 			.success(function(res, status, headers, config){
-				(res);
+				callback(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);
@@ -223,7 +224,7 @@
 			controllerAs: 'navbar',
 			controller: function($scope, $element, $attrs){
 				User.subscribe(function () {
-					$scope.user = User.name;
+					$scope.user = User;
 				})
 			}
 		}
@@ -247,6 +248,20 @@
 			.error(function(res, status, headers, config){
 				$scope.error = res.error;
 			});
+		}
+	})
+
+	.directive('ngLet', function($http){
+		return {
+			restrict: 'A',
+			controllerAs: 'ngLet',
+			controller: function($scope, $element, $attrs){
+				components = $attrs.ngLet.split('=');
+				for (var i = components.length - 1; i >= 0; i--) {
+					components[i] = components[i].trim();
+				}
+				$scope[components[0]] = $scope.$eval(components[1]);
+			}
 		}
 	})
 

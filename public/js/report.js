@@ -63,7 +63,7 @@
 
 	.controller('ReportDataController', function(
 		$scope, reportService, classService, timeService, $state,
-		ReportNavigationService, ReportFormSelectionService, RISK_ID
+		ReportNavigationService, ReportFormSelectionService
 	) {
 		// Implement super class;
 		ReportPagingationDataSource.call($scope);
@@ -153,7 +153,6 @@
 		}
 
 		var _getListData = function() {
-			console.log('called');
 			if (!!_formID && !!$scope.type) {
 				var fn = reportService.functionForType($scope.type);
 				var clazz = (!!_class) ? _class.value : null;
@@ -173,12 +172,9 @@
 
 					fn(payload, function(result){
 						$scope.results = result;
-
-						if (_formID == RISK_ID) {
-							for (var i = 0; i < $scope.results.length; i++) {
-								$scope.results[i].hasTalent = function() {
-									return !!this.talent;
-								}
+						for (var i = 0; i < $scope.results.length; i++) {
+							$scope.results[i].hasTalent = function() {
+								return !!this.talent;
 							}
 						}
 					})

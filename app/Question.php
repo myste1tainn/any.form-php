@@ -1,9 +1,9 @@
 <?php namespace App;
 
+use App\Definition;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model {
-
 	public static $riskMap = [
 		'47' => [ 
 			'name' => 'ด้านการเรียน',
@@ -56,16 +56,9 @@ class Question extends Model {
 		return static::$riskMap[$this->id][$nodeName];
 	}
 
-	public function isAspect() {
-		$ids = \Config::get('app')['questionRiskIDs'];
-		
-		foreach ($ids as $id) {
-			if ($this->id == $id) {
-				return true;
-			}
-		}
-
-		return false;
+	public function isAspect($def) {
+									// To make this is string
+		return strpos($def->values, (string)$this->id) !== false;
 	}
 	public function isAboutTalent() {
 		return $this->id == env('APP_QUESTION_TALENT_ID');

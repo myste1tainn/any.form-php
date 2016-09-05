@@ -2,7 +2,8 @@
 	
 	var module = angular.module('form-do', ['form-service'])
 
-	.controller('FormDoController', function($scope, $stateParams, formService){
+	.controller('FormDoController', function($scope, $stateParams, formService, ngDialog){
+		var _isSDQReports = false;
 		var id = $stateParams.formID;
 		$scope.form = $stateParams.form;
 
@@ -46,6 +47,9 @@
 		}
 		loadFormIfNeeded();
 		
+		formService.isSDQReport(id).then(function(res) {
+			_isSDQReports = res;
+		})
 
 		$scope.toggleChoose = function(question, choice) {
 			if (choice.enabled) {
@@ -60,6 +64,25 @@
 						question.choosenChoices = [];
 					}
 					question.choosenChoices.push(choice);
+
+					if (_isSDQReports && question.order == 27 && choice.name.indexOf('ไม่') > -1) {
+						// select the rest answers automactically
+						for (var i = $scope.form.questions.length - 1; i >= 0; i--) {
+							var q = $scope.form.questions[i];
+							if (q.order == 32) {
+								for (var j = q.choices.length - 1; j >= 0; j--) {
+									var c = q.choices[j];
+									var cc = c.subchoices[0];
+									$scope.toggleChoose(c, cc);
+								}
+							} else if (q.order > 27) {
+								if (q.choices.length > 1) {
+									var c = q.choices[0];
+									$scope.toggleChoose(q, c);
+								}
+							}
+						}
+					}
 				}
 			}
 		}
@@ -124,20 +147,17 @@
 
 		var validateChoosenChoices = function(choices) {
 			var valid = choices.length >= totalLength();
-
 			if (!valid) {
 				ngDialog.open({
 					plain: true,
 					template: 'กรุณาตอบคำถามให้ครบทุกข้อ'
 				})
 			}
-
 			return valid;
 		}
 
 		$scope.submit = function() {
 			var choices = choosenChoices();
-
 			if ($scope.validateFormInput()) {
 				if (validateChoosenChoices(choices)) {
 					$scope.participant.choices = choices;

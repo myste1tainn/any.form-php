@@ -98,8 +98,16 @@ class Questionaire extends Model {
 		return $this->results($year, null, null, $class, $room, false)->count();
 	}
 
-	public static function isSDQReport($id) {
-		return $id == env('APP_SDQ_ID') || $id == env('APP_SDQP_ID') || $id == env('APP_SDQT_ID');
-	}
+	public static function is($id, $name) {
+		$def = Definition::where('name', $name)
+						 ->where('table',  'questionaires')
+						 ->where('column', 'id')
+						 ->first();
 
+		if ($def) {
+			return strpos($def->values, $id) !== false;
+		} else {
+			return false;
+		}
+	}
 }

@@ -29,11 +29,11 @@ class ParticipantController extends Controller {
 	}
 
 	public function result($participantID, $formID, $year) {
-		if ($formID == env('APP_RISK_ID')) {
+		if (Questionaire::is($formID, 'RiskReport')) {
 			return $this->riskResult($participantID, $formID, $year);
-		} else if (Questionaire::isSDQReport($formID)) {
+		} else if (Questionaire::is($formID, 'SDQReports')) {
 			return $this->sdqResult($participantID, $formID, $year);
-		} else if ($formID == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($formID, 'EQReport')) {
 			return $this->eqResult($participantID, $formID, $year);
 		}
 	}

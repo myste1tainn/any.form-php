@@ -3,8 +3,8 @@
 	var module = angular.module('form-service', [])
 
 	.service('formService', function(
-		$http, $question, $criterion, ngDialog, req, sys,
-		SDQ_ID, SDQT_ID, SDQP_ID, EQ_ID, RISK_ID) {
+		$http, $question, $criterion, ngDialog, req, sys, $q
+	) {
 		var _this = this;
 
 		this.newInstance = function() {
@@ -41,10 +41,6 @@
 				callback = id;
 				$http.get('api/v1/forms')
 				.success(function(res, status, headers, config){
-					for (var i = res.length - 1; i >= 0; i--) {
-						_this.injectFunctions(res[i]);
-					}
-
 					callback(res);
 				})
 				.error(function(res, status, headers, config){
@@ -61,28 +57,24 @@
 			}
 		}
 
-		this.injectFunctions = function(form){
-			form.isSDQForm = function(){ 
-				return this.id == SDQ_ID || this.id == SDQP_ID || this.id == SDQT_ID;
-			}
-			form.isEQForm = function(){ 
-				return this.id == EQ_ID;
-			}
-			form.isRiskScreeningForm = function(){ 
-				return this.id == RISK_ID;
-			}
-			form.isGeneralForm = function(){ 
-				return !(this.isSDQForm() || this.isRiskScreeningForm())
-			}
-			form.injectedFunctions = true;
-		}
-
 		this.save = function(Form, callback) {
 			req.postData('api/v1/form', Form, callback);
 		}
 
 		this.submit = function(result, callback) {
 			req.postMessage('api/v1/form/submit', result, callback);
+		}
+
+		this.isSDQReport = function(id) {
+			var deferred = $q.defer();
+			$http.get(`api/v1/form/${id}/is-sdq-report`)
+			.success(function(res, status, headers, config){
+				deferred.resolve(res);
+			})
+			.error(function(res, status, headers, config){
+				console.log(res);
+			});
+			return deferred.promise;
 		}
 	})
 

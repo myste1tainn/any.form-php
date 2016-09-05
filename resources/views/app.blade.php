@@ -27,11 +27,11 @@ use Cache;
 		angular.module('ammart').constant('CURRENT_YEAR', '{{ Cache::get('settings.current_academic_year') }}');
 
 		// ID of the risk screening form
-		angular.module('ammart').constant('RISK_ID', {{ env('APP_RISK_ID') }});
-		angular.module('ammart').constant('SDQ_ID', {{ env('APP_SDQ_ID') }});
-		angular.module('ammart').constant('SDQT_ID', {{ env('APP_SDQT_ID') }});
-		angular.module('ammart').constant('SDQP_ID', {{ env('APP_SDQP_ID') }});
-		angular.module('ammart').constant('EQ_ID', {{ env('APP_EQ_ID') }});
+		// angular.module('ammart').constant('RISK_ID', {{ env('APP_RISK_ID') }});
+		// angular.module('ammart').constant('SDQ_ID', {{ env('APP_SDQ_ID') }});
+		// angular.module('ammart').constant('SDQT_ID', {{ env('APP_SDQT_ID') }});
+		// angular.module('ammart').constant('SDQP_ID', {{ env('APP_SDQP_ID') }});
+		// angular.module('ammart').constant('EQ_ID', {{ env('APP_EQ_ID') }});
 
 		// Default number that indicate "Use the current academic year"
 		angular.module('ammart').constant('ACADEMIC_YEAR', {{ env('APP_ACADEMIC_DEFAULT') }});

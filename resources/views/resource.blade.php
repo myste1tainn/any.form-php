@@ -40,10 +40,16 @@
 <script src="{{ asset('/js/form.create.question-header-toggler.component.js') }}"></script>
 <script src="{{ asset('/js/form.create.choice-enabled-toggler.component.js') }}"></script>
 <script src="{{ asset('/js/form.service.js') }}"></script>
+<script src="{{ asset('/js/definition.component.js') }}"></script>
+<script src="{{ asset('/js/definition.service.js') }}"></script>
 <script src="{{ asset('/js/question.js') }}"></script>
 <script src="{{ asset('/js/criterion.js') }}"></script>
 <script src="{{ asset('/js/choice.js') }}"></script>
 <script src="{{ asset('/js/risk-screening.js') }}"></script>
+
+<!-- Common Components -->
+<script src="{{ asset('/js/tableview.interface.js') }}"></script>
+<script src="{{ asset('/js/tableview.component.js') }}"></script>
 
 <!-- Application Collections -->
 <script src="{{ asset('/js/collections/questions.js') }}"></script>

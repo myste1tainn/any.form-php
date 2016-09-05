@@ -238,4 +238,8 @@ class FormController extends Controller {
 		                        'results' => $answers
 		                        ]);
 	}
+
+	public function isSDQReports($id) {
+		return response()->json(Questionaire::is($id, 'SDQReports'), 200);
+	}
 }
