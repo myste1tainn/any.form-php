@@ -50,17 +50,26 @@ class Participant extends Model {
 		return $query->get();
 	}
 
+	public function getQuestionIDForFormID($formID, $suffix) {
+		$prefix = 'QuestionSDQ';
+		if (Questionaire::is($formID, 'SDQStudentReport') || $formID == null) {
+			$middle = 'Student';
+		} else if (Questionaire::is($formID, 'SDQTeacherReport')) {
+			$middle = 'Teacher';
+		} else if (Questionaire::is($formID, 'SDQParentReport')) {
+			$middle = 'Parent';
+		}
+
+		return Definition::where('name', $prefix.$middle.$suffix)->first()->values;
+	}
+
 	// TODO: Make this not having to take paramter
 	// REMARK: This takes parameter because
 	// There are few SDQ form student, teacher, and parents
 	// Each form has their own sets of life question
 	public function lifeProblems($id = null) {
 		$lifeProblems = [];
-
-		if (Questionaire::is($id, 'SDQReport') || $id == null) {
-			$id = Definition::where('name', 'QuestionSDQLife')->first()->values;
-		}
-
+		$id = $this->getQuestionIDForFormID($id, 'Life');
 		$q = Question::find($id);
 		$answers = $q->answers($this->id)->get();
 
@@ -80,15 +89,7 @@ class Participant extends Model {
 
 	public function notease($id = null) {
 		$notease = new \stdClass();
-		
-		if ($id == env('APP_SDQ_ID') || $id == null) {
-			$id = env('APP_QUESTION_SDQ_NOTEASE');
-		} else if ($id == env('APP_SDQT_ID')) {
-			$id = env('APP_QUESTION_SDQT_NOTEASE');
-		} else if ($id == env('APP_SDQP_ID')) {
-			$id = env('APP_QUESTION_SDQP_NOTEASE');
-		}
-
+		$id = $this->getQuestionIDForFormID($id, 'NotEase');
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 
@@ -100,13 +101,9 @@ class Participant extends Model {
 
 	public function chronic($id = null) {
 		$chronic = new \stdClass();
-
-		if ($id == env('APP_SDQ_ID') || $id == null) {
-			$id = env('APP_QUESTION_SDQ_CHRONIC');
-		} else if ($id == env('APP_SDQT_ID')) {
-			$id = env('APP_QUESTION_SDQT_CHRONIC');
-		} else if ($id == env('APP_SDQP_ID')) {
-			$id = env('APP_QUESTION_SDQP_CHRONIC');
+		$id = $this->getQuestionIDForFormID($id, 'Chronic');
+		if (Questionaire::is($id, 'SDQReport') || $id == null) {
+			$id = Definition::where('name', 'QuestionSDQChronic')->first()->values;
 		}
 
 		$q = Question::find($id);
@@ -120,15 +117,7 @@ class Participant extends Model {
 
 	public function comments($id = null) {
 		$comments = new \stdClass();
-		
-		if ($id == env('APP_SDQ_ID') || $id == null) {
-			$id = env('APP_QUESTION_SDQ_COMMENTS');
-		} else if ($id == env('APP_SDQT_ID')) {
-			$id = env('APP_QUESTION_SDQT_COMMENTS');
-		} else if ($id == env('APP_SDQP_ID')) {
-			$id = env('APP_QUESTION_SDQP_COMMENTS');
-		}
-
+		$id = $this->getQuestionIDForFormID($id, 'Comment');
 		$q = Question::find($id);
 		$answer = $q->answer($this)->first();
 

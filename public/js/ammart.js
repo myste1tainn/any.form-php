@@ -176,7 +176,7 @@
 		this.postMessage = function(url, payload, callback) {
 			$http.post(url, payload)
 			.success(function(res, status, headers, config){
-				(res);
+				callback(res);
 			})
 			.error(function(res, status, headers, config){
 				sys.dialog.error(res);

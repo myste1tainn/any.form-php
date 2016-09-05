@@ -21,6 +21,7 @@ Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantCont
 Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', 'ReportController@numberOfPages');
 
 // API: Question Groups
+Route::get('api/v1/form/{formID}/is-sdq-report', 'FormController@isSDQReports');
 Route::get('api/v1/form/{formID}/question-groups', 'QuestionController@allGroup');
 Route::post('api/v1/question-group', 'QuestionController@createGroup');
 Route::put('api/v1/question-group', 'QuestionController@updateGroup');

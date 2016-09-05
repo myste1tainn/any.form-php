@@ -68,7 +68,7 @@ class ReportController extends Controller {
 	public function resultByRoom($id, $class, $room, $year) {
 		if (Questionaire::is($id, 'RiskReport')) {
 			return $this->riskResult($id, $class, $room, $year);
-		} else if (Questionaire::is($id, 'SDQReport')) {
+		} else if (Questionaire::is($id, 'SDQReports')) {
 			return (new SDQReportController())->resultByRoom($id, $class, $room, $year);
 		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->eqResult($id, $class, $room, $year);
@@ -199,7 +199,7 @@ class ReportController extends Controller {
 		if (Questionaire::is($id, 'RiskReport')) {
 			// Passing ull on room parameter will pull a class
 			return $this->riskResult($id, $class, null, $year);
-		} else if (Questionaire::is($id, 'SDQReport')) {
+		} else if (Questionaire::is($id, 'SDQReports')) {
 			return (new SDQReportController())->resultByClass($id, $class, $year);
 		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->riskResult($id, $class, null, $year);
@@ -268,7 +268,7 @@ class ReportController extends Controller {
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 		if (Questionaire::is($id, 'RiskReport')) {
 			return $this->resultByPersonRisk($id, $year, $from, $num);
-		} else if (Questionaire::is($id, 'SDQReport')) {
+		} else if (Questionaire::is($id, 'SDQReports')) {
 			return (new SDQReportController())->resultByPerson($id, $year, $from, $num);
 		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->resultByPersonEQ($id, $year, $from, $num);
@@ -324,7 +324,7 @@ class ReportController extends Controller {
 		if (Questionaire::is($id, 'RiskReport')) {
 			// Passing class & room as null will results in entire school results
 			return $this->riskResult($id, null, null, $year);
-		} else if (Questionaire::is($id, 'SDQReport')) {
+		} else if (Questionaire::is($id, 'SDQReports')) {
 			return (new SDQReportController())->resultBySchool($id, $year);
 		} else if (Questionaire::is($id, 'EQReport')) {
 			return $this->resultBySchool($id, null, null, $year);

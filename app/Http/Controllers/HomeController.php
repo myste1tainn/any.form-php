@@ -90,7 +90,7 @@ class HomeController extends Controller {
 	}
 
 	private function reportTemplate($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null) {
-		if (Questionaire::is($p2, 'SDQReport')) {
+		if (Questionaire::is($p2, 'SDQReports')) {
 			$part = '/sdq/';
 		} else if (Questionaire::is($p2, 'RiskReport')) {
 			$part = '/risk/';

@@ -3,7 +3,7 @@
 	var module = angular.module('form-service', [])
 
 	.service('formService', function(
-		$http, $question, $criterion, ngDialog, req, sys
+		$http, $question, $criterion, ngDialog, req, sys, $q
 	) {
 		var _this = this;
 
@@ -63,6 +63,18 @@
 
 		this.submit = function(result, callback) {
 			req.postMessage('api/v1/form/submit', result, callback);
+		}
+
+		this.isSDQReport = function(id) {
+			var deferred = $q.defer();
+			$http.get(`api/v1/form/${id}/is-sdq-report`)
+			.success(function(res, status, headers, config){
+				deferred.resolve(res);
+			})
+			.error(function(res, status, headers, config){
+				console.log(res);
+			});
+			return deferred.promise;
 		}
 	})
 

@@ -31,7 +31,7 @@ class ParticipantController extends Controller {
 	public function result($participantID, $formID, $year) {
 		if (Questionaire::is($formID, 'RiskReport')) {
 			return $this->riskResult($participantID, $formID, $year);
-		} else if (Questionaire::is($formID, 'SDQReport')) {
+		} else if (Questionaire::is($formID, 'SDQReports')) {
 			return $this->sdqResult($participantID, $formID, $year);
 		} else if (Questionaire::is($formID, 'EQReport')) {
 			return $this->eqResult($participantID, $formID, $year);
