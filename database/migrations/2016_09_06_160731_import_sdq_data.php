@@ -30,9 +30,7 @@ class ImportSdqData extends Migration {
 		$this->importExcelToTable('migrations/data/6_question_groups.csv', 'App\QuestionGroup');
 		$this->importExcelToTable('migrations/data/7_additional_inputs.csv', 'App\AdditionalInput');
 		$this->importExcelToTable('migrations/data/8_definitions.csv', 'App\Definition');
-
-		DB::table('choices')->where('parentID', 0)->update(['parentID' => NULL])
-
+		DB::table('choices')->where('parentID', 0)->update(['parentID' => NULL]);
 		Model::reguard();
 	}
 
