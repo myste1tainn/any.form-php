@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateIdentifiersTable extends Migration {
+class CreateDefinitionsTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -12,12 +12,13 @@ class CreateIdentifiersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('identifiers', function(Blueprint $table)
+		Schema::create('definitions', function(Blueprint $table)
 		{
-			$table->string('id');
-			$table->string('table');
-			$table->string('description')->nullable();
-			$table->string('relatedIDs')
+			$table->increments('id');
+			$table->string('name');
+			$table->string('tableName');
+			$table->string('columnName');
+			$table->string('values', 1024);
 			$table->timestamps();
 		});
 	}
@@ -29,7 +30,7 @@ class CreateIdentifiersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('identifiers');
+		Schema::drop('definitions');
 	}
 
 }

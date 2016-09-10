@@ -37,7 +37,6 @@
 				if ($result) {
 					$scope.selectedForm = $result;
 					if (_delegate) {
-						// TODO: Determine if this is needed (form change event from data loading)
 						_delegate.formSelectionDidChangeForm($scope, $result);
 					}
 				}
@@ -164,6 +163,11 @@
 				for (var i = 0; i < $scope.numPage; i++) {
 					$scope.pages.push(i);
 				}
+			} else {
+				$scope.pages = [];
+				for (var i = 0; i < paginationObject.pages.length; i++) {
+					$scope.pages.push(i);
+				}
 			}
 			
 			$scope.classes = _dataSource.classesForNavigationController($scope);
@@ -203,6 +207,10 @@
 			}
 		}
 		var _adjustPageToolbar = function(pageNum) {
+			if ($scope.numPage > $scope.totalPageCount) {
+				return;
+			}
+
 			if (!!$scope.pages) {
 				if ($scope.currentPage < $scope.totalPageCount &&
 					$scope.currentPage > 0) {

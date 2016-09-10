@@ -11,15 +11,11 @@ class SDQReportController extends Controller {
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 		$participants = Questionaire::participantsForQuestionaire($id, $year, $from, $num);
 		if ($participants) {
-			return response()->json([
-				'success' => true,
-				'data' => $participants
-			]);
+			return response()->json($participants, 200);
 		} else {
 			return response()->json([
-				'success' => false,
 				'message' => 'ไม่พบข้อมูลรายงาน'
-			]);
+			], 404);
 		}
 	}
 
@@ -64,16 +60,12 @@ class SDQReportController extends Controller {
 
 			}
 
-			return response()->json([
-				'success' => true,
-				'data' => $groups
-			]);
+			return response()->json($groups, 200);
 
 		} else {
 			return response()->json([
-				'success' => false,
 				'message' => 'ไม่พบข้อมูลรายงาน'
-			]);
+			], 404);
 		}
 	}
 

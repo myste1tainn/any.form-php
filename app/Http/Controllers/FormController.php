@@ -13,14 +13,15 @@ use App\Http\Controllers\Controller;
 
 use Cache;
 use Request;
+use Auth;
 
 class FormController extends Controller {
 
 	public function load($id = null) {
 		if ($id) {
 			$questionaire = Questionaire::with('criteria', 'questions.meta')
-									->where('id', $id)	
-									->first();
+										->where('id', $id)	
+										->first();
 
 			if (!$questionaire) {
 				return response()->json(null, 404);
@@ -144,7 +145,10 @@ class FormController extends Controller {
 
 	public function all()
 	{
-		$questionaires = Questionaire::with('criteria', 'questions')->get();
+		$user = Auth::user();
+		$searchLevel = (!!$user) ? $user->level : 0;
+		$query = Questionaire::with('criteria', 'questions')->where('level', '<=', $searchLevel);
+		$questionaires = $query->get();
 
 		foreach ($questionaires as $qq) {
 			foreach ($qq->questions as $q) {
@@ -233,5 +237,9 @@ class FormController extends Controller {
 		                        'message' => '',
 		                        'results' => $answers
 		                        ]);
+	}
+
+	public function isSDQReports($id) {
+		return response()->json(Questionaire::is($id, 'SDQReports'), 200);
 	}
 }

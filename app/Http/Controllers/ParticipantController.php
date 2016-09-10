@@ -29,22 +29,22 @@ class ParticipantController extends Controller {
 	}
 
 	public function result($participantID, $formID, $year) {
-		if ($formID == env('APP_RISK_ID')) {
+		if (Questionaire::is($formID, 'RiskReport')) {
 			return $this->riskResult($participantID, $formID, $year);
-		} else if (Questionaire::isSDQReport($formID)) {
+		} else if (Questionaire::is($formID, 'SDQReports')) {
 			return $this->sdqResult($participantID, $formID, $year);
-		} else if ($formID == env('APP_EQ_ID')) {
+		} else if (Questionaire::is($formID, 'EQReport')) {
 			return $this->eqResult($participantID, $formID, $year);
 		}
 	}
 
 	private function sdqResult($participantID, $formID, $year) {
-		$participant = Participant::find($participantID);
+		$participant = Participant::where('identifier', $participantID)->first();
 		$form = Questionaire::with('questionGroups.criteria')
 							->where('id', $formID)
 							->first();
 
-		if ($form) {
+		if ($participant && $form) {
 			$participant->groups = $form->questionGroups;
 			$participant->lifeProblems($formID);
 			$participant->chronic($formID);
@@ -57,17 +57,11 @@ class ParticipantController extends Controller {
 				);
 			}
 
-			return response()->json([
-				'status' => 200,
-				'success' => true,
-				'data' => $participant
-			]);
+			return response()->json($participant, 200);
 		} else {
 			return response()->json([
-				'status' => 403,
-				'success' => false,
 				'message' => 'ไม่พบข้อมูลรายงาน'
-			]);
+			], 404);
 		}
 
 	}

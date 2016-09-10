@@ -335,7 +335,7 @@
                             return null;
                         }
 
-                        // TODO: This might be incorrect if there are a mix of open dialogs with different 'appendTo' values
+
                         return $el(dialogs[dialogs.length - 1]);
                     },
 
