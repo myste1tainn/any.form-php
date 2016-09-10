@@ -128,13 +128,13 @@
 				var table = this.tableNameList.selectedItem.name;
 				_loadColumns(table);
 
-				this.definitionList.selectedItem.table = tableView.selectedItem.name;
+				this.definitionList.selectedItem.tableName = tableView.selectedItem.name;
 			} else if (tableView == this.columnNameList) {
 				var table = this.tableNameList.selectedItem.name;
 				var column = this.columnNameList.selectedItem;
 				_loadValues(table, column);
 
-				this.definitionList.selectedItem.column = tableView.selectedItem;
+				this.definitionList.selectedItem.columnName = tableView.selectedItem;
 			} else if (tableView == this.valueList) {
 				this.definitionList.selectedItem.values = tableView.selectedItems;
 			}

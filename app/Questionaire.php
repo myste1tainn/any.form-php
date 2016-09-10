@@ -100,8 +100,8 @@ class Questionaire extends Model {
 
 	public static function is($id, $name) {
 		$def = Definition::where('name', $name)
-						 ->where('table',  'questionaires')
-						 ->where('column', 'id')
+						 ->where('tableName',  'questionaires')
+						 ->where('columnName', 'id')
 						 ->first();
 
 		if ($def) {

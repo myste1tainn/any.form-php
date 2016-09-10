@@ -5,7 +5,7 @@
 	.service('definitionService', function($http, $q){
 		this.newObject = function() {
 			return {
-				id: -1, name: 'New Definition', table: null, column: null, values: null
+				id: -1, name: 'New Definition', tableName: null, columnName: null, values: null
 			};
 		}
 
