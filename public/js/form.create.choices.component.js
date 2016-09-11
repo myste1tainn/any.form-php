@@ -19,8 +19,11 @@
 
 				$scope.currentPage = 0;
 				$scope.showPage = function(number){
-					
 					$scope.currentPage = number;
+
+					setTimeout(function() {
+						$element.find('input[name=choice-value]').select();
+					}, 0);
 				}
 
 				$scope.addChoice = function(question) {
@@ -30,6 +33,10 @@
 						question.choices.push($choice.newInstance());
 					}
 					$scope.currentPage = question.choices.length-1;
+
+					setTimeout(function() {
+						$element.find('input[name=choice-value]').select();
+					}, 0);
 				}
 
 				$scope.removeCurrentChoice = function(question) {

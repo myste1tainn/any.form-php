@@ -1,6 +1,8 @@
 <div class="col-xs-12 no-pad">
-	<div class="col-xs-12 border-b std-pad" 
-		 ng-repeat="group in groups">
+	<input class="col-xs-12" ng-model="filterText" />
+	<div class="col-xs-12 border-b std-pad"
+		 ng-class="{'bgcolor-secondary children': isSelected(group)}"
+		 ng-repeat="group in groups | filter: filterText">
 		<div class="col-xs-10">
 			<span class="col-xs-12" 
 				  ng-click="selectGroup(group)">
