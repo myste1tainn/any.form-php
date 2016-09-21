@@ -1,12 +1,16 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Report;
 
 use App\Questionaire;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\QuestionaireResult;
+use App\QuestionGroup;
+use App\Criterion;
+use App\Participant;
+use App\Definition;
 
+use App\Http\Requests;
 use Illuminate\Http\Request;
 
-class SDQReportController extends Controller {
+class SDQReportController extends AbstractReport {
 
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 		$participants = Questionaire::participantsForQuestionaire($id, $year, $from, $num);

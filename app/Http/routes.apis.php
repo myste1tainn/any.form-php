@@ -1,5 +1,7 @@
 <?php
 
+$rp = 'Report\ReportController';
+
 Route::get('/api/v1/user', 'HomeController@user');
 
 /* DEPRECATED */Route::get('/class/all', 'ClassController@all');
@@ -9,16 +11,16 @@ Route::get('/api/v1/user', 'HomeController@user');
 /* NEW */ Route::get('/api/answers/{questionaireID}/{academicYear}/{participantID}', 'FormController@answers');
 
 // Report
-/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}', 'ReportController@resultByPerson');
-/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}/from/{from}/num/{num}', 'ReportController@resultByPerson');
-/* DEPRECATED */ Route::get('/api/v1/report/by-room/{id}/class/{class}/room/{room}/year/{year}', 'ReportController@resultByRoom');
-/* DEPRECATED */ Route::get('/api/v1/report/by-class/{id}/class/{class}/year/{year}', 'ReportController@resultByClass');
-/* DEPRECATED */ Route::get('/api/v1/report/by-school/{id}/year/{year}', 'ReportController@resultBySchool');
+/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}', $rp.'@resultByPerson');
+/* DEPRECATED */ Route::get('/api/v1/report/by-person/{id}/year/{year}/from/{from}/num/{num}', $rp.'@resultByPerson');
+/* DEPRECATED */ Route::get('/api/v1/report/by-room/{id}/class/{class}/room/{room}/year/{year}', $rp.'@resultByRoom');
+/* DEPRECATED */ Route::get('/api/v1/report/by-class/{id}/class/{class}/year/{year}', $rp.'@resultByClass');
+/* DEPRECATED */ Route::get('/api/v1/report/by-school/{id}/year/{year}', $rp.'@resultBySchool');
 
 // Participants
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
 Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
-Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', 'ReportController@numberOfPages');
+Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', $rp.'@numberOfPages');
 
 // API: Question Groups
 Route::get('api/v1/form/{formID}/is-sdq-report', 'FormController@isSDQReports');

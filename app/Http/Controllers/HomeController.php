@@ -84,10 +84,13 @@ class HomeController extends Controller {
 
 	private function constructPath($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null) {
 		$path = $p1.'/'.$p2.'/'.$p3.'/'.$p4;
+
 		$path = str_replace('//', '', $path);
 		if (substr($path, -1) == '/') {
 			$path = substr($path, 0, strlen($path) - 1);
 		}
+
+
 		return $path;
 	}
 
@@ -97,14 +100,20 @@ class HomeController extends Controller {
 
 	private function reportTemplate($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null) {
 		if (Questionaire::is($p2, 'SDQReports')) {
-			$part = '/sdq/';
+			$part = 'sdq';
 		} else if (Questionaire::is($p2, 'RiskReport')) {
-			$part = '/risk/';
+			$part = 'risk';
+		} else if (Questionaire::is($p2, 'EQReports')) {
+			$part = 'eq';
 		} else {
-			$part = '/common/';
+			$part = 'common';
+
+			if ($p2 == 'main') {
+				$p3 = $p2;
+			}
 		}
 
-		return view($this->constructPath($p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8));
+		return view($this->constructPath($p1,$part,$p3,$p4,$p5,$p6,$p7,$p8));
 	}
 
 }

@@ -33,7 +33,7 @@ class ParticipantController extends Controller {
 			return $this->riskResult($participantID, $formID, $year);
 		} else if (Questionaire::is($formID, 'SDQReports')) {
 			return $this->sdqResult($participantID, $formID, $year);
-		} else if (Questionaire::is($formID, 'EQReport')) {
+		} else if (Questionaire::is($formID, 'EQReports')) {
 			return $this->eqResult($participantID, $formID, $year);
 		}
 	}
@@ -64,6 +64,15 @@ class ParticipantController extends Controller {
 			], 404);
 		}
 
+	}
+
+	private function eqResult($participantID, $formID, $year) {
+		$participant = Participant::where('identifier', $participantID)->first();
+		$form = Questionaire::with('questionGroups.criteria')
+							->where('id', $formID)
+							->first();
+
+							
 	}
 
 	private function riskResult($participantID, $formID, $year) {
