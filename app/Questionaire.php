@@ -85,6 +85,9 @@ class Questionaire extends Model {
 				[env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
 			);
 
+			// TODO: Continue from here, use the definition table instead of env('APP_QUESTION_GROUP_SDQ_SOC_ID')
+			dd($sumval, env('APP_QUESTION_GROUP_SDQ_SOC_ID'), $res);
+
 			$riskString = Criterion::riskString($this->criteria, $sumval);
 			$res->participant->risk = $riskString." ($sumval)";
 

@@ -38,43 +38,6 @@ class ParticipantController extends Controller {
 		}
 	}
 
-	private function sdqResult($participantID, $formID, $year) {
-		$participant = Participant::where('identifier', $participantID)->first();
-		$form = Questionaire::with('questionGroups.criteria')
-							->where('id', $formID)
-							->first();
-
-		if ($participant && $form) {
-			$participant->groups = $form->questionGroups;
-			$participant->lifeProblems($formID);
-			$participant->chronic($formID);
-			$participant->notease($formID);
-			$participant->comments($formID);
-
-			foreach ($participant->groups as $g) {
-				$g->result = Criterion::riskStringWithModifiers(
-					$g->criteria, $g->sumAnswersValueOfParticiant($participant)
-				);
-			}
-
-			return response()->json($participant, 200);
-		} else {
-			return response()->json([
-				'message' => 'ไม่พบข้อมูลรายงาน'
-			], 404);
-		}
-
-	}
-
-	private function eqResult($participantID, $formID, $year) {
-		$participant = Participant::where('identifier', $participantID)->first();
-		$form = Questionaire::with('questionGroups.criteria')
-							->where('id', $formID)
-							->first();
-
-							
-	}
-
 	private function riskResult($participantID, $formID, $year) {
 		$participant = Participant::where('identifier', $participantID)->first();
 

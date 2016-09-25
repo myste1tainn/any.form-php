@@ -1,7 +1,7 @@
-<div class="row" ng-if="results != null">
+<div class="col-xs-12" ng-if="results != null">
 
 	<!-- Participant Information -->
-	<div class="row border-tb border-lightgray">
+	<div class="col-xs-12 border-tb border-lightgray">
 		<!-- <h4>ข้อมูลนักเรียน</h4> -->
 		<div class="row small-pad">
 			<div class="col-xs-4">
@@ -26,57 +26,232 @@
 					</p>
 				</div>
 			</div>
-			<div class="col-xs-6">
+			<div class="col-xs-1">
 				<div class="row text-center">
-					<p class="text-left color-highlight one-line"
-					   style="font-size: 1.2em; margin-bottom: -20px; padding-left: 2px; margin-top: 5px;">
-						เพิ่มเติม
+					<p class="text-right color-highlight one-line std-pad-right"
+					   style="font-size: 1.2em; margin-bottom: 0px; margin-top: 20px;">
+						ดี
 					</p>
-					<p class="text-left one-line" style="font-size: 1.7em; margin-bottom: 0px;">
-						{{ results.comments }}
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<div class="row text-center">
+					<div class="circle" style="width: 16px; height: 16px; margin-top: 34px;"
+					 ng-class="{'bg-destructive' : results.levelOf('good') == 0, 'bg-alarming' : results.levelOf('good') == 1, 'bg-friendly' : results.levelOf('good') == 2}">
+				</div>
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<div class="row text-center">
+					<p class="text-right color-highlight one-line std-pad-right"
+					   style="font-size: 1.2em; margin-bottom: 0px; margin-top: 20px;">
+						เก่ง
 					</p>
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<div class="row text-center">
+					<div class="circle" style="width: 16px; height: 16px; margin-top: 34px;"
+					 	  ng-class="{'bg-destructive' : results.levelOf('skilled') == 0, 'bg-alarming' : results.levelOf('skilled') == 1, 'bg-friendly' : results.levelOf('skilled') == 2}">
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<div class="row text-center">
+					<p class="text-right color-highlight one-line std-pad-right"
+					   style="font-size: 1.2em; margin-bottom: 0px; margin-top: 20px;">
+						สุข
+					</p>
+				</div>
+			</div>
+			<div class="col-xs-1">
+				<div class="row text-center">
+					<div class="circle" style="width: 16px; height: 16px; margin-top: 34px;"
+					 	  ng-class="{'bg-destructive' : results.levelOf('happy') == 0, 'bg-alarming' : results.levelOf('happy') == 1, 'bg-friendly' : results.levelOf('happy') == 2}">
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<style>
+	table.eq td, table th {
+		border: 1px solid #e7e7e7;
+		padding: 4px;
+	}
+	table.eq tr td:last-child {
+		padding: 0px !important;
+	}
+	table.eq tr td div.point {
+		width: 3.571428571%;
+		float: left;
+	}
+	table.eq tr:first-child th {
+		border: none;
+	}
+	table.eq tr.measure th {
+		height: 1.5em;
+		padding: 0px;
+	}
+	table.eq tr.tick th {
+		height: 1.5em;
+		padding: 8px;
+		padding-top: 0px;
+		margin-top: -10px;
+	}
+	table.eq tr.tick th.y div.dash {
+		color: #e7e7e7;
+		margin-top: -1.2em;
+	}
+	table.eq tr.measure th.y div {
+		margin-left: -0.2em;
+	}
+	</style>
 
 	<!-- Participant Aspects -->
-	<div class="col-xs-12 col-md-8 no-pad std-pad-left" 
+	<div class="col-xs-12 no-pad" 
 		 style="border-right: 1px solid lightgray;">
-		<h4 class="text-center std-pad no-margin">ข้อมูลความเสี่ยง</h4>
+		<h4 class="text-center std-pad no-margin">กราฟความฉลาดทางอารมณ์</h4>
 
-		<table class="sdq">
+		<table class="col-xs-12 eq std-pad-left">
+			<tr class="measure">
+				<th></th><th></th><th></th>
+				<th></th><th></th><th></th>
+				<th class="y"><div class="pull-left">0</div></th>
+				<th class="y"><div class="pull-left">5</div></th>
+				<th class="y"><div class="pull-left">10</div></th>
+				<th class="y"><div class="pull-left">15</div></th>
+				<th class="y"><div class="pull-left">20</div></th>
+				<th class="y"><div class="pull-left">25</div></th>
+			</tr>
+			<tr class="tick">
+				<th colspan="6" style="width: 50%">ช่วงคะแนนปกติของแต่ละด้าน</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+				<th class="y">
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+					<div class="col-xs-3 dash no-pad no-margin">|</div>
+				</th>
+			</tr>
 			<tr>
-				<td class="text-center" ng-repeat="g in results.groups">
-					<h1 style="font-size:1.7em" 
-						class="{{g.result.modifier}}"
-						data-type="{{g.label}}">
-						{{g.result.string}}
-					</h1>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">1.1 ควบคุมอารมณ์</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (13-17)</div>
+				</td>
+				<td colspan="6">
+					<graph name="good.อารมณ์" participant="results"></graph>
+				</td>
+			</tr>
+
+			<!-- GOOD -->
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">1.2 เห็นใจผู้อื่น</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (16-20)</div>
+				</td>
+				<td colspan="6">
+					<graph name="good.เห็นใจ" participant="results"></graph>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">1.3 รับผิดชอบ</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (16-22)</div>
+				</td>
+				<td colspan="6">
+					<graph name="good.รับผิดชอบ" participant="results"></graph>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">2.1 มีแรงจูงใจ</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (14-20)</div>
+				</td>
+				<td colspan="6">
+					<graph name="skilled.แรงจูงใจ" participant="results"></graph>
+				</td>
+			</tr>
+
+			<!-- SKILLED -->
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">2.2 ตัดสินใจและแก้ปัญหา</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (13-19)</div>
+				</td>
+				<td colspan="6">
+					<graph name="skilled.การตัดสินใจ" participant="results"></graph>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">2.3 สัมพันธภาพกับผู้อื่น</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (14-20)</div>
+				</td>
+				<td colspan="6">
+					<graph name="skilled.สัมพันธ์ภาพ" participant="results"></graph>
+				</td>
+			</tr>
+
+			<!-- HAPPNINESS -->
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">3.1 ภูมิใจใจตนเอง</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (9-13)</div>
+				</td>
+				<td colspan="6">
+					<graph name="happy.ภูมิใจ" participant="results"></graph>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">3.2 พึงพอใจในชีวิต</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (16-22)</div>
+				</td>
+				<td colspan="6">
+					<graph name="happy.พอใจ" participant="results"></graph>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="6">
+					<div class="pull-left std-pad-left">3.3 สุขสงบทางใจ</div>
+					<div class="pull-right std-pad-right">ช่วงคะแนนปกติ = (15-21)</div>
+				</td>
+				<td colspan="6">
+					<graph name="happy.สุขใจ" participant="results"></graph>
 				</td>
 			</tr>
 		</table>
 
-		<h4 class="col-xs-12 text-center">ความเรื้อรังของปัญหา</h4>
-		<div class="col-xs-12 text-center text-xxxl border-tb">{{ results.chronic }}</div>
-
-		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหาทำให้ไม่สบายใจ</h4>
-		<div class="col-xs-12 text-center text-xxxl ">{{ results.notease }}</div>
-
-	</div>
-
-	<div class="col-xs-12 col-md-4 no-pad" 
-		 style="border-right: 1px solid lightgray;">
-
-		<h4 class="col-xs-12 text-center std-pad no-margin border-b">ปัญหารบกวนชีวิตประจำวัน</h4>
-		<div class="col-xs-12">
-			<div ng-repeat="problem in results.lifeProblems">
-				<span class="text-normal col-xs-6 std-pad text-left">{{problem.name}}</span>
-				<span class="text-normal col-xs-6 std-pad text-right">{{problem.label}}</span>
-			</div>
-		</div>
-		
 	</div>
 
 </div>

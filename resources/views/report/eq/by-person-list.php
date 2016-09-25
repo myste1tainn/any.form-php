@@ -1,12 +1,12 @@
 <div class="col-xs-12 no-pad border-t">
 
-	<table class="risk-body">
+	<table class="risk-body col-xs-12">
 		<tr>
-			<th rowspan="2" style="width: 12%">รหัสประจำตัว</th>
-			<th rowspan="2" style="width: 27%">ชื่อ</th>
-			<th rowspan="2" style="width: 27%">ห้อง</th>
-			<th rowspan="2" style="width: 12%">เลขที่</th>
-			<th colspan="3">ระดับความเสี่ยง</th>
+			<th rowspan="2">รหัสประจำตัว</th>
+			<th rowspan="2">ชื่อ</th>
+			<th rowspan="2">ห้อง</th>
+			<th rowspan="2">เลขที่</th>
+			<th colspan="3">ด้าน</th>
 		</tr>
 		<tr>
 			<th>ดี</th>
@@ -20,9 +20,21 @@
 			<td class="text-left">{{ p.firstname }} {{ p.lastname }}</td>
 			<td class="text-center">{{ p.class }}/{{ p.room }}</td>
 			<td class="text-center">{{ p.number }}</td>
-			<td class="text-center">{{ p.goodside }}</td>
-			<td class="text-center">{{ p.skilled }}</td>
-			<td class="text-center">{{ p.happiness }}</td>
+			<td class="text-center">
+				<div class="circle" style="width: 16px; height: 16px; margin: auto;"
+					 ng-class="{'bg-destructive' : p.levelOf('good') == 0, 'bg-alarming' : p.levelOf('good') == 1, 'bg-friendly' : p.levelOf('good') == 2}">
+				</div>
+			</td>
+			<td class="text-center">
+				<div class="circle" style="width: 16px; height: 16px; margin: auto;"
+					 ng-class="{'bg-destructive' : p.levelOf('skilled') == 0, 'bg-alarming' : p.levelOf('skilled') == 1, 'bg-friendly' : p.levelOf('skilled') == 2}">
+				</div>
+			</td>
+			<td class="text-center">
+				<div class="circle" style="width: 16px; height: 16px; margin: auto;"
+					 ng-class="{'bg-destructive' : p.levelOf('happy') == 0, 'bg-alarming' : p.levelOf('happy') == 1, 'bg-friendly' : p.levelOf('happy') == 2}">
+				</div>
+			</td>
 		</tr>
 	</table>
 

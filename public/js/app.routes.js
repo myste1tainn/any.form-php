@@ -75,7 +75,7 @@
 		.state('ReportDisplay', {
 			url: '/report',
 			controller: 'ReportFormSelectionController',
-			templateUrl: 'template/report/main'
+			templateUrl: 'template/report/common/main'
 		})
 		.state('ReportDisplay.List', {
 			url: '/form/:formID/type/:type',

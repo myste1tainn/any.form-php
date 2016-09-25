@@ -19,7 +19,7 @@ Route::get('/api/v1/user', 'HomeController@user');
 
 // Participants
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
-Route::get('api/v1/participant/{id}/form/{formID}/year/{year}', 'ParticipantController@result');
+Route::get('api/v1/participant/{identifier}/form/{id}/year/{year}', 'Report\ReportController@detailByPerson');
 Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', $rp.'@numberOfPages');
 
 // API: Question Groups

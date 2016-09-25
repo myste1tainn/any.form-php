@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 
 class SDQReportController extends AbstractReport {
 
-	public function resultByPerson($id, $year, $from = 0, $num = 10) {
-		$participants = Questionaire::participantsForQuestionaire($id, $year, $from, $num);
+	public function participantList($reportID, $year, $from = 0, $num = 10) {
+		$participants = Questionaire::participantsForQuestionaire($reportID, $year, $from, $num);
 		if ($participants) {
 			return response()->json($participants, 200);
 		} else {
@@ -22,17 +22,40 @@ class SDQReportController extends AbstractReport {
 			], 404);
 		}
 	}
+	public function participantDetail($participantIdentifier, $reportID, $year) {
+		$participant = Participant::where('identifier', $participantIdentifier)->first();
+		$form = Questionaire::with('questionGroups.criteria')
+							->where('id', $reportID)
+							->first();
 
-	public function resultByRoom($id, $class, $room, $year) {
-		return $this->resultByType($id, $class, $room, $year);
+		if ($participant && $form) {
+			$participant->groups = $form->questionGroups;
+			$participant->lifeProblems($reportID);
+			$participant->chronic($reportID);
+			$participant->notease($reportID);
+			$participant->comments($reportID);
+
+			foreach ($participant->groups as $g) {
+				$g->result = Criterion::riskStringWithModifiers(
+					$g->criteria, $g->sumAnswersValueOfParticiant($participant)
+				);
+			}
+
+			return response()->json($participant, 200);
+		} else {
+			return response()->json([
+				'message' => 'ไม่พบข้อมูลรายงาน'
+			], 404);
+		}
 	}
-
-	public function resultByClass($id, $class, $year) {
-		return $this->resultByType($id, $class, null, $year);
+	public function summaryByRoom($reportID, $class, $room, $year) {
+		return $this->resultByType($reportID, $class, $room, $year);
 	}
-
-	public function resultBySchool($id, $year) {
-		return $this->resultByType($id, null, null, $year);
+	public function summaryByClass($reportID, $class, $room, $year) {
+		return $this->resultByType($reportID, $class, null, $year);
+	}
+	public function summaryBySchool($reportID, $class, $room, $year) {
+		return $this->resultByType($reportID, null, null, $year);
 	}
 
 	private function resultByType($id, $class = null, $room = null, $year) {
@@ -50,7 +73,7 @@ class SDQReportController extends AbstractReport {
 				foreach ($participants as $p) {
 				
 					$sumval = $g->sumAnswersValueOfParticiant($p);
-					$c = $g->valueFallsInCriterion($sumval);
+					$c = $g->criterionForValue($sumval);
 
 					if ($c) {
 						if (!isset($c->count)) {

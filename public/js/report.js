@@ -170,13 +170,13 @@
 
 				if (_canDoRequestWithPayload(payload)) {
 
-					fn(payload, function(result){
+					fn(payload).then(function(result){
 						$scope.results = result;
 						for (var i = 0; i < $scope.results.length; i++) {
-							$scope.results[i].hasTalent = function() {
-								return !!this.talent;
-							}
+							reportService.injectFunctions($scope.results[i]);
 						}
+					}, function(error){
+						
 					})
 				}
 			}
@@ -246,12 +246,13 @@
 		}
 
 		var _getDetailData = function() {
-			reportService.participantResult(
-				$scope._participant.identifier, 
-				$scope._form.id, 
-				$scope._year, 
-			function(result) {
+			var promise = reportService.participantResult($scope._participant.identifier, $scope._form.id, $scope._year)
+			promise.then(function(result) {
+				reportService.injectFunctions(result);
 				$scope.results = result;
+				
+			}, function(res){
+				$scope.results = null;
 			})
 		}
 
@@ -265,4 +266,20 @@
 
 		$scope.constructor();
 	})
+
+	.directive('graph', function($http){
+		return {
+			scope: true,
+			restrict: 'E',
+			templateUrl: 'template/report/eq/by-person-detail-graph',
+			controllerAs: 'graph',
+			controller: function($rootScope, $scope, $element, $attrs){
+				var _data = $scope.$eval($attrs.participant);
+				$scope.graph = _data.graphOf($attrs.name);
+				$scope.level = _data.levelOf($attrs.name);
+				console.log(_data);
+			}
+		}
+	})
+
 })();

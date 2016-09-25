@@ -1,4 +1,4 @@
-<div class="row" ng-if="results != null">
+<div class="col-xs-12" ng-if="results != null">
 
 	<!-- Participant Information -->
 	<div class="row border-tb border-lightgray">

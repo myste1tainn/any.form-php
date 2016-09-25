@@ -36,7 +36,8 @@ class Participant extends Model {
 	}
 
 	public function answers() {
-		return $this->hasMany('App\ParticipantAnswer', 'participantID');
+		$relation = $this->hasMany('App\ParticipantAnswer', 'participantID');
+		return $relation;
 	}
 
 	public static function allThatChose(Choice $choice, $year = null, $class = null, $room = null) {

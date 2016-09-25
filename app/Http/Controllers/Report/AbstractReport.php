@@ -10,8 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 abstract class AbstractReport extends Controller {
-	abstract public function list($reportID, $year, $from = 0, $num = 10);
-	abstract public function detail($reportID, $participantIdentifier);
+	abstract public function participantList($reportID, $year, $from = 0, $num = 10);
+	abstract public function participantDetail($participantIdentifier, $reportID, $year);
 	abstract public function summaryByRoom($reportID, $class, $room, $year);
 	abstract public function summaryByClass($reportID, $class, $room, $year);
 	abstract public function summaryBySchool($reportID, $class, $room, $year);
@@ -22,7 +22,7 @@ abstract class AbstractReport extends Controller {
 	}
 
 	protected function prepareParticipantWithIdentifier() {
-		$id = Request::input('identifier')
+		$id = Request::input('identifier');
 
 		if ($id) {
 			$participant = Participant::where('identifier', $id)->first();

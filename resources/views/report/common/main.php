@@ -1,4 +1,4 @@
-<div class="container report do">
+<div class="container col-xs-12 report do">
 
 	<div class="row report header" style="padding-bottom: 0px">
 

@@ -41,9 +41,14 @@ class ReportController extends Controller {
 		return response()->json($questionaires);
 	}
 
+	public function detailByPerson($identifier, $id, $year) {
+		$reportController = $this->getReportControllerInstance($id);
+		return $reportController->participantDetail($identifier, $id, $year);
+	}
+
 	public function resultByPerson($id, $year, $from = 0, $num = 10) {
 		$reportController = $this->getReportControllerInstance($id);
-		return $reportController->list($id, $year, $from, $num);
+		return $reportController->participantList($id, $year, $from, $num);
 	}
 
 	public function resultByRoom($id, $class, $room, $year) {
@@ -58,7 +63,7 @@ class ReportController extends Controller {
 
 	public function resultBySchool($id, $year) {
 		$reportController = $this->getReportControllerInstance($id);
-		return $reportController->summaryBySchool($id, null, null, $num);
+		return $reportController->summaryBySchool($id, null, null, $year);
 	}
 
 	public function numberOfPages($id, $year, $numRows = 10)

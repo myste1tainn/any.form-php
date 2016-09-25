@@ -1,4 +1,4 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Report;
 
 use App\Questionaire;
 use App\QuestionaireResult;
@@ -11,9 +11,9 @@ use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class GeneralReportController extends Controller {
+class GeneralReportController extends AbstractReport {
 
-	public function list($reportID, $year, $from = 0, $num = 10) {
+	public function participantList($reportID, $year, $from = 0, $num = 10) {
 		$q = Questionaire::with('criteria')
 						 ->where('id', $reportID)
 						 ->first();
@@ -29,22 +29,26 @@ class GeneralReportController extends Controller {
 			return response()->json([], 404);
 		}
 	}
+	public function participantDetail($participantIdentifier, $reportID, $year) {
 
-	public function summaryByRoom($id, $class, $room, $year) {
-		return $this->($id, $class, $room, $year);
 	}
-	public function summaryClass($id, $class, $room, $year) {
-		return $this->($id, $class, null, $year);
+	public function summaryByRoom($reportID, $class, $room, $year) {
+		return $this->summary($reportID, $class, $room, $year);
 	}
-	public function summarySchool($id, $class, $room, $year) {
-		return $this->($id, null, null, $year);
+	public function summaryByClass($reportID, $class, $room, $year) {
+		return $this->summary($reportID, $class, null, $year);
+	}
+	public function summaryBySchool($reportID, $class, $room, $year) {
+		return $this->summary($reportID, null, null, $year);
 	}
 
 	private function summary($id, $class, $room, $year) {
 		$results = $this->fetchDataAndSummation($id, $class, $room, $year);
 		if ($results->sumNum > 0) {
 			foreach ($results->criteria as $c) {
-				$c->percent = round($c->number / $sumnum * 100, 2);
+				$c->class = $class;
+				$c->room = $room;
+				$c->percent = round($c->number / $results->sumNum * 100, 2);
 			}
 
 			$carr = $results->criteria->toArray();
@@ -53,7 +57,7 @@ class GeneralReportController extends Controller {
 			});
 
 			return response()->json([[
-				'avgRisk' => Criterion::riskString($criteria, $avg),
+				'avgRisk' => Criterion::riskString($results->criteria, $results->average),
 				'avgValue' => $results->average,
 				'total' => $results->sumNum,
 				'criteria' => $carr
@@ -65,6 +69,7 @@ class GeneralReportController extends Controller {
 
 	private function fetchDataAndSummation($id, $class, $room, $year) {
 		$criteria = Criterion::where('questionaireID', $id)->get();
+		$results = new \stdClass();
 
 		$sumNum = 0;
 		$sumValue = 0;
@@ -78,10 +83,10 @@ class GeneralReportController extends Controller {
 			$sumNum += $c->number;
 		}
 
-		$results->data = $criteria;
+		$results->criteria = $criteria;
 		$results->sumValue = $sumValue;
 		$results->sumNum = $sumNum;
-		$results->average = ($sumNum > 0) ? round($sumval / $sumnum, 2) : -1;
+		$results->average = ($sumNum > 0) ? round($sumValue / $sumNum, 2) : -1;
 
 		return $results;
 	}
@@ -93,14 +98,14 @@ class GeneralReportController extends Controller {
 		$c->value = $r['value'];
 	}
 
-	private function buildQuery($id, $class, $room, $year$c) {
+	private function buildQuery($id, $class, $room, $year, $c) {
 		$query = QuestionaireResult::where('questionaire_results.questionaireID', $id)
 								   ->where('questionaire_results.value', '>=', $c->from)
-								   ->where('questionaire_results.value', '<=', $c->to)
+								   ->where('questionaire_results.value', '<=', $c->to);
 
-		$this->addFilterIfNeed('participants.class', $class);
-		$this->addFilterIfNeed('participants.room', $room);
-		$this->addFilterIfNeed('academicYear', $year);
+		$this->addFilterIfNeed($query, 'participants.class', $class);
+		$this->addFilterIfNeed($query, 'participants.room', $room);
+		$this->addFilterIfNeed($query, 'academicYear', $year);
 		$this->addJoin($query);
 		$this->addGroup($query);
 		$this->addRaw($query);
@@ -108,7 +113,7 @@ class GeneralReportController extends Controller {
 		return $query;
 	}
 
-	private function addFilterIfNeed($name, $value) {
+	private function addFilterIfNeed($query, $name, $value) {
 		if ($value) {
 			$query->where($name, $value);
 		}
@@ -117,10 +122,10 @@ class GeneralReportController extends Controller {
 		$query->join('participants', 'questionaire_results.participantID','=','participants.id');
 	}
 	private function addGroup($query) {
-		$query->groupBy(['participants.room'])
+		$query->groupBy(['participants.room']);
 	}
 	private function addRaw($query) {
-		$query->selectRaw('count(participants.id) as number, sum(questionaire_results.value) as value')
+		$query->selectRaw('count(participants.id) as number, sum(questionaire_results.value) as value');
 	}
 
 }
