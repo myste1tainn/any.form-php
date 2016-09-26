@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Definition;
 use Illuminate\Database\Eloquent\Model;
 
 class Questionaire extends Model {
@@ -74,6 +75,9 @@ class Questionaire extends Model {
 		$this->results($year, $from, $num, $class, $room);
 		$this->questionGroups();
 
+		// TODO: Continue on this
+		$exlcludedGroups = [Definition::valueOf('GroupSDQStudentSocial')];
+
 		$participants = [];
 		foreach ($this->results as $res) {
 
@@ -82,11 +86,8 @@ class Questionaire extends Model {
 			$sumval = QuestionGroup::sumOf(
 				$this->questionGroups, 
 				$res->participant,
-				[env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
+				$exlcludedGroups
 			);
-
-			// TODO: Continue from here, use the definition table instead of env('APP_QUESTION_GROUP_SDQ_SOC_ID')
-			dd($sumval, env('APP_QUESTION_GROUP_SDQ_SOC_ID'), $res);
 
 			$riskString = Criterion::riskString($this->criteria, $sumval);
 			$res->participant->risk = $riskString." ($sumval)";

@@ -54,8 +54,8 @@ class DefinitionController extends Controller {
 		$in = Request::all();
 		$definition = new Definition();
 		$definition->name = $in['name'];
-		$definition->table = $in['table'];
-		$definition->column = $in['column'];
+		$definition->tableName = $in['tableName'];
+		$definition->columnName = $in['columnName'];
 		$definition->values = implode('|', $in['values']);
 		$definition->save();
 		return response()->json($definition, 200);
@@ -65,8 +65,8 @@ class DefinitionController extends Controller {
 		$in = Request::all();
 		$definition = Definition::find($id);
 		$definition->name = $in['name'];
-		$definition->table = $in['table'];
-		$definition->column = $in['column'];
+		$definition->tableName = $in['tableName'];
+		$definition->columnName = $in['columnName'];
 		$definition->values = implode('|', $in['values']);	
 		$definition->save();
 		return response()->json($definition, 200);
