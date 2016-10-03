@@ -17,8 +17,13 @@ Route::get('/api/v1/user', 'HomeController@user');
 /* DEPRECATED */ Route::get('/api/v1/report/by-class/{id}/class/{class}/year/{year}', $rp.'@resultByClass');
 /* DEPRECATED */ Route::get('/api/v1/report/by-school/{id}/year/{year}', $rp.'@resultBySchool');
 
+Route::get('api/v1/report/{id}/count-group/{name}/class/{class}/room/{room}/year/{year}', 'Report\EQReportController@countOfGroup');
+Route::get('api/v1/report/{id}/count-group/{name}/class/{class}/year/{year}', 'Report\EQReportController@countOfGroup');
+Route::get('api/v1/report/{id}/count-group/{name}/year/{year}', 'Report\EQReportController@countOfGroup');
+
 // Participants
 Route::get('api/v1/participant/{identifier}', 'ParticipantController@load');
+
 Route::get('api/v1/participant/{identifier}/form/{id}/year/{year}', 'Report\ReportController@detailByPerson');
 Route::get('api/v1/report/{id}/year/{year}/number-of-rows/{numRows}/number-of-pages', $rp.'@numberOfPages');
 

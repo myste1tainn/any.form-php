@@ -1,4 +1,4 @@
-<div class="col-xs-12" ng-if="results != null">
+<div class="col-xs-12 no-pad" ng-if="results != null">
 
 	<!-- Participant Information -->
 	<div class="col-xs-12 border-tb border-lightgray">
@@ -73,40 +73,6 @@
 			</div>
 		</div>
 	</div>
-
-	<style>
-	table.eq td, table th {
-		border: 1px solid #e7e7e7;
-		padding: 4px;
-	}
-	table.eq tr td:last-child {
-		padding: 0px !important;
-	}
-	table.eq tr td div.point {
-		width: 3.571428571%;
-		float: left;
-	}
-	table.eq tr:first-child th {
-		border: none;
-	}
-	table.eq tr.measure th {
-		height: 1.5em;
-		padding: 0px;
-	}
-	table.eq tr.tick th {
-		height: 1.5em;
-		padding: 8px;
-		padding-top: 0px;
-		margin-top: -10px;
-	}
-	table.eq tr.tick th.y div.dash {
-		color: #e7e7e7;
-		margin-top: -1.2em;
-	}
-	table.eq tr.measure th.y div {
-		margin-left: -0.2em;
-	}
-	</style>
 
 	<!-- Participant Aspects -->
 	<div class="col-xs-12 no-pad" 

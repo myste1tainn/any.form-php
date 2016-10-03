@@ -51,7 +51,11 @@ class QuestionGroup extends Model {
 
 		$sumval = 0;
 		foreach($this->questions as $q) {
-			$ans = $q->answer($p->id)->first()->choice()->first();
+			$f = $q->answer($p->id)->first();
+
+			if ($f == null) continue;
+
+			$ans = $f->choice()->first();
 			if ($ans) {
 				$sumval += $ans->value;
 			}

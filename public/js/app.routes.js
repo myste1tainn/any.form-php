@@ -106,6 +106,7 @@
 				'report-body': {
 					controller: 'ReportDetailDataController',
 					templateUrl: function($stateParams) {
+						console.log($stateParams.formID);
 						return `template/report/${$stateParams.formID}/by-person-detail`;
 					}
 				}

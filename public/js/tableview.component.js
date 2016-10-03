@@ -103,7 +103,7 @@
 		}
 
 		this.reloadData = function() {
-			// TODO: should the selection be reload everytimes data is reloaded like this?
+			// TODO: [LATER] should the selection be reload everytimes data is reloaded like this?
 			if (this.dataSource) {
 				this.results = this.dataSource.itemsForTableView(this);
 				this.selectedItem = null;

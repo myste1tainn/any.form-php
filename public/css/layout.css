@@ -150,6 +150,9 @@ strong {
 	text-align: center;
 	margin: auto;
 }
+.center {
+	margin: auto;
+}
 
 /**
 *

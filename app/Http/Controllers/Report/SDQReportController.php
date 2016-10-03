@@ -52,10 +52,10 @@ class SDQReportController extends AbstractReport {
 		return $this->resultByType($reportID, $class, $room, $year);
 	}
 	public function summaryByClass($reportID, $class, $room, $year) {
-		return $this->resultByType($reportID, $class, null, $year);
+		return $this->resultByType($reportID, $class, $room, $year);
 	}
 	public function summaryBySchool($reportID, $class, $room, $year) {
-		return $this->resultByType($reportID, null, null, $year);
+		return $this->resultByType($reportID, $class, $room, $year);
 	}
 
 	private function resultByType($id, $class = null, $room = null, $year) {

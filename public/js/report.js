@@ -80,7 +80,7 @@
 				_navigationController.setDataSource($scope);
 			}
 
-			$scope.results 			= [];
+			$scope.results 			= null;
 			$scope.displayedResults = [];
 			$scope.type 			= _formSelectionController.selectedType;
 			_formID 				= $state.params.formID;
@@ -128,8 +128,8 @@
 
 		$scope.getReportPagesInfo = function() {
 			if (!!!_formID || $state.current.name == 'ReportDisplay.Detail') return;
-			
-			reportService.numberOfPages(_formID, _year.value, _numRows, function(numPage){
+
+			reportService.numberOfPages(_formID, _year.value, _numRows).then(function(numPage){
 				for (var i = 0; i <= numPage; i++) {
 					_pages.push(i);
 				}
@@ -172,9 +172,15 @@
 
 					fn(payload).then(function(result){
 						$scope.results = result;
-						for (var i = 0; i < $scope.results.length; i++) {
-							reportService.injectFunctions($scope.results[i]);
+						
+						if (!!$scope.results.length) {
+							for (var i = 0; i < $scope.results.length; i++) {
+								reportService.injectFunctions($scope.results[i]);
+							}
+						} else {
+							reportService.injectFunctions($scope.results);
 						}
+						window.a = $scope.results;
 					}, function(error){
 						
 					})
@@ -267,7 +273,7 @@
 		$scope.constructor();
 	})
 
-	.directive('graph', function($http){
+	.directive('graph', function(){
 		return {
 			scope: true,
 			restrict: 'E',
@@ -277,7 +283,33 @@
 				var _data = $scope.$eval($attrs.participant);
 				$scope.graph = _data.graphOf($attrs.name);
 				$scope.level = _data.levelOf($attrs.name);
-				console.log(_data);
+			}
+		}
+	})
+
+	.directive('countGroup', function(reportService, $state){
+		return {
+			scope: true,
+			restrict: 'E',
+			templateUrl: 'template/report/eq/count-group',
+			controllerAs: 'countGroup',
+			controller: function($scope, $element, $attrs){
+				var formID = $state.params['formID'];
+				var clazz = $state.params['class'];
+				var room = $state.params['room'];
+				var groupName = $attrs.name;
+
+				payload = {
+					reportID: formID,
+					class: clazz,
+					room: room,
+					year: new Date().getFullYear(),
+					groupName: groupName
+				}
+
+				reportService.countGroup(payload).then(function(res){
+					$scope.items = res;
+				})
 			}
 		}
 	})

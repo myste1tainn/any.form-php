@@ -6,7 +6,7 @@ class Definition extends Model {
 
 	public static function valueOf($name) {
 		$def = static::where('name', $name)->first();
-		if ($def) return ->value;
+		if ($def) return $def->value;
 		else return null;
 	}
 

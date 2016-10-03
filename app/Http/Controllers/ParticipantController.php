@@ -39,39 +39,7 @@ class ParticipantController extends Controller {
 	}
 
 	private function riskResult($participantID, $formID, $year) {
-		$participant = Participant::where('identifier', $participantID)->first();
-
-		if (!$participant) {
-			return response()->json([
-				"message" => 'ไม่พบข้อมูลสำหรับนักเรียนหมายเลข '.$participantID
-			], 404);
-		}
-
-		$form = Questionaire::find($formID);
-		$result = $participant->results()
-							  ->where('questionaireID', $formID)
-							  ->where('academicYear', $year)
-							  ->get();
-
-		$answers = $participant->answers()
-							   ->with('choice.parent')
-							   ->where('questionaireID', $formID)
-							   ->where('academicYear', $year)
-							   ->get();
-
-		$mappedAnswers = static::riskNameMappedAnswers($answers);		
-
-		$participant->talent = $mappedAnswers['talent'];
-		$participant->disabilities = $mappedAnswers['disabilities'];
-		$participant->aspects = $mappedAnswers['aspects'];
-
-		if ($result && $answers) {
-			return response()->json($participant);
-		} else {
-			return response()->json([
-				'message' => 'ไม่พบข้อมูล '.$form->name.' สำหรับนักเรียนหมายเลข '.$participant->identifier.' ในปีการศึกษา '.$year
-			], 404);
-		}
+		
 	}
 
 	public static function riskNameMappedAnswers($answers) {

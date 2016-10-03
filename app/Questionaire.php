@@ -75,8 +75,15 @@ class Questionaire extends Model {
 		$this->results($year, $from, $num, $class, $room);
 		$this->questionGroups();
 
-		// TODO: Continue on this
-		$exlcludedGroups = [Definition::valueOf('GroupSDQStudentSocial')];
+		if (static::is($this->id, 'SDQStudentReport')) {
+			$type = 'Student';
+		} else if (static::is($this->id, 'SDQTeacherReport')) {
+			$type = 'Teacher';
+		} else if (static::is($this->id, 'SDQParentReport')) {
+			$type = 'Parent';
+		}
+
+		$exlcludedGroups = [Definition::valueOf('GroupSDQ'.$type.'Social')];
 
 		$participants = [];
 		foreach ($this->results as $res) {
@@ -109,7 +116,7 @@ class Questionaire extends Model {
 						 ->first();
 
 		if ($def) {
-			return strpos($def->values, $id) !== false;
+			return strpos($def->values, ''.$id) !== false;
 		} else {
 			return false;
 		}

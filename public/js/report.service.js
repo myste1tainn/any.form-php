@@ -87,6 +87,16 @@
 			return d.promise;
 		}
 
+		this.countGroup = function(payload){
+			var d = $q.defer();
+			var classParameter = (payload.class) ? `/class/${payload.class}/` : '';
+			var roomParameter = (payload.room) ? `/room/${payload.room}` : '';
+			$http.get(`api/v1/report/${payload.reportID}/count-group/${payload.groupName}/year/${payload.year}${classParameter}${roomParameter}`)
+			.success(_successHandler(d))
+			.error(_errorHandler(d));
+			return d.promise;
+		}
+
 		this.injectFunctions = function(target){
 			target.hasTalent = function() {
 				return !!this.talent;
