@@ -28,9 +28,11 @@
 		};
 		var _successHandler = function(d) {
 			return function(res, status, headers, config){
-				(status > 299) ? 
-				_errorHandler(res, status, headers, config) : 
-				d.resolve(res, status, headers, config);
+				if (status > 299) {
+					_errorHandler(d)(res, status, headers, config);
+				} else {
+					d.resolve(res, status, headers, config);
+				}
 			}
 		}
 		this.functionForType = function(type) {

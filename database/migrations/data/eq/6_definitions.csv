@@ -1,2 +1,7 @@
 "id","name","tableName","columnName","values","created_at","updated_at"
 31,"EQReports","questionaires","id",38,"2016-09-11 18:23:22","2016-09-11 18:23:22"
+32,"SDQTeacherReport","questionaires","id",36,"2016-09-26 17:17:22","2016-09-26 17:17:22"
+33,"SDQParentReport","questionaires","id",37,"2016-09-26 17:17:39","2016-09-26 17:17:39"
+34,"GroupSDQStudentSocial","question_groups","id",5,"2016-09-26 17:21:47","2016-09-26 17:21:47"
+35,"GroupSDQTeacherSocial","question_groups","id",12,"2016-09-26 17:22:25","2016-09-26 17:22:25"
+36,"GroupSDQParentSocial","question_groups","id",18,"2016-09-26 17:23:07","2016-09-26 17:23:07"

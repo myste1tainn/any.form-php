@@ -180,9 +180,9 @@
 						} else {
 							reportService.injectFunctions($scope.results);
 						}
-						window.a = $scope.results;
 					}, function(error){
-						
+						$scope.results = null;
+						$scope.error = error
 					})
 				}
 			}

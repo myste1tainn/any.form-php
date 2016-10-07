@@ -17,7 +17,7 @@ use DB;
 
 class EQReportController extends AbstractReport {
 
-	private function return404($message = 'Data not found') {
+	private function responseNotFound($message = 'Data not found') {
 		return response()->json(['message' => $message], 404);
 	}
 
@@ -39,7 +39,7 @@ class EQReportController extends AbstractReport {
 		$form = $query->where('id', $reportID)->first();
 
 		if (!$form || count($form->pagedResults) == 0) {
-			return $this->return404('ไม่พบข้อมูลรายงาน');
+			return $this->responseNotFound('ไม่พบข้อมูลรายงาน');
 		} else {
 			$participants = [];
 			foreach ($form->pagedResults as $res) {
@@ -58,7 +58,7 @@ class EQReportController extends AbstractReport {
 		$participant = Participant::where('identifier', $participantIdentifier)->first();
 
 		if (!$form || !$participant) {
-			return $this->return404('ไม่พบข้อมูลรายงาน');
+			return $this->responseNotFound('ไม่พบข้อมูลรายงาน');
 		} else {
 			$this->injectAttributes($participant, $form);
 			return response()->json($participant);
@@ -71,106 +71,60 @@ class EQReportController extends AbstractReport {
 		return $this->summaryBySchool($reportID, $class, null, $year);
 	}
 	public function summaryBySchool($reportID, $class, $room, $year) {
-		$table = (new Participant())->getTable();
-		$query = DB::table($table);
-		if ($class) $query->where('class', $class);
-		if ($room) $query->where('room', $room);
-
-		$participants = $query->get();
-
-		foreach ($participants as $p) {
-			$answers = $p->answers($year)->with('choice.question.group')->get();
-
-		}
-
+		$where = "";
 		if ($class) $where = "WHERE class = $class";
-		if ($room) $where .= "AND room = $room";
+		if ($room) $where .= " AND room = $room";
 
 		$sql = "
-		SELECT qg.label as label, SUM(c.value)/COUNT(distinct p.id) as value
+		SELECT 		qg.id as id,
+					qg.label as name, 
+					pqg.label as groupName,
+					cri.from as minValue,
+					cri.to as `maxValue`,
+					ROUND(SUM(c.value)/COUNT(distinct p.id)) as value
+
 		FROM ( SELECT id, COUNT(distinct id) FROM participants $where GROUP BY id ) p
-		INNER JOIN ( SELECT * FROM participant_answers WHERE academicYear = $academicYear ) pa 
+		INNER JOIN ( SELECT * FROM participant_answers WHERE academicYear = $year ) pa 
 													ON p.id = pa.participantID
 		INNER JOIN choices c 						ON pa.choiceID = c.id
 		INNER JOIN questions q 						ON c.questionID = q.id
 		INNER JOIN question_groups qg 				ON q.groupID = qg.id
+		INNER JOIN question_groups pqg 				ON qg.parentID = pqg.id
+		INNER JOIN criteria cri 					ON cri.groupID = qg.id
 		WHERE pa.questionaireID = $reportID
+		AND cri.label = 'ปกติ'
 		GROUP BY q.groupID";
 
+		$groups = [];
 		$results = DB::select($sql);
-		foreach ($results as $row) {
-			// TODO: Continue on this, see comment after each line
 
-			// Each row is label and value of questions in group
-
-			// Calculate summation of group (because they are child groups)
-
-			// Reconstruct response object to have structure like
-			// Partent Group
-			// 		-> Child Group
-			// 		-> Child Group
-			// 		-> Child Group
-			// Partent Group
-			// 		-> Child Group
-			// 		-> Child Group
-		}
-
-		// TODO: Remove all codes after this comment line, if above is successfully constructed
-		$query = Questionaire::with(['questionGroups' => function($q){
-			$q->with('childs.questions.answers.choice')->whereNull('parentID');
-		}]);
-		
-		$questionaire = $query->find($reportID);
-
-		if ($questionaire) {
-			
-			$firstGroups = [];
-			foreach ($questionaire->questionGroups as $group) {
-				$secondGroups = [];
-				foreach ($group->childs as $child) {
-					$secondSum = 0;
-					$secondCount = $child->questions[0]->answers->count();
-					$secondItem = new \stdClass();
-					foreach ($child->questions as $question) {
-						foreach ($question->answers as $answer) {
-							$secondSum += $answer->choice->value;
-						}
-					}
-
-					$secondNormCriteria = $child->normalRangeCriteria('ปกติ');
-
-					$value = round($secondSum / $secondCount);
-
-					$secondItem->name = $child->label;
-					$secondItem->sum = $secondSum;
-					$secondItem->count = $secondCount;
-					$secondItem->maxValue = $secondNormCriteria->to;
-					$secondItem->minValue = $secondNormCriteria->from;
-					$secondItem->value = $value;
-					$secondItem->valueString = $child->criterionForValue($value)->label;
-					$secondGroups[] = $secondItem;
+		if (count($results) > 0) {
+			foreach ($results as $row) {
+				// Each row is label and value of questions in group
+				if (!isset($groups[$row->groupName])) {
+					$groups[$row->groupName] = new \stdClass();
+					$groups[$row->groupName]->value = 0;
+					$groups[$row->groupName]->properties = [];
 				}
 
-				$firstSum = 0;
-				$firstCount = count($secondGroups);
-				foreach ($secondGroups as $seocondItem) {
-					$firstSum += $seocondItem->value;
-				}
-				$firstItem = new \stdClass();
-				$firstItem->name = $group->label;
-				$firstItem->sum = $firstSum;
-				$firstItem->count = $firstCount;
-				$firstItem->value = round($firstSum / $firstCount);
-				$firstItem->properties = $secondGroups;
+				$row->value = (int) $row->value;
+				$criteria = Criterion::where('groupID', $row->id)->get();
+				$row->valueString = Criterion::criterionThatFallsIntoValue($criteria, $row->value)->label;
 
-				$firstGroups[] = $firstItem;
+				$groups[$row->groupName]->name = $row->groupName;
+				$groups[$row->groupName]->value += $row->value;
+				$groups[$row->groupName]->properties[] = $row;
 			}
+
+			return response()->json([
+				'name' => 'root',
+				'properties' => array_values($groups)
+			]);
+		} else {
+			return $this->responseNotFound('ไม่พบข้อมูลรายงาน');
 		}
 
-		return response()->json([
-			'name' => 'root',
-			'properties' => $firstGroups
-		]);
+			
 	}
 
 	public function countOfGroup($reportID, $groupName, $year, $class = null, $room = null) {

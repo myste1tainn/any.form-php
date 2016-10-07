@@ -13,8 +13,8 @@ class AddQuestionGroupsAliasAndParent extends Migration {
 	public function up()
 	{
 		Schema::table('question_groups', function (Blueprint $table) {
-			$table->string('alias', 128)->after('label');
-			$table->integer('parentID')->unsigned()->after('updated_at');
+			$table->string('alias', 128)->after('label')->default('alias_not_set');
+			$table->integer('parentID')->unsigned()->after('updated_at')->nullable();
 		});
 	}
 
