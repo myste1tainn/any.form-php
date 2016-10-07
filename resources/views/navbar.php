@@ -24,7 +24,7 @@
 						</table>
 					</a>
 				</li>
-				<div ng-if="!!!user">
+				<div ng-if="!user || user.level == 0">
 					<li id="login">
 						<a ui-sref="login" class="bgcolor-clear children">
 							<table>
@@ -36,7 +36,7 @@
 						</a>
 					</li>
 				</div>
-				<div ng-if="!!user">
+				<div ng-if="!!user && user.level > 0">
 					<li class="section" >อาจารย์</li>
 					<li id="report">
 						<a ui-sref="ReportDisplay" class="bgcolor-clear children">

@@ -1,4 +1,4 @@
-<div class="container report do">
+<div class="container col-xs-12 report do">
 
 	<div class="row report header" style="padding-bottom: 0px">
 
@@ -33,7 +33,7 @@
 
 	</div>
 
-	<div class="col-xs-12 no-pad" ui-view="report-navigator"></div>
-	<div class="row" ui-view="report-body" ng-controller="ReportDisplayController"></div>
+	<div class="col-xs-12" ui-view="report-navigator"></div>
+	<div class="col-xs-12 no-pad" ui-view="report-body" ng-controller="ReportDisplayController"></div>
 
 </div>

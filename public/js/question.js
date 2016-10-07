@@ -61,9 +61,9 @@
 
 				formService.load(function(forms) {
 					_this.forms = forms;
-					if (forms.length > 0) {
-						_this.select(forms[0]);
-					}
+					// if (forms.length > 0) {
+					// 	_this.select(forms[0]);
+					// }
 				})
 
 				/**
@@ -98,15 +98,18 @@
 		this.formID = $state.params.formID;
 	})
 
-	.controller('GroupFormController', function($scope, $state, Groups){
+	.controller('GroupFormController', function($scope, $element, $state, Groups){
 		var _formID = $state.params.formID || null;
-		$scope.group = null;
+		$scope.selectedGroupID = $state.params.groupID || null;
+		$scope.group = {};
 		$scope.addGroup = function(group) {
 			Groups.insert({
 				name: group.name,
 				formID: _formID
-			});
-			$scope.group.name = '';
+			}).then(function(res){
+				setTimeout(function() { $element.find('input').select() }, 0);
+			})
+			$scope.group = {};
 		}
 	})
 
@@ -116,7 +119,12 @@
 		var _formID = $state.params.formID || null;
 		var _groupID = $state.params.groupID || null;
 		$scope.currentGroup = null;
+		$scope.selectedGroupID = _groupID;
 		$scope.groups = Groups.all(_formID);
+
+		$scope.isSelected = function(group) {
+			return group.id == $scope.selectedGroupID;
+		}
 
 		$scope.selectGroup = function(group){
 			$scope.currentGroup = group;

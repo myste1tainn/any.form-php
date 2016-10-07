@@ -80,7 +80,7 @@
 				_navigationController.setDataSource($scope);
 			}
 
-			$scope.results 			= [];
+			$scope.results 			= null;
 			$scope.displayedResults = [];
 			$scope.type 			= _formSelectionController.selectedType;
 			_formID 				= $state.params.formID;
@@ -128,8 +128,8 @@
 
 		$scope.getReportPagesInfo = function() {
 			if (!!!_formID || $state.current.name == 'ReportDisplay.Detail') return;
-			
-			reportService.numberOfPages(_formID, _year.value, _numRows, function(numPage){
+
+			reportService.numberOfPages(_formID, _year.value, _numRows).then(function(numPage){
 				for (var i = 0; i <= numPage; i++) {
 					_pages.push(i);
 				}
@@ -170,13 +170,19 @@
 
 				if (_canDoRequestWithPayload(payload)) {
 
-					fn(payload, function(result){
+					fn(payload).then(function(result){
 						$scope.results = result;
-						for (var i = 0; i < $scope.results.length; i++) {
-							$scope.results[i].hasTalent = function() {
-								return !!this.talent;
+						
+						if (!!$scope.results.length) {
+							for (var i = 0; i < $scope.results.length; i++) {
+								reportService.injectFunctions($scope.results[i]);
 							}
+						} else {
+							reportService.injectFunctions($scope.results);
 						}
+					}, function(error){
+						$scope.results = null;
+						$scope.error = error
 					})
 				}
 			}
@@ -246,12 +252,13 @@
 		}
 
 		var _getDetailData = function() {
-			reportService.participantResult(
-				$scope._participant.identifier, 
-				$scope._form.id, 
-				$scope._year, 
-			function(result) {
+			var promise = reportService.participantResult($scope._participant.identifier, $scope._form.id, $scope._year)
+			promise.then(function(result) {
+				reportService.injectFunctions(result);
 				$scope.results = result;
+				
+			}, function(res){
+				$scope.results = null;
 			})
 		}
 
@@ -265,4 +272,46 @@
 
 		$scope.constructor();
 	})
+
+	.directive('graph', function(){
+		return {
+			scope: true,
+			restrict: 'E',
+			templateUrl: 'template/report/eq/by-person-detail-graph',
+			controllerAs: 'graph',
+			controller: function($rootScope, $scope, $element, $attrs){
+				var _data = $scope.$eval($attrs.participant);
+				$scope.graph = _data.graphOf($attrs.name);
+				$scope.level = _data.levelOf($attrs.name);
+			}
+		}
+	})
+
+	.directive('countGroup', function(reportService, $state){
+		return {
+			scope: true,
+			restrict: 'E',
+			templateUrl: 'template/report/eq/count-group',
+			controllerAs: 'countGroup',
+			controller: function($scope, $element, $attrs){
+				var formID = $state.params['formID'];
+				var clazz = $state.params['class'];
+				var room = $state.params['room'];
+				var groupName = $attrs.name;
+
+				payload = {
+					reportID: formID,
+					class: clazz,
+					room: room,
+					year: new Date().getFullYear(),
+					groupName: groupName
+				}
+
+				reportService.countGroup(payload).then(function(res){
+					$scope.items = res;
+				})
+			}
+		}
+	})
+
 })();

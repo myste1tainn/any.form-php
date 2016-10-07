@@ -33,73 +33,13 @@ class ParticipantController extends Controller {
 			return $this->riskResult($participantID, $formID, $year);
 		} else if (Questionaire::is($formID, 'SDQReports')) {
 			return $this->sdqResult($participantID, $formID, $year);
-		} else if (Questionaire::is($formID, 'EQReport')) {
+		} else if (Questionaire::is($formID, 'EQReports')) {
 			return $this->eqResult($participantID, $formID, $year);
 		}
 	}
 
-	private function sdqResult($participantID, $formID, $year) {
-		$participant = Participant::where('identifier', $participantID)->first();
-		$form = Questionaire::with('questionGroups.criteria')
-							->where('id', $formID)
-							->first();
-
-		if ($participant && $form) {
-			$participant->groups = $form->questionGroups;
-			$participant->lifeProblems($formID);
-			$participant->chronic($formID);
-			$participant->notease($formID);
-			$participant->comments($formID);
-
-			foreach ($participant->groups as $g) {
-				$g->result = Criterion::riskStringWithModifiers(
-					$g->criteria, $g->sumAnswersValueOfParticiant($participant)
-				);
-			}
-
-			return response()->json($participant, 200);
-		} else {
-			return response()->json([
-				'message' => 'ไม่พบข้อมูลรายงาน'
-			], 404);
-		}
-
-	}
-
 	private function riskResult($participantID, $formID, $year) {
-		$participant = Participant::where('identifier', $participantID)->first();
-
-		if (!$participant) {
-			return response()->json([
-				"message" => 'ไม่พบข้อมูลสำหรับนักเรียนหมายเลข '.$participantID
-			], 404);
-		}
-
-		$form = Questionaire::find($formID);
-		$result = $participant->results()
-							  ->where('questionaireID', $formID)
-							  ->where('academicYear', $year)
-							  ->get();
-
-		$answers = $participant->answers()
-							   ->with('choice.parent')
-							   ->where('questionaireID', $formID)
-							   ->where('academicYear', $year)
-							   ->get();
-
-		$mappedAnswers = static::riskNameMappedAnswers($answers);		
-
-		$participant->talent = $mappedAnswers['talent'];
-		$participant->disabilities = $mappedAnswers['disabilities'];
-		$participant->aspects = $mappedAnswers['aspects'];
-
-		if ($result && $answers) {
-			return response()->json($participant);
-		} else {
-			return response()->json([
-				'message' => 'ไม่พบข้อมูล '.$form->name.' สำหรับนักเรียนหมายเลข '.$participant->identifier.' ในปีการศึกษา '.$year
-			], 404);
-		}
+		
 	}
 
 	public static function riskNameMappedAnswers($answers) {

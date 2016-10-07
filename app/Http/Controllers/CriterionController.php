@@ -38,7 +38,7 @@ class CriterionController extends Controller {
 		$criterion->label = $input['label'];
 		$criterion->from = $input['from'];
 		$criterion->to = $input['to'];
-		$criterion->questionaireID = $input['questionaireID'];
+		$criterion->questionaireID = $input['formID'];
 		$criterion->groupID = $input['groupID'];
 		$criterion->save();
 		return response()->json($criterion);

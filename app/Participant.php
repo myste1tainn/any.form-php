@@ -36,7 +36,8 @@ class Participant extends Model {
 	}
 
 	public function answers() {
-		return $this->hasMany('App\ParticipantAnswer', 'participantID');
+		$relation = $this->hasMany('App\ParticipantAnswer', 'participantID');
+		return $relation;
 	}
 
 	public static function allThatChose(Choice $choice, $year = null, $class = null, $room = null) {
@@ -62,11 +63,7 @@ class Participant extends Model {
 
 		return Definition::where('name', $prefix.$middle.$suffix)->first()->values;
 	}
-
-	// TODO: Make this not having to take paramter
-	// REMARK: This takes parameter because
-	// There are few SDQ form student, teacher, and parents
-	// Each form has their own sets of life question
+	
 	public function lifeProblems($id = null) {
 		$lifeProblems = [];
 		$id = $this->getQuestionIDForFormID($id, 'Life');

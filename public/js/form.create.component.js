@@ -13,13 +13,17 @@
 		}
 	})
 
-	.controller('FormCreateController', function($scope, $stateParams, formService, ngDialog){
+	.controller('FormCreateController', function($scope, $element, $stateParams, formService, ngDialog){
 		var id = $stateParams.formID
 
 		$scope.currentPage = null;
 
 		$scope.showPage = function(number){
 			$scope.currentPage = number;
+
+			setTimeout(function() {
+				$element.find('input[name=question-name]').select();
+			}, 0);
 		}
 
 		var checkFormHeader = function() {
@@ -33,6 +37,7 @@
 
 		var loadFormIfNeeded = function(){
 			if (!!!id) {
+				$scope.form = formService.newInstance();
 				return;
 			}
 			formService.load(id, function(form) {

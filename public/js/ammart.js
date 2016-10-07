@@ -212,6 +212,7 @@
 
 		this.subscribe = function(obj) {
 			this.subscriber = obj;
+			this.subscriber();
 		}
 
 		this.reload();
@@ -225,6 +226,7 @@
 			controller: function($scope, $element, $attrs){
 				User.subscribe(function () {
 					$scope.user = User;
+					console.log($scope.user);
 				})
 			}
 		}

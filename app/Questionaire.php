@@ -1,5 +1,6 @@
 <?php namespace App;
 
+use App\Definition;
 use Illuminate\Database\Eloquent\Model;
 
 class Questionaire extends Model {
@@ -74,6 +75,16 @@ class Questionaire extends Model {
 		$this->results($year, $from, $num, $class, $room);
 		$this->questionGroups();
 
+		if (static::is($this->id, 'SDQStudentReport')) {
+			$type = 'Student';
+		} else if (static::is($this->id, 'SDQTeacherReport')) {
+			$type = 'Teacher';
+		} else if (static::is($this->id, 'SDQParentReport')) {
+			$type = 'Parent';
+		}
+
+		$exlcludedGroups = [Definition::valueOf('GroupSDQ'.$type.'Social')];
+
 		$participants = [];
 		foreach ($this->results as $res) {
 
@@ -82,7 +93,7 @@ class Questionaire extends Model {
 			$sumval = QuestionGroup::sumOf(
 				$this->questionGroups, 
 				$res->participant,
-				[env('APP_QUESTION_GROUP_SDQ_SOC_ID')]
+				$exlcludedGroups
 			);
 
 			$riskString = Criterion::riskString($this->criteria, $sumval);
@@ -105,7 +116,7 @@ class Questionaire extends Model {
 						 ->first();
 
 		if ($def) {
-			return strpos($def->values, $id) !== false;
+			return strpos($def->values, ''.$id) !== false;
 		} else {
 			return false;
 		}

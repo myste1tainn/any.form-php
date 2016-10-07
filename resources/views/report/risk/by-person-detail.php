@@ -66,7 +66,7 @@
 		 style="border-right: 1px solid lightgray;">
 		<h4 class="text-center">ข้อมูลความเสี่ยง</h4>
 
-		<!-- TODO: READ ME!
+		<!-- TODO: [FUTURE-PLAN] READ ME!
 
 			YOU PLANNED ON MAKING BELOW TABLE, BECOME A MORE AUTOMATICALLY
 			GENERATED TEMPLATE BY MAKING ParticipantController RETURN A STRUCTURED ARRAY

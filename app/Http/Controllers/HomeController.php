@@ -67,22 +67,31 @@ class HomeController extends Controller {
 			if (!$user || $user->level < 999) {
 				return response('', 403);
 			}
-		} else if ($p1 == 'form' && $p2 != 'list') {
+		} else if ($p1 == 'form') {
 			if (Questionaire::is($p2, 'RiskReport')) {
 				return view('form/risk-screening');
+			} else if ($p2 == 'list' || strpos($p2, 'create') !== false) {
+				return view($this->constructPath($p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8));
 			} else {
 				return view('form/do');
 			}
 		} else if ($p1 == 'report') {
 			return $this->reportTemplate($p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8);
 		}
+		
+		return view($this->constructPath($p1,$p2,$p3,$p4,$p5,$p6,$p7,$p8));
+	}
 
+	private function constructPath($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null) {
 		$path = $p1.'/'.$p2.'/'.$p3.'/'.$p4;
+
 		$path = str_replace('//', '', $path);
 		if (substr($path, -1) == '/') {
 			$path = substr($path, 0, strlen($path) - 1);
 		}
-		return view($path);
+
+
+		return $path;
 	}
 
 	public function user() {
@@ -90,20 +99,25 @@ class HomeController extends Controller {
 	}
 
 	private function reportTemplate($p1, $p2 = null, $p3 = null, $p4 = null, $p5 = null, $p6 = null, $p7 = null, $p8 = null) {
-		if (Questionaire::is($p2, 'SDQReports')) {
-			$part = '/sdq/';
-		} else if (Questionaire::is($p2, 'RiskReport')) {
-			$part = '/risk/';
+		if (is_numeric($p2)) {
+			if (Questionaire::is($p2, 'SDQReports')) {
+				$part = 'sdq';
+			} else if (Questionaire::is($p2, 'RiskReport')) {
+				$part = 'risk';
+			} else if (Questionaire::is($p2, 'EQReports')) {
+				$part = 'eq';
+			} else {
+				$part = 'common';
+
+				if ($p2 == 'main') {
+					$p3 = $p2;
+				}
+			}	
 		} else {
-			$part = '/common/';
+			$part = $p2;
 		}
 
-		$path = $p1.$part.$p3.'/'.$p4;
-		$path = str_replace('//', '', $path);
-		if (substr($path, -1) == '/') {
-			$path = substr($path, 0, strlen($path) - 1);
-		}
-		return view($path);
+		return view($this->constructPath($p1,$part,$p3,$p4,$p5,$p6,$p7,$p8));
 	}
 
 }
