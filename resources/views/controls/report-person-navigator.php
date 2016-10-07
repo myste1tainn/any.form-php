@@ -70,7 +70,7 @@
 		<div class="col-xs-4">
 			<form>
 				<button class="pull-right"
-						ui-sref="ReportDisplay.Detail({participantID: searchID, year:year.value})">
+						ui-sref="ReportDisplay.Detail({participantID: searchID, year:year.value, formID:selectedForm.id})">
 					ค้นหา
 				</button>
 				<input class="col-xs-6 pull-right text-center" type="text" 

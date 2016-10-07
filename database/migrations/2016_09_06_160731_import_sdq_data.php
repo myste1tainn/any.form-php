@@ -22,14 +22,14 @@ class ImportSdqData extends Migration {
 	public function up()
 	{
 		Model::unguard();
-		$this->importExcelToTable('migrations/data/1_questionaires.csv', 'App\Questionaire');
-		$this->importExcelToTable('migrations/data/2_criteria.csv', 'App\Criterion');
-		$this->importExcelToTable('migrations/data/3_questions.csv', 'App\Question');
-		$this->importExcelToTable('migrations/data/4_choices.csv', 'App\Choice');
-		$this->importExcelToTable('migrations/data/5_question_metas.csv', 'App\QuestionMeta');
-		$this->importExcelToTable('migrations/data/6_question_groups.csv', 'App\QuestionGroup');
-		$this->importExcelToTable('migrations/data/7_additional_inputs.csv', 'App\AdditionalInput');
-		$this->importExcelToTable('migrations/data/8_definitions.csv', 'App\Definition');
+		$this->importExcelToTable('migrations/data/sdq/1_questionaires.csv', 'App\Questionaire');
+		$this->importExcelToTable('migrations/data/sdq/2_criteria.csv', 'App\Criterion');
+		$this->importExcelToTable('migrations/data/sdq/3_questions.csv', 'App\Question');
+		$this->importExcelToTable('migrations/data/sdq/4_choices.csv', 'App\Choice');
+		$this->importExcelToTable('migrations/data/sdq/5_question_metas.csv', 'App\QuestionMeta');
+		$this->importExcelToTable('migrations/data/sdq/6_question_groups.csv', 'App\QuestionGroup');
+		$this->importExcelToTable('migrations/data/sdq/7_additional_inputs.csv', 'App\AdditionalInput');
+		$this->importExcelToTable('migrations/data/sdq/8_definitions.csv', 'App\Definition');
 		DB::table('choices')->where('parentID', 0)->update(['parentID' => NULL]);
 		Model::reguard();
 	}
@@ -57,14 +57,14 @@ class ImportSdqData extends Migration {
 	public function down()
 	{
 		Model::unguard();
-		$this->downFromExcelFile('migrations/data/8_definitions.csv', 'App\Definition');
-		$this->downFromExcelFile('migrations/data/7_additional_inputs.csv', 'App\AdditionalInput');
-		$this->downFromExcelFile('migrations/data/6_question_groups.csv', 'App\QuestionGroup');
-		$this->downFromExcelFile('migrations/data/5_question_metas.csv', 'App\QuestionMeta');
-		$this->downFromExcelFile('migrations/data/4_choices.csv', 'App\Choice');
-		$this->downFromExcelFile('migrations/data/3_questions.csv', 'App\Question');
-		$this->downFromExcelFile('migrations/data/2_criteria.csv', 'App\Criteria');
-		$this->downFromExcelFile('migrations/data/1_questionaires.csv', 'App\Questionaire');
+		$this->downFromExcelFile('migrations/data/sdq/8_definitions.csv', 'App\Definition');
+		$this->downFromExcelFile('migrations/data/sdq/7_additional_inputs.csv', 'App\AdditionalInput');
+		$this->downFromExcelFile('migrations/data/sdq/6_question_groups.csv', 'App\QuestionGroup');
+		$this->downFromExcelFile('migrations/data/sdq/5_question_metas.csv', 'App\QuestionMeta');
+		$this->downFromExcelFile('migrations/data/sdq/4_choices.csv', 'App\Choice');
+		$this->downFromExcelFile('migrations/data/sdq/3_questions.csv', 'App\Question');
+		$this->downFromExcelFile('migrations/data/sdq/2_criteria.csv', 'App\Criteria');
+		$this->downFromExcelFile('migrations/data/sdq/1_questionaires.csv', 'App\Questionaire');
 		Model::reguard();
 	}
 

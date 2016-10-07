@@ -2,7 +2,7 @@
 	
 	var module = angular.module('Groups', [])
 
-	.service('Groups', function($http, ArrayHelper){
+	.service('Groups', function($http, $q, ArrayHelper){
 		var _collections = [];
 		var _subscribers = [];
 
@@ -31,6 +31,10 @@
 			}
 		}
 
+		var _errorHandler = function(res, status, headers, config){
+			console.error(res);
+		}
+
 		this.constructor = function() {
 			// _getCollections();
 		}
@@ -39,22 +43,19 @@
 			return _collections;
 		}
 		this.insert = function(group) {
+			var deferred = $q.defer();
 			$http.post('api/v1/question-group', group)
 			.success(function(res, status, headers, config){
 				_collections.push(res);
+				deferred.resolve(res);
 			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
+			.error(_errorHandler);
+			return deferred.promise;
 		}
 		this.update = function(group) {
 			$http.put('api/v1/question-group', group)
-			.success(function(res, status, headers, config){
-				console.log(res);
-			})
-			.error(function(res, status, headers, config){
-				console.log(res);
-			});
+			.success(_errorHandler)
+			.error(_errorHandler);
 		}
 		this.remove = function(payload) {
 			$http.delete('api/v1/question-group/'+payload.id)

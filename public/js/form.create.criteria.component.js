@@ -12,8 +12,8 @@
 
 	.controller('FormCreateCriteriaController', function($scope){
 		var copyOfPreviousCriterion = function() {
-			var length = $scope.Form.criteria.length;
-			var previous = $scope.Form.criteria[length - 1];
+			var length = $scope.form.criteria.length;
+			var previous = $scope.form.criteria[length - 1];
 			var copy = angular.copy(previous);
 			copy.id = -1;
 			return copy;
@@ -25,12 +25,12 @@
 		}
 
 		$scope.addCriterion = function() {
-			if ($scope.Form.criteria.length > 0) {
-				$scope.Form.criteria.push(copyOfPreviousCriterion());
+			if ($scope.form.criteria.length > 0) {
+				$scope.form.criteria.push(copyOfPreviousCriterion());
 			} else {
-				$scope.Form.criteria.push($criterion.newInstance());
+				$scope.form.criteria.push($criterion.newInstance());
 			}
-			$scope.currentCriterion = $scope.Form.criteria.length - 1;
+			$scope.currentCriterion = $scope.form.criteria.length - 1;
 		}
 	})
 

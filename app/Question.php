@@ -117,15 +117,23 @@ class Question extends Model {
 		return $query->where('participantID', $participantID);
 	}
 
-	public function answers($participantID, $year = null) {
+	public function answers($participantID = null, $year = null) {
 		$query = $this->hasMany('App\ParticipantAnswer', 'questionID');
 		if (is_object($participantID)) {
 			$participantID = $participantID->id;
 		}
 		if ($year) {
+			// Answers on the question specific to acacemicYear
 			$query->where('academicYear', $year);
 		}
-		return $query->where('participantID', $participantID);
+
+		if ($participantID) {
+			// Answers on the question specific to participants
+			return $query->where('participantID', $participantID);	
+		} else {
+			// ALL Answers on the question 
+			return $query;
+		}
 	}
 
 	private static function _create($questionaire, $iQuestion) {

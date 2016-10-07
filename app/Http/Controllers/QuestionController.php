@@ -62,7 +62,7 @@ class QuestionController extends Controller {
 		$inputGroup = Request::all();
 		$group = new QuestionGroup();
 		$group->name = $inputGroup['name'];
-		$group->questionaireID = $inputGroup['questionaireID'];
+		$group->questionaireID = $inputGroup['formID'];
 		$group->save();
 		return response()->json($group);
 	}

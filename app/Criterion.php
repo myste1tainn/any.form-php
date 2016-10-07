@@ -69,7 +69,6 @@ class Criterion extends Model {
 		$obj = new \stdClass();
 		foreach ($criteria as $c) {
 			if ($c->inValue($value)) {
-				// TODO: Change this, this is temporary fix
 				$obj->string = $c->label;
 
 				if ($obj->string == 'ปกติ') {
