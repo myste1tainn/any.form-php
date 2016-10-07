@@ -114,7 +114,15 @@ class HomeController extends Controller {
 				}
 			}	
 		} else {
-			$part = $p2;
+			if ($p2 == 'common') {
+                $part = 'common';
+
+                if ($p2 == 'main') {
+                    $p3 = $p2;
+                }
+            } else {
+                $part = $p2;
+            }
 		}
 
 		return view($this->constructPath($p1,$part,$p3,$p4,$p5,$p6,$p7,$p8));
