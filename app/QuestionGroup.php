@@ -15,6 +15,10 @@ class QuestionGroup extends Model {
 		return $this->hasMany('App\QuestionGroup', 'parentID');
 	}
 
+	public function parent() {
+		return $this->belongsTo('App\QuestionGroup', 'parentID', 'id');
+	}
+
 	public function criteria()
 	{
 		return $this->hasMany('App\Criterion', 'groupID');
@@ -100,7 +104,7 @@ class QuestionGroup extends Model {
 	}
 
 	public function childProperties($participant) {
-		if ($this->childs == null) $this->childs();
+		if ($this->childs == null) $this->childs = $this->childs()->get();
 		$properties = [];
 		foreach ($this->childs as $child) {
 			$properties[] = $child->propertyObject($participant);
