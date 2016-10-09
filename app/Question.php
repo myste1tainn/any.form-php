@@ -72,6 +72,11 @@ class Question extends Model {
 		return $this->hasOne('App\QuestionMeta', 'questionID');
 	}
 
+	public function group() {
+		$relation = $this->belongsTo('App\QuestionGroup', 'groupID', 'id');
+		return $relation;
+	}
+
 	public function choices($mainChoicesOnly = false) {
 		if ($mainChoicesOnly) {
 			return $this->hasMany('App\Choice', 'questionID')->whereNull('parentID');
