@@ -69,7 +69,7 @@ class ImportEqData extends Migration {
 		Excel::load(database_path($excelFile), function($sheet) use ($className) {
 			$sheet->each(function($row) use ($className) {
 				$item = new $className();
-				DB::table($item->getTable())->destroy($row->id);
+				DB::table($item->getTable())->where('id', $row->id)->delete();
 			});
 		});
 	}

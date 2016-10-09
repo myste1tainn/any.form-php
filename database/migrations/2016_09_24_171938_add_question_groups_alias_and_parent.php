@@ -25,8 +25,11 @@ class AddQuestionGroupsAliasAndParent extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropColumn('question_groups', 'alias');
-		Schema::dropColumn('question_groups', 'parentID');
+		Schema::table('question_groups', function (Blueprint $table) {
+			$table->dropColumn('alias');
+			$table->dropColumn('parentID');
+		});
+		
 	}
 
 }
